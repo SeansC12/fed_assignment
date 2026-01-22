@@ -32,7 +32,7 @@
   }
 
   .section-container {
-    @apply max-w-375 mx-auto py-8 mt-8 border-b border-light-gray;
+    @apply max-w-375 mx-auto py-8 border-b border-light-gray;
   }
 
   .section-heading {
@@ -48,7 +48,7 @@
   }
 
   .cuisine-label {
-    @apply text-sm font-medium;
+    @apply text-sm font-medium group-hover:underline;
   }
 
   .filter-capsule {
@@ -110,5 +110,42 @@
 
   .modal-button.primary {
     @apply bg-orange-primary text-white hover:bg-orange-primary-hover;
+  }
+
+  /* Hawker card */
+  .hawker-card {
+    @apply bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer;
+  }
+
+  .hawker-card-image {
+    @apply w-full h-56 bg-light-gray object-cover;
+  }
+
+  .hawker-card-content {
+    @apply p-4;
+  }
+
+  .hawker-card-header {
+    @apply flex items-start justify-between mb-2;
+  }
+
+  .hawker-card-title {
+    @apply text-lg font-semibold text-black;
+  }
+
+  .hawker-card-favorite {
+    @apply w-6 h-6 text-gray-400 hover:text-red-500 transition-colors cursor-pointer flex-shrink-0;
+  }
+
+  .hawker-card-meta {
+    @apply flex items-center gap-2 text-sm text-gray-600;
+  }
+
+  .hawker-card-rating {
+    @apply flex items-center gap-1 font-medium;
+  }
+
+  .hawker-card-badge {
+    @apply absolute top-3 left-3 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-md;
   }
 }
