@@ -30,4 +30,24 @@
   .button[data-variant="outline"] {
     @apply border border-light-gray text-black bg-transparent hover:bg-orange-primary/10 focus:outline-2 focus:outline-orange-primary disabled:text-neutral-600;
   }
+
+  .section-container {
+    @apply max-w-375 mx-auto py-8 mt-8 border-b border-light-gray;
+  }
+
+  .section-heading {
+    @apply text-3xl font-bold mb-6;
+  }
+
+  .cuisine-item {
+    @apply flex flex-col items-center gap-2 shrink-0 cursor-pointer;
+  }
+
+  .cuisine-image {
+    @apply w-24 h-24 bg-light-gray rounded-2xl;
+  }
+
+  .cuisine-label {
+    @apply text-sm font-medium;
+  }
 }
