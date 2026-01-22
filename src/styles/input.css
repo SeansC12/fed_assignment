@@ -1,3 +1,33 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 @import "tailwindcss";
 
 @source "../pages";
+
+@theme {
+  --color-orange-primary: #ff6700;
+  --color-orange-primary-hover: #e45e00;
+  --color-off-white: #f4f1ea;
+  --color-light-gray: #d3d3d3;
+  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --default-font-family: var(--font-sans);
+}
+
+@layer base {
+  body {
+    @apply bg-off-white;
+  }
+}
+
+@layer components {
+  .button {
+    @apply flex h-fit flex-row items-center justify-center rounded-sm px-4 py-3 leading-[140%] font-semibold tracking-[1.08px] transition-colors hover:cursor-pointer;
+  }
+
+  .button[data-variant="solid"] {
+    @apply bg-orange-primary text-white hover:bg-orange-primary-hover focus:outline-4 focus:outline-green-400 disabled:bg-neutral-600;
+  }
+
+  .button[data-variant="outline"] {
+    @apply border border-light-gray text-black bg-transparent hover:bg-orange-primary/10 focus:outline-2 focus:outline-orange-primary disabled:text-neutral-600;
+  }
+}
