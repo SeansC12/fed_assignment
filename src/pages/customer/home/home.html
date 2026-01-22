@@ -166,10 +166,240 @@
           </div>
         </div>
       </section>
+
+      <!-- Filters Section -->
+      <section class="section-container">
+        <div class="flex gap-3 overflow-x-auto pb-2 px-4">
+          <button class="filter-capsule active">
+            <span class="filter-capsule-icon">
+              <i data-lucide="tag" class="w-4 h-4"></i>
+              Offers
+            </span>
+          </button>
+          <!-- <button class="filter-capsule" data-modal="deliveryFeeModal">
+            <span class="filter-capsule-icon">
+              Distance
+              <i data-lucide="chevron-down" class="w-4 h-4"></i>
+            </span>
+          </button> -->
+          <button class="filter-capsule">
+            <span class="filter-capsule-icon"> Under 30 min </span>
+          </button>
+          <button class="filter-capsule">
+            <span class="filter-capsule-icon">
+              <i data-lucide="eye" class="w-4 h-4"></i>
+              Most viewed
+            </span>
+          </button>
+          <button class="filter-capsule" data-modal="ratingModal">
+            <span class="filter-capsule-icon">
+              Rating
+              <i data-lucide="chevron-down" class="w-4 h-4"></i>
+            </span>
+          </button>
+          <!-- <button class="filter-capsule" data-modal="sortModal">
+            <span class="filter-capsule-icon">
+              Sort
+              <i data-lucide="chevron-down" class="w-4 h-4"></i>
+            </span>
+          </button> -->
+        </div>
+      </section>
+
+      <!-- Sort Modal -->
+      <!-- <div id="sortModal" class="modal-overlay">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title">Sort</h3>
+            <button class="modal-close" data-close-modal="sortModal">
+              <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+          </div>
+          <div>
+            <label class="modal-option">
+              <input type="radio" name="sort" value="recommended" checked />
+              <span>Recommended</span>
+            </label>
+            <label class="modal-option">
+              <input type="radio" name="sort" value="rating" />
+              <span>Rating</span>
+            </label>
+            <label class="modal-option">
+              <input type="radio" name="sort" value="earliest" />
+              <span>Earliest arrival</span>
+            </label>
+          </div>
+          <div class="modal-footer">
+            <button class="modal-button secondary" data-close-modal="sortModal">Reset</button>
+            <button class="modal-button primary" data-close-modal="sortModal">Apply</button>
+          </div>
+        </div>
+      </div> -->
+
+      <!-- Rating Modal -->
+      <div id="ratingModal" class="modal-overlay">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title">Rating</h3>
+            <button class="modal-close" data-close-modal="ratingModal">
+              <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+          </div>
+          <div>
+            <label class="modal-option">
+              <input type="radio" name="rating" value="all" checked />
+              <span>All ratings</span>
+            </label>
+            <label class="modal-option">
+              <input type="radio" name="rating" value="4.5" />
+              <span>4.5+ stars</span>
+            </label>
+            <label class="modal-option">
+              <input type="radio" name="rating" value="4.0" />
+              <span>4.0+ stars</span>
+            </label>
+          </div>
+          <div class="modal-footer">
+            <button
+              class="modal-button secondary"
+              data-close-modal="ratingModal"
+            >
+              Reset
+            </button>
+            <button class="modal-button primary" data-close-modal="ratingModal">
+              Apply
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Delivery Fee Modal -->
+      <!-- <div id="deliveryFeeModal" class="modal-overlay">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title">Delivery fee</h3>
+            <button class="modal-close" data-close-modal="deliveryFeeModal">
+              <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+          </div>
+          <div>
+            <label class="modal-option">
+              <input type="radio" name="delivery" value="all" checked />
+              <span>All fees</span>
+            </label>
+            <label class="modal-option">
+              <input type="radio" name="delivery" value="free" />
+              <span>Free delivery</span>
+            </label>
+            <label class="modal-option">
+              <input type="radio" name="delivery" value="under3" />
+              <span>Under $3</span>
+            </label>
+          </div>
+          <div class="modal-footer">
+            <button class="modal-button secondary" data-close-modal="deliveryFeeModal">Reset</button>
+            <button class="modal-button primary" data-close-modal="deliveryFeeModal">Apply</button>
+          </div>
+        </div>
+      </div> -->
     </main>
 
     <script>
       lucide.createIcons();
+
+      // Modal functionality
+      document.addEventListener("DOMContentLoaded", () => {
+        // Open modal
+        document.querySelectorAll("[data-modal]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const modalId = button.getAttribute("data-modal");
+            const modal = document.getElementById(modalId);
+            if (modal) {
+              modal.classList.add("show");
+            }
+          });
+        });
+
+        // Close modal
+        document.querySelectorAll("[data-close-modal]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const modalId = button.getAttribute("data-close-modal");
+            const modal = document.getElementById(modalId);
+            if (modal) {
+              // If Reset button, select first radio option
+              if (button.classList.contains("secondary")) {
+                const firstRadio = modal.querySelector('input[type="radio"]');
+                if (firstRadio) firstRadio.checked = true;
+              }
+
+              modal.classList.remove("show");
+
+              // Update capsule text if Apply or Reset button
+              if (
+                button.classList.contains("primary") ||
+                button.classList.contains("secondary")
+              ) {
+                updateCapsuleText(modalId);
+              }
+            }
+          });
+        });
+
+        // Close modal on overlay click
+        document.querySelectorAll(".modal-overlay").forEach((overlay) => {
+          overlay.addEventListener("click", (e) => {
+            if (e.target === overlay) {
+              overlay.classList.remove("show");
+            }
+          });
+        });
+
+        // Toggle filter active state
+        document
+          .querySelectorAll(".filter-capsule:not([data-modal])")
+          .forEach((button) => {
+            button.addEventListener("click", () => {
+              button.classList.toggle("active");
+            });
+          });
+
+        // Function to update capsule text based on selection
+        function updateCapsuleText(modalId) {
+          const modal = document.getElementById(modalId);
+          const selectedRadio = modal.querySelector(
+            'input[type="radio"]:checked',
+          );
+
+          if (!selectedRadio) return;
+
+          const selectedText = selectedRadio.nextElementSibling.textContent;
+          const capsule = document.querySelector(`[data-modal="${modalId}"]`);
+          const textSpan = capsule.querySelector(".filter-capsule-icon");
+
+          // Get filter name from modal title
+          const filterName = modal.querySelector(".modal-title").textContent;
+
+          // Check if it's the default/first option (usually "All" or "Recommended")
+          const isDefault =
+            selectedRadio.value ===
+            modal.querySelectorAll('input[type="radio"]')[0].value;
+
+          if (isDefault) {
+            // Reset to original text and remove active class
+            textSpan.innerHTML = `${filterName}<i data-lucide="chevron-down" class="w-4 h-4"></i>`;
+            capsule.classList.remove("active");
+          } else {
+            // Show selected option and add active class
+            textSpan.innerHTML = `${filterName}: ${selectedText}<i data-lucide="chevron-down" class="w-4 h-4"></i>`;
+            capsule.classList.add("active");
+          }
+
+          lucide.createIcons();
+        }
+
+        // Re-init lucide icons after modal interaction
+        setTimeout(() => lucide.createIcons(), 100);
+      });
     </script>
   </body>
 </html>

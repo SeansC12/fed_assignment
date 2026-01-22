@@ -50,4 +50,65 @@
   .cuisine-label {
     @apply text-sm font-medium;
   }
+
+  .filter-capsule {
+    @apply px-4 py-2 flex items-center justify-center rounded-full border border-light-gray bg-white text-sm font-medium transition-all cursor-pointer hover:border-orange-primary hover:bg-orange-primary/5 whitespace-nowrap;
+  }
+
+  .filter-capsule.active {
+    @apply bg-orange-primary text-white border-orange-primary hover:bg-orange-primary-hover hover:border-orange-primary-hover;
+  }
+
+  .filter-capsule-icon {
+    @apply inline-flex items-center gap-2;
+  }
+
+  /* Modal */
+  .modal-overlay {
+    @apply fixed inset-0 bg-black/50 z-50 hidden items-center justify-center;
+  }
+
+  .modal-overlay.show {
+    @apply flex;
+  }
+
+  .modal-content {
+    @apply bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl;
+  }
+
+  .modal-header {
+    @apply flex items-center justify-between mb-6;
+  }
+
+  .modal-title {
+    @apply text-2xl font-bold;
+  }
+
+  .modal-close {
+    @apply w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 cursor-pointer transition-colors;
+  }
+
+  .modal-option {
+    @apply flex items-center gap-3 py-3 cursor-pointer hover:bg-gray-50 rounded-lg px-3 transition-colors;
+  }
+
+  .modal-option input[type="radio"] {
+    @apply w-5 h-5 cursor-pointer;
+  }
+
+  .modal-footer {
+    @apply flex gap-3 mt-6;
+  }
+
+  .modal-button {
+    @apply flex-1 py-3 rounded-lg font-semibold transition-colors cursor-pointer text-center;
+  }
+
+  .modal-button.secondary {
+    @apply bg-gray-100 text-black hover:bg-gray-200;
+  }
+
+  .modal-button.primary {
+    @apply bg-orange-primary text-white hover:bg-orange-primary-hover;
+  }
 }
