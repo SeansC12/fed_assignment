@@ -11,7 +11,7 @@
 <body class="bg-gray-50 text-gray-900 font-sans">
     <header class="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-100">
         <nav class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-            <div class="flex flex-1 gap-3 items-center">
+            <div class="flex-1 flex gap-3 items-center">
                 <img src="/static/myhawker-logo-orange.svg" alt="Logo" class="h-10 w-auto" onerror="this.src='https://placehold.co/40x40?text=MH'"/>
                 <img src="/static/myhawker-name-orange.svg" alt="MyHawker" class="h-5 w-auto" onerror="this.style.display='none'"/>
             </div>
@@ -33,19 +33,13 @@
     </header>
 
     <main>
-        <section class="bg-white border-b border-gray-200">
+        <section class="sticky top-[72px] z-40 bg-white border-b border-gray-200 shadow-sm">
             <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                
                 <div class="relative flex-1 max-w-md">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                         <i data-lucide="search" class="w-5 h-5"></i>
                     </span>
-                    <input 
-                        type="text" 
-                        id="searchInput"
-                        placeholder="Search menu items..." 
-                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-all" 
-                    />
+                    <input type="text" id="searchInput" placeholder="Search menu items..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-all" />
                 </div>
 
                 <div class="flex items-center gap-3">
@@ -75,7 +69,7 @@
                         </div>
                     </div>
 
-                    <button class="flex items-center gap-2 px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all font-semibold shadow-md active:scale-95">
+                    <button onclick="window.location.href='../menu_add/menu_add.html'" class="flex items-center gap-2 px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all font-semibold shadow-md active:scale-95">
                         <i data-lucide="plus" class="w-5 h-5"></i>
                         <span>Add Item</span>
                     </button>
@@ -84,51 +78,43 @@
         </section>
 
         <section class="max-w-7xl mx-auto px-6 py-10">
-            <div id="menu-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                </div>
+            <div id="menu-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
         </section>
     </main>
 
-    <script>
-        // 1. DATA: Add your menu items here
-        const menuData = [
-            { id: 1, name: "Western Food", price: "5.50", category: "Mains", stock: true,
-                image: "https://unsplash.com/photos/a-plate-of-steak-asparagus-tomatoes-and-asparagus-HbgkV1jfHIk",
-                desc: "Delicious western-style steak served with fresh vegetables and a side of mashed potatoes."
-             },
-            { id: 2, name: "Iced Kopi-O", price: "1.80", category: "Drinks", stock: true,
-                image: "https://unsplash.com/photos/4_jhDO54BYg",
-                desc: "Refreshing iced black coffee, a perfect blend of strong coffee flavor and cool refreshment."
-            },
-            { id: 3, name: "Crispy Spring Rolls", price: "3.50", category: "Sides", stock: false,
-                image: "https://unsplash.com/photos/9wg5jCEPBsw",
-                desc: "Golden fried spring rolls filled with a savory mix of vegetables and meat, served with sweet chili sauce."
-            },
-            { id: 4, name: "Hokkien Mee", price: "6.00", category: "Mains", stock: true,
-                image: "https://unsplash.com/photos/3A3fX1c0kYg",
-                desc: "Stir-fried Hokkien noodles with prawns, squid, and pork, garnished with lime and sambal."
-            },
-            { id: 5, name: "Fresh Bandung", price: "2.20", category: "Drinks", stock: true,
-                image: "https://unsplash.com/photos/9j8xG0bX5rE",
-                desc: "A sweet and creamy rose-flavored drink made with evaporated milk and rose syrup, served chilled."
-            },
-            { id: 6, name: "Satay (Set of 10)", price: "9.00", category: "Sides", stock: true,
-                image: "https://unsplash.com/photos/9M66mX1ZJ6s",
-                desc: "Grilled skewers of marinated meat served with a rich peanut sauce, rice cakes, and cucumber."
-            },
-            { id: 7, name: "Test food", price: "900.00", category: "Mains", stock: true,
-                image: "https://unsplash.com/photos/a-plate-of-steak-asparagus-tomatoes-and-asparagus-HbgkV1jfHIk",
-                desc: "Authentic local flavor prepared fresh daily for the best hawker experience."
-            },
-        ];
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, onSnapshot, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+        // REPLACE WITH YOUR CONFIG
+        const firebaseConfig = {
+            apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
+            authDomain: "fed-assignment-f1456.firebaseapp.com",
+            projectId: "fed-assignment-f1456",
+            storageBucket: "fed-assignment-f1456.firebasestorage.app",
+            messagingSenderId: "646434763443",
+            appId: "1:646434763443:web:40ca6ecd4edd45e2edf6c6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const menuCol = collection(db, "vendor_menu");
+
+        let menuData = [];
         let activeFilter = 'All';
         let activeSearch = '';
 
-        // 2. RENDERER: Builds the grid
+        // 1. REAL-TIME LISTENER (replaces LocalStorage loading)
+        onSnapshot(menuCol, (snapshot) => {
+            menuData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            renderItems();
+        });
+
         function renderItems() {
             const grid = document.getElementById('menu-grid');
-            
             const filteredData = menuData.filter(item => {
                 const matchesCat = activeFilter === 'All' || item.category === activeFilter;
                 const matchesSearch = item.name.toLowerCase().includes(activeSearch.toLowerCase());
@@ -139,75 +125,81 @@
                 grid.innerHTML = `
                     <div class="col-span-full text-center py-20 bg-white rounded-2xl border-2 border-dashed border-gray-200">
                         <i data-lucide="search-x" class="w-12 h-12 mx-auto text-gray-300 mb-2"></i>
-                        <p class="text-gray-500 font-medium">No items found matching your criteria.</p>
-                    </div>
-                `;
+                        <p class="text-gray-500 font-medium">No items found.</p>
+                    </div>`;
             } else {
                 grid.innerHTML = filteredData.map(item => `
                     <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm flex flex-col hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                        <div class="h-52 bg-gray-50 flex items-center justify-center relative border-b border-gray-100">
-                            <i data-lucide="utensils-crosses" class="w-12 h-12 text-gray-200"></i>
+                        <div class="h-52 bg-gray-100 relative border-b border-gray-100 overflow-hidden">
+                            <img src="${item.image}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x300?text=Food+Image'">
                             <span class="absolute top-4 right-4 bg-white/95 backdrop-blur px-3 py-1 rounded-full text-sm font-black text-gray-800 shadow-sm border border-gray-100">
-                                $${item.price}
+                                $${Number(item.price).toFixed(2)}
                             </span>
                         </div>
-
                         <div class="p-6 flex-1">
-                            <div class="flex justify-between items-start mb-2">
-                                <span class="text-[10px] font-black tracking-widest text-red-500 uppercase px-2 py-1 bg-red-50 rounded">${item.category}</span>
-                            </div>
-                            <h3 class="text-xl font-bold text-gray-900">${item.name}</h3>
-                            <p class="text-gray-500 text-sm mt-2 line-clamp-2">Authentic local flavor prepared fresh daily for the best hawker experience.</p>
+                            <span class="text-[10px] font-black tracking-widest text-red-500 uppercase px-2 py-1 bg-red-50 rounded">${item.category}</span>
+                            <h3 class="text-xl font-bold text-gray-900 mt-2">${item.name}</h3>
+                            <p class="text-gray-500 text-sm mt-2 line-clamp-2">${item.desc}</p>
                         </div>
-
                         <div class="px-6 py-4 bg-gray-50/50 border-t border-gray-100 flex justify-between items-center">
                             <div class="flex items-center gap-2">
                                 <div class="w-2.5 h-2.5 rounded-full ${item.stock ? 'bg-green-500 animate-pulse' : 'bg-red-400'}"></div>
                                 <span class="text-xs font-bold text-gray-600 uppercase tracking-tight">${item.stock ? 'Available' : 'Sold Out'}</span>
                             </div>
-
                             <div class="flex gap-2">
-                                <button onclick="alert('Edit item ' + ${item.id})" class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all" title="Edit Item">
+                                <button onclick="editItem('${item.id}')" class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
                                     <i data-lucide="pencil" class="w-4 h-4"></i>
                                 </button>
-                                <button onclick="alert('Delete item ' + ${item.id})" class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all" title="Delete Item">
+                                <button onclick="deleteItem('${item.id}')" class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all">
                                     <i data-lucide="trash-2" class="w-4 h-4"></i>
                                 </button>
                             </div>
                         </div>
-                    </div>
-                `).join('');
+                    </div>`).join('');
             }
-            
-            // Re-render icons for dynamic content
             lucide.createIcons();
         }
 
-        // 3. LOGIC: Handle Inputs & UI
+        // 2. DELETE FROM FIREBASE
+        async function deleteItem(id) {
+            const item = menuData.find(i => i.id === id);
+            if (confirm(`Delete "${item.name}" from the menu?`)) {
+                try {
+                    await deleteDoc(doc(db, "vendor_menu", id));
+                } catch (e) {
+                    alert("Error deleting item: " + e.message);
+                }
+            }
+        }
+
+        // 3. FILTER & SEARCH LOGIC
+        window.filterByCategory = (category) => {
+            activeFilter = category;
+            document.getElementById('filterMenu').classList.add('hidden');
+            renderItems();
+        };
+
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            activeSearch = e.target.value;
+            renderItems();
+        });
+
+        // 4. UI DROPDOWN LOGIC
         const filterBtn = document.getElementById('filterBtn');
         const filterMenu = document.getElementById('filterMenu');
-        const searchInput = document.getElementById('searchInput');
-
+        
         filterBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             filterMenu.classList.toggle('hidden');
         });
 
-        searchInput.addEventListener('input', (e) => {
-            activeSearch = e.target.value;
-            renderItems();
-        });
-
-        window.filterByCategory = (category) => {
-            activeFilter = category;
-            filterMenu.classList.add('hidden');
-            renderItems();
-        };
-
         window.addEventListener('click', () => filterMenu.classList.add('hidden'));
 
-        // Start page
-        renderItems();
+        // Expose functions to window (needed because we are in a module)
+        window.deleteItem = deleteItem;
+        window.editItem = (id) => console.log("Edit item:", id);
+        
+        lucide.createIcons();
     </script>
 </body>
 </html>
