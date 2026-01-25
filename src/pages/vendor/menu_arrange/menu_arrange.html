@@ -1,205 +1,158 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>MyHawker | Menu Management</title>
     <link rel="stylesheet" href="/static/output.css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-</head>
-<body class="bg-gray-50 text-gray-900 font-sans">
-    <header class="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-100">
-        <nav class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-            <div class="flex-1 flex gap-3 items-center">
-                <img src="/static/myhawker-logo-orange.svg" alt="Logo" class="h-10 w-auto" onerror="this.src='https://placehold.co/40x40?text=MH'"/>
-                <img src="/static/myhawker-name-orange.svg" alt="MyHawker" class="h-5 w-auto" onerror="this.style.display='none'"/>
-            </div>
+  </head>
+  <body class="bg-gray-50 text-gray-900 font-sans">
+    <header
+      class="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-100"
+    >
+      <nav
+        class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4"
+      >
+        <div class="flex-1 flex gap-3 items-center">
+          <img
+            src="/static/myhawker-logo-orange.svg"
+            alt="Logo"
+            class="h-10 w-auto"
+            onerror="this.src = 'https://placehold.co/40x40?text=MH'"
+          />
+          <img
+            src="/static/myhawker-name-orange.svg"
+            alt="MyHawker"
+            class="h-5 w-auto"
+            onerror="this.style.display = 'none'"
+          />
+        </div>
 
-            <ul class="hidden lg:flex flex-2 justify-center items-center space-x-8 font-semibold text-gray-500">
-                <li><a href="#" class="hover:text-red-600 transition-colors">Dashboard</a></li>
-                <li><a href="#" class="text-red-600 border-b-2 border-red-600 pb-1">Menu</a></li>
-                <li><a href="#" class="hover:text-red-600 transition-colors">Promotions</a></li>
-                <li><a href="#" class="hover:text-red-600 transition-colors">Rental Agreement</a></li>
-                <li><a href="#" class="hover:text-red-600 transition-colors">Sales</a></li>
-            </ul>
+        <ul
+          class="hidden lg:flex flex-2 justify-center items-center space-x-8 font-semibold text-gray-500"
+        >
+          <li>
+            <a href="#" class="hover:text-red-600 transition-colors"
+              >Dashboard</a
+            >
+          </li>
+          <li>
+            <a href="#" class="text-red-600 border-b-2 border-red-600 pb-1"
+              >Menu</a
+            >
+          </li>
+          <li>
+            <a href="#" class="hover:text-red-600 transition-colors"
+              >Promotions</a
+            >
+          </li>
+          <li>
+            <a href="#" class="hover:text-red-600 transition-colors"
+              >Rental Agreement</a
+            >
+          </li>
+          <li>
+            <a href="#" class="hover:text-red-600 transition-colors">Sales</a>
+          </li>
+        </ul>
 
-            <div class="flex-1 text-right">
-                <button class="p-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 transition-all border border-gray-200">
-                    <i data-lucide="circle-user-round" class="w-6 h-6"></i>
-                </button>
-            </div>
-        </nav>
+        <div class="flex-1 text-right">
+          <button
+            class="p-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 transition-all border border-gray-200"
+          >
+            <i data-lucide="circle-user-round" class="w-6 h-6"></i>
+          </button>
+        </div>
+      </nav>
     </header>
 
     <main>
-        <section class="sticky top-[72px] z-40 bg-white border-b border-gray-200 shadow-sm">
-            <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div class="relative flex-1 max-w-md">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                        <i data-lucide="search" class="w-5 h-5"></i>
-                    </span>
-                    <input type="text" id="searchInput" placeholder="Search menu items..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-all" />
+      <section
+        class="sticky top-[72px] z-40 bg-white border-b border-gray-200 shadow-sm"
+      >
+        <div
+          class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4"
+        >
+          <div class="relative flex-1 max-w-md">
+            <span
+              class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"
+            >
+              <i data-lucide="search" class="w-5 h-5"></i>
+            </span>
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Search menu items..."
+              class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-all"
+            />
+          </div>
+
+          <div class="flex items-center gap-3">
+            <div class="relative">
+              <button
+                id="filterBtn"
+                class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-all font-medium"
+              >
+                <i data-lucide="filter" class="w-4 h-4"></i>
+                <span>Filters</span>
+                <i data-lucide="chevron-down" class="w-4 h-4 ml-1"></i>
+              </button>
+
+              <div
+                id="filterMenu"
+                class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden"
+              >
+                <div class="py-1">
+                  <button
+                    onclick="filterByCategory('Mains')"
+                    class="w-full text-left flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
+                  >
+                    <i data-lucide="utensils" class="w-4 h-4 mr-3"></i> Mains
+                  </button>
+                  <button
+                    onclick="filterByCategory('Drinks')"
+                    class="w-full text-left flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
+                  >
+                    <i data-lucide="cup-soda" class="w-4 h-4 mr-3"></i> Drinks
+                  </button>
+                  <button
+                    onclick="filterByCategory('Sides')"
+                    class="w-full text-left flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
+                  >
+                    <i data-lucide="popcorn" class="w-4 h-4 mr-3"></i> Sides
+                  </button>
+                  <hr class="border-gray-100" />
+                  <button
+                    onclick="filterByCategory('All')"
+                    class="w-full text-left flex items-center px-4 py-3 text-sm text-gray-500 hover:bg-gray-50 transition-colors font-medium"
+                  >
+                    Show All Items
+                  </button>
                 </div>
-
-                <div class="flex items-center gap-3">
-                    <div class="relative">
-                        <button id="filterBtn" class="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-all font-medium">
-                            <i data-lucide="filter" class="w-4 h-4"></i>
-                            <span>Filters</span>
-                            <i data-lucide="chevron-down" class="w-4 h-4 ml-1"></i>
-                        </button>
-
-                        <div id="filterMenu" class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden">
-                            <div class="py-1">
-                                <button onclick="filterByCategory('Mains')" class="w-full text-left flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors">
-                                    <i data-lucide="utensils" class="w-4 h-4 mr-3"></i> Mains
-                                </button>
-                                <button onclick="filterByCategory('Drinks')" class="w-full text-left flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors">
-                                    <i data-lucide="cup-soda" class="w-4 h-4 mr-3"></i> Drinks
-                                </button>
-                                <button onclick="filterByCategory('Sides')" class="w-full text-left flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors">
-                                    <i data-lucide="popcorn" class="w-4 h-4 mr-3"></i> Sides
-                                </button>
-                                <hr class="border-gray-100">
-                                <button onclick="filterByCategory('All')" class="w-full text-left flex items-center px-4 py-3 text-sm text-gray-500 hover:bg-gray-50 transition-colors font-medium">
-                                    Show All Items
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button onclick="window.location.href='../menu_add/menu_add.html'" class="flex items-center gap-2 px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all font-semibold shadow-md active:scale-95">
-                        <i data-lucide="plus" class="w-5 h-5"></i>
-                        <span>Add Item</span>
-                    </button>
-                </div>
+              </div>
             </div>
-        </section>
 
-        <section class="max-w-7xl mx-auto px-6 py-10">
-            <div id="menu-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
-        </section>
+            <button
+              onclick="window.location.href = '../menu_add/menu_add.html'"
+              class="flex items-center gap-2 px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all font-semibold shadow-md active:scale-95"
+            >
+              <i data-lucide="plus" class="w-5 h-5"></i>
+              <span>Add Item</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section class="max-w-7xl mx-auto px-6 py-10">
+        <div
+          id="menu-grid"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        ></div>
+      </section>
     </main>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-        // REPLACE WITH YOUR CONFIG
-        const firebaseConfig = {
-            apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
-            authDomain: "fed-assignment-f1456.firebaseapp.com",
-            projectId: "fed-assignment-f1456",
-            storageBucket: "fed-assignment-f1456.firebasestorage.app",
-            messagingSenderId: "646434763443",
-            appId: "1:646434763443:web:40ca6ecd4edd45e2edf6c6"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const menuCol = collection(db, "vendor_menu");
-
-        let menuData = [];
-        let activeFilter = 'All';
-        let activeSearch = '';
-
-        // 1. REAL-TIME LISTENER (replaces LocalStorage loading)
-        onSnapshot(menuCol, (snapshot) => {
-            menuData = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-            renderItems();
-        });
-
-        function renderItems() {
-            const grid = document.getElementById('menu-grid');
-            const filteredData = menuData.filter(item => {
-                const matchesCat = activeFilter === 'All' || item.category === activeFilter;
-                const matchesSearch = item.name.toLowerCase().includes(activeSearch.toLowerCase());
-                return matchesCat && matchesSearch;
-            });
-
-            if (filteredData.length === 0) {
-                grid.innerHTML = `
-                    <div class="col-span-full text-center py-20 bg-white rounded-2xl border-2 border-dashed border-gray-200">
-                        <i data-lucide="search-x" class="w-12 h-12 mx-auto text-gray-300 mb-2"></i>
-                        <p class="text-gray-500 font-medium">No items found.</p>
-                    </div>`;
-            } else {
-                grid.innerHTML = filteredData.map(item => `
-                    <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm flex flex-col hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                        <div class="h-52 bg-gray-100 relative border-b border-gray-100 overflow-hidden">
-                            <img src="${item.image}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x300?text=Food+Image'">
-                            <span class="absolute top-4 right-4 bg-white/95 backdrop-blur px-3 py-1 rounded-full text-sm font-black text-gray-800 shadow-sm border border-gray-100">
-                                $${Number(item.price).toFixed(2)}
-                            </span>
-                        </div>
-                        <div class="p-6 flex-1">
-                            <span class="text-[10px] font-black tracking-widest text-red-500 uppercase px-2 py-1 bg-red-50 rounded">${item.category}</span>
-                            <h3 class="text-xl font-bold text-gray-900 mt-2">${item.name}</h3>
-                            <p class="text-gray-500 text-sm mt-2 line-clamp-2">${item.desc}</p>
-                        </div>
-                        <div class="px-6 py-4 bg-gray-50/50 border-t border-gray-100 flex justify-between items-center">
-                            <div class="flex items-center gap-2">
-                                <div class="w-2.5 h-2.5 rounded-full ${item.stock ? 'bg-green-500 animate-pulse' : 'bg-red-400'}"></div>
-                                <span class="text-xs font-bold text-gray-600 uppercase tracking-tight">${item.stock ? 'Available' : 'Sold Out'}</span>
-                            </div>
-                            <div class="flex gap-2">
-                                <button onclick="editItem('${item.id}')" class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all">
-                                    <i data-lucide="pencil" class="w-4 h-4"></i>
-                                </button>
-                                <button onclick="deleteItem('${item.id}')" class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all">
-                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>`).join('');
-            }
-            lucide.createIcons();
-        }
-
-        // 2. DELETE FROM FIREBASE
-        async function deleteItem(id) {
-            const item = menuData.find(i => i.id === id);
-            if (confirm(`Delete "${item.name}" from the menu?`)) {
-                try {
-                    await deleteDoc(doc(db, "vendor_menu", id));
-                } catch (e) {
-                    alert("Error deleting item: " + e.message);
-                }
-            }
-        }
-
-        // 3. FILTER & SEARCH LOGIC
-        window.filterByCategory = (category) => {
-            activeFilter = category;
-            document.getElementById('filterMenu').classList.add('hidden');
-            renderItems();
-        };
-
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            activeSearch = e.target.value;
-            renderItems();
-        });
-
-        // 4. UI DROPDOWN LOGIC
-        const filterBtn = document.getElementById('filterBtn');
-        const filterMenu = document.getElementById('filterMenu');
-        
-        filterBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            filterMenu.classList.toggle('hidden');
-        });
-
-        window.addEventListener('click', () => filterMenu.classList.add('hidden'));
-
-        // Expose functions to window (needed because we are in a module)
-        window.deleteItem = deleteItem;
-        window.editItem = (id) => console.log("Edit item:", id);
-        
-        lucide.createIcons();
-    </script>
-</body>
+    <script src="menu_arrange.js" type="module"></script>
+  </body>
 </html>
