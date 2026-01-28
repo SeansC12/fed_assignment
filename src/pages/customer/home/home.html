@@ -6,7 +6,7 @@
     <title>Document</title>
     <link rel="stylesheet" href="/static/output.css" />
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    <script src="./home.js" defer></script>
+    <script type="module" src="./home.js" defer></script>
   </head>
 
   <body>
@@ -195,157 +195,10 @@
           </button>
         </div>
 
-        <h2 class="px-4 mb-4 mt-4">6 results</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
+        <h2 id="results_count" class="px-4 mb-4 mt-4">0 results</h2>
+        <div id="grid_container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
           <!-- Card 1 -->
-          <div class="hawker-card">
-            <div class="relative">
-              <div class="hawker-card-image"></div>
-            </div>
-            <div class="hawker-card-content">
-              <div class="hawker-card-header">
-                <h3 class="hawker-card-title">Old Kallang Rd Wanton Noodles</h3>
-                <i data-lucide="heart" class="hawker-card-favorite"></i>
-              </div>
-              <div class="hawker-card-meta">
-                <div class="hawker-card-rating">
-                  <span>4.5</span>
-                  <i
-                    data-lucide="star"
-                    class="w-4 h-4 fill-current text-yellow-500"
-                  ></i>
-                </div>
-                <span>(15,000+)</span>
-                <span>•</span>
-                <span>10 min</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 2 -->
-          <div class="hawker-card">
-            <div class="relative">
-              <div class="hawker-card-image"></div>
-            </div>
-            <div class="hawker-card-content">
-              <div class="hawker-card-header">
-                <h3 class="hawker-card-title">Old Kallang Rd Wanton Noodles</h3>
-                <i data-lucide="heart" class="hawker-card-favorite"></i>
-              </div>
-              <div class="hawker-card-meta">
-                <div class="hawker-card-rating">
-                  <span>4.3</span>
-                  <i
-                    data-lucide="star"
-                    class="w-4 h-4 fill-current text-yellow-500"
-                  ></i>
-                </div>
-                <span>(8,000+)</span>
-                <span>•</span>
-                <span>17 min</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 3 -->
-          <div class="hawker-card">
-            <div class="relative">
-              <div class="hawker-card-image"></div>
-            </div>
-            <div class="hawker-card-content">
-              <div class="hawker-card-header">
-                <h3 class="hawker-card-title">Old Kallang Rd Wanton Noodles</h3>
-                <i data-lucide="heart" class="hawker-card-favorite"></i>
-              </div>
-              <div class="hawker-card-meta">
-                <div class="hawker-card-rating">
-                  <span>4.7</span>
-                  <i
-                    data-lucide="star"
-                    class="w-4 h-4 fill-current text-yellow-500"
-                  ></i>
-                </div>
-                <span>(3,000+)</span>
-                <span>•</span>
-                <span>17 min</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 4 -->
-          <div class="hawker-card">
-            <div class="relative">
-              <div class="hawker-card-image"></div>
-            </div>
-            <div class="hawker-card-content">
-              <div class="hawker-card-header">
-                <h3 class="hawker-card-title">Old Kallang Rd Wanton Noodles</h3>
-                <i data-lucide="heart" class="hawker-card-favorite"></i>
-              </div>
-              <div class="hawker-card-meta">
-                <div class="hawker-card-rating">
-                  <span>4.6</span>
-                  <i
-                    data-lucide="star"
-                    class="w-4 h-4 fill-current text-yellow-500"
-                  ></i>
-                </div>
-                <span>(12,500+)</span>
-                <span>•</span>
-                <span>15 min</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 5 -->
-          <div class="hawker-card">
-            <div class="relative">
-              <div class="hawker-card-image"></div>
-            </div>
-            <div class="hawker-card-content">
-              <div class="hawker-card-header">
-                <h3 class="hawker-card-title">Old Kallang Rd Wanton Noodles</h3>
-                <i data-lucide="heart" class="hawker-card-favorite"></i>
-              </div>
-              <div class="hawker-card-meta">
-                <div class="hawker-card-rating">
-                  <span>4.4</span>
-                  <i
-                    data-lucide="star"
-                    class="w-4 h-4 fill-current text-yellow-500"
-                  ></i>
-                </div>
-                <span>(20,000+)</span>
-                <span>•</span>
-                <span>12 min</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card 6 -->
-          <div class="hawker-card">
-            <div class="relative">
-              <div class="hawker-card-image"></div>
-            </div>
-            <div class="hawker-card-content">
-              <div class="hawker-card-header">
-                <h3 class="hawker-card-title">Old Kallang Rd Wanton Noodles</h3>
-                <i data-lucide="heart" class="hawker-card-favorite"></i>
-              </div>
-              <div class="hawker-card-meta">
-                <div class="hawker-card-rating">
-                  <span>4.5</span>
-                  <i
-                    data-lucide="star"
-                    class="w-4 h-4 fill-current text-yellow-500"
-                  ></i>
-                </div>
-                <span>(5,000+)</span>
-                <span>•</span>
-                <span>23 min</span>
-              </div>
-            </div>
-          </div>
+          
         </div>
       </section>
 

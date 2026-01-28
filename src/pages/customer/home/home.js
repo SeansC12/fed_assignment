@@ -1,3 +1,100 @@
+// Firebase imports and initialization
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  getDocs,
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
+  authDomain: "fed-assignment-f1456.firebaseapp.com",
+  projectId: "fed-assignment-f1456",
+  storageBucket: "fed-assignment-f1456.firebasestorage.app",
+  messagingSenderId: "646434763443",
+  appId: "1:646434763443:web:40ca6ecd4edd45e2edf6c6",
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// Fetch and display hawker stalls
+async function fetchAndDisplayHawkerStalls() {
+  try {
+    const hawkerStallsCol = collection(db, "hawker-stalls");
+    const hawkerStallsSnapshot = await getDocs(hawkerStallsCol);
+    console.log
+    const hawkerStalls = hawkerStallsSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    // Update results count
+    const resultsElement = document.querySelector("#results_count");
+    if (resultsElement) {
+      resultsElement.textContent = `${hawkerStalls.length} results`;
+    }
+
+    // Get the grid container
+    const gridContainer = document.querySelector(
+      "#grid_container"
+    );
+
+    if (gridContainer) {
+      // Clear existing cards
+      gridContainer.innerHTML = "";
+
+      // Create a card for each hawker stall
+      hawkerStalls.forEach((stall) => {
+        const card = createHawkerCard(stall);
+        gridContainer.appendChild(card);
+      });
+
+      // Re-initialize lucide icons for the new cards
+      lucide.createIcons();
+    }
+  } catch (error) {
+    console.error("Error fetching hawker stalls:", error);
+  }
+}
+
+// Function to create a hawker card
+function createHawkerCard(stall) {
+  const card = document.createElement("div");
+  card.className = "hawker-card";
+
+  const imageUrl = stall.image || "";
+  const name = stall.name || "Unknown Hawker";
+  const rating = stall.rating || "N/A";
+  const reviewCount = stall.reviewCount || stall.reviews || 0;
+  const deliveryTime = stall.deliveryTime || stall.delivery_time || "N/A";
+
+  card.innerHTML = `
+    <div class="relative">
+      <div class="hawker-card-image" style="background-image: url('${imageUrl}');"></div>
+    </div>
+    <div class="hawker-card-content">
+      <div class="hawker-card-header">
+        <h3 class="hawker-card-title">${name}</h3>
+        <i data-lucide="heart" class="hawker-card-favorite"></i>
+      </div>
+      <div class="hawker-card-meta">
+        <div class="hawker-card-rating">
+          <span>${rating}</span>
+          <i data-lucide="star" class="w-4 h-4 fill-current text-yellow-500"></i>
+        </div>
+        <span>(${reviewCount.toLocaleString()}+)</span>
+        <span>•</span>
+        <span>${deliveryTime} min</span>
+      </div>
+    </div>
+  `;
+
+  return card;
+}
+
+fetchAndDisplayHawkerStalls();
+
 // Open modal
 document.querySelectorAll("[data-modal]").forEach((button) => {
   button.addEventListener("click", () => {
