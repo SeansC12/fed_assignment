@@ -1,6 +1,17 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { 
+    getAuth, 
+    GoogleAuthProvider, 
+    signInWithPopup, 
+    signInWithEmailAndPassword, 
+    signOut 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { 
+    getFirestore, 
+    doc, 
+    getDoc, 
+    setDoc 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
@@ -16,6 +27,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
+// --- GOOGLE LOGIN LOGIC ---
 const googleBtn = document.getElementById("googleLogin");
 
 if (googleBtn) {
@@ -24,14 +36,13 @@ if (googleBtn) {
             const result = await signInWithPopup(auth, provider);
             const user = result.user;
 
-            // Check if user exists in the 'customer_list' collection
             const userDoc = await getDoc(doc(db, "customer_list", user.uid));
 
             if (userDoc.exists()) {
-                // SUCCESS: Redirect to teammate's home page folder
+                // User found, proceed to home
                 window.location.href = "../customer/home/home.html";
             } else {
-                // NEW USER: Automatically create their profile
+                // Auto-create profile for first-time Google users
                 await setDoc(doc(db, "customer_list", user.uid), {
                     email: user.email,
                     wallet: 0, 
@@ -48,11 +59,40 @@ if (googleBtn) {
     });
 }
 
-// Block the manual email form on the LOGIN page only
+// --- MANUAL EMAIL LOGIN LOGIC ---
 const loginForm = document.getElementById("customerLoginForm");
+
 if (loginForm) {
-    loginForm.addEventListener("submit", (e) => {
+    loginForm.addEventListener("submit", async (e) => {
         e.preventDefault();
-        alert("Email login is currently under maintenance. Please use Google Login!");
+        
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        try {
+            // Attempt to sign in
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+            // Verify they exist in your 'customer_list' collection
+            const userDoc = await getDoc(doc(db, "customer_list", user.uid));
+
+            if (userDoc.exists()) {
+                window.location.href = "../customer/home/home.html";
+            } else {
+                // This handles cases where Auth exists but Firestore record is missing
+                await signOut(auth);
+                alert("No user found. Please sign up first!");
+                window.location.href = "../customer-sign-up/customer-sign-up.html";
+            }
+        } catch (error) {
+            // Handle specific "Not Found" errors
+            if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+                alert("No user found. Please sign up!");
+                window.location.href = "../customer-sign-up/customer-sign-up.html";
+            } else {
+                alert("Login failed: " + error.message);
+            }
+        }
     });
 }
