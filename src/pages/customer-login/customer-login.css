@@ -1,11 +1,17 @@
+/* customer-login.css */
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background-image: url('backgroundtest.jpeg');
+    /* Path Fix: Go up one level to 'pages', then into 'images' */
+    background-image: url('../images/backgroundtest.jpeg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     position: relative;
 }
 
@@ -18,42 +24,60 @@ body::before {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.4);
     z-index: 0;
+    pointer-events: none;
+}
+
+.branding {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    gap: 12px;
+}
+
+.branding-icon {
+    width: 60px;
+    height: auto;
+}
+
+.branding-text {
+    font-size: 32px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.text-my {
+    color: #ff6600;
+}
+
+.text-hawker {
+    color: #333;
 }
 
 .login-container {
     position: relative;
     z-index: 1;
-    padding: 30px;
-    text-align: center;
-    width: 90%;
-    max-width: 400px;
-    margin: auto;
-    top: 50%;
-    transform: translateY(-50%);
     background-color: #fff;
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 400px;
+    padding: 30px;
+    text-align: center;
 }
 
 .back-button {
-    display: inline-block;
+    display: block;
+    text-align: left;
     margin-bottom: 20px;
     font-size: 16px;
     color: #007bff;
     text-decoration: none;
-    text-align: left;
 }
 
-.back-button:hover {
-    text-decoration: underline;
-}
-
-.logo {
-    width: 160px;
-    margin-bottom: 30px;
-}
-
-.login-container h1 {
+.login-title {
     font-size: 24px;
     color: #333;
     margin-bottom: 10px;
@@ -78,22 +102,34 @@ body::before {
     border-radius: 8px;
 }
 
+.forgot-password {
+    font-size: 14px;
+    color: #007bff;
+    text-decoration: none;
+    text-align: right;
+    margin-top: -5px;
+}
+
 .login-button {
     padding: 12px;
     font-size: 16px;
     border: none;
     border-radius: 8px;
-    background-color: #003366;
+    background-color: #ff6700;
     color: white;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: 0.3s;
 }
 
 .login-button:hover {
-    background-color: #002244;
+    background-color: #e45e00;
 }
 
 .google-login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
     padding: 12px;
     font-size: 16px;
     border: 1px solid #ccc;
@@ -101,22 +137,15 @@ body::before {
     background-color: white;
     color: #333;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: 0.3s;
 }
 
 .google-login:hover {
     background-color: #f0f0f0;
 }
 
-.forgot-password {
-    font-size: 14px;
-    color: #007bff;
-    text-decoration: none;
-    text-align: right;
-}
-
 .signup-link {
     font-size: 14px;
-    text-align: center;
     color: #333;
+    margin-top: 15px;
 }
