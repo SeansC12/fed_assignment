@@ -23,7 +23,7 @@ async function fetchAndDisplayHawkerStalls() {
   try {
     const hawkerStallsCol = collection(db, "hawker-stalls");
     const hawkerStallsSnapshot = await getDocs(hawkerStallsCol);
-    console.log
+    console.log;
     const hawkerStalls = hawkerStallsSnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
@@ -36,9 +36,7 @@ async function fetchAndDisplayHawkerStalls() {
     }
 
     // Get the grid container
-    const gridContainer = document.querySelector(
-      "#grid_container"
-    );
+    const gridContainer = document.querySelector("#grid_container");
 
     if (gridContainer) {
       // Clear existing cards
@@ -68,6 +66,10 @@ function createHawkerCard(stall) {
   const rating = stall.rating || "N/A";
   const reviewCount = stall.reviewCount || stall.reviews || 0;
   const deliveryTime = stall.deliveryTime || stall.delivery_time || "N/A";
+
+  card.addEventListener("click", () => {
+    window.location.href = `/src/pages/customer/stall/stall-details.html?id=${stall.id}`;
+  });
 
   card.innerHTML = `
     <div class="relative">
