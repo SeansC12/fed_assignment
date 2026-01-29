@@ -4,6 +4,7 @@ import {
   collection,
   onSnapshot,
   doc,
+  getDoc,
   deleteDoc,
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
@@ -46,7 +47,7 @@ function renderItems() {
 
   if (filteredData.length === 0) {
     grid.innerHTML = `
-            <div class="col-span-full text-center py-20 bg-white rounded-2xl border-2 border-dashed border-gray-200">
+            <div class="col-span-full text-center py-20rounded-2xl border-2 border-dashed border-gray-200">
                 <i data-lucide="search-x" class="w-12 h-12 mx-auto text-gray-300 mb-2"></i>
                 <p class="text-gray-500 font-medium">No items found.</p>
             </div>`;
@@ -62,7 +63,7 @@ function renderItems() {
                     </span>
                 </div>
                 <div class="p-6 flex-1">
-                    <span class="text-[10px] font-black tracking-widest text-red-500 uppercase px-2 py-1 bg-red-50 rounded">${item.category}</span>
+                    <span class="text-[10px] font-black tracking-widest text-orange-primary uppercase px-2 py-1 bg-orange-50 rounded">${item.category}</span>
                     <h3 class="text-xl font-bold text-gray-900 mt-2">${item.name}</h3>
                     <p class="text-gray-500 text-sm mt-2 line-clamp-2">${item.desc}</p>
                 </div>
@@ -124,6 +125,8 @@ window.addEventListener("click", () => filterMenu.classList.add("hidden"));
 
 // Expose functions to window (needed because we are in a module)
 window.deleteItem = deleteItem;
-window.editItem = (id) => console.log("Edit item:", id);
+window.editItem = (id) => {
+    window.location.href = `../menu_edit/menu_edit.html?id=${id}`;
+};
 
 lucide.createIcons();
