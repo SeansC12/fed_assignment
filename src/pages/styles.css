@@ -80,9 +80,9 @@ body::before {
 
 /* ICON FIXES: Prevents icons from overlapping or being huge */
 .icon-wrapper {
-    width: 120px;
-    height: 120px;
-    margin-bottom: 20px;
+    width: 160px;
+    height: 160px;
+    margin-bottom: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
