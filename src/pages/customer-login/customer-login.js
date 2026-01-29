@@ -2,12 +2,14 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
 import { 
     getAuth, 
     GoogleAuthProvider, 
-    signInWithPopup, 
-    signInWithEmailAndPassword, 
-    signOut 
+    signInWithPopup 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { 
     getFirestore, 
+    collection, 
+    query, 
+    where, 
+    getDocs, 
     doc, 
     getDoc, 
     setDoc 
@@ -27,9 +29,18 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
-// --- GOOGLE LOGIN LOGIC ---
-const googleBtn = document.getElementById("googleLogin");
+// --- 1. FORGOT PASSWORD REDIRECT ---
+// Redirects to your new verification page instead of sending an email
+const forgotPasswordLink = document.getElementById("forgotPassword");
+if (forgotPasswordLink) {
+    forgotPasswordLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.location.href = "verify-email.html";
+    });
+}
 
+// --- 2. GOOGLE LOGIN (WITH AUTO-SIGNUP) ---
+const googleBtn = document.getElementById("googleLogin");
 if (googleBtn) {
     googleBtn.addEventListener('click', async () => {
         try {
@@ -39,10 +50,10 @@ if (googleBtn) {
             const userDoc = await getDoc(doc(db, "customer_list", user.uid));
 
             if (userDoc.exists()) {
-                // User found, proceed to home
+                // User already exists, log them in
                 window.location.href = "../customer/home/home.html";
             } else {
-                // Auto-create profile for first-time Google users
+                // New user: Create profile automatically
                 await setDoc(doc(db, "customer_list", user.uid), {
                     email: user.email,
                     wallet: 0, 
@@ -53,46 +64,43 @@ if (googleBtn) {
                 window.location.href = "../customer/home/home.html";
             }
         } catch (error) {
-            console.error("Login Error:", error.message);
+            console.error("Google Login Error:", error.message);
             alert("Error: " + error.message);
         }
     });
 }
 
-// --- MANUAL EMAIL LOGIN LOGIC ---
+// --- 3. MANUAL LOGIN (CHECKS FIRESTORE PASSWORD) ---
 const loginForm = document.getElementById("customerLoginForm");
-
 if (loginForm) {
     loginForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
+        const emailInput = document.getElementById("email").value.trim();
+        const passwordInput = document.getElementById("password").value;
 
         try {
-            // Attempt to sign in
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
+            // Search for the user by email in the Firestore collection
+            const q = query(collection(db, "customer_list"), where("email", "==", emailInput));
+            const querySnapshot = await getDocs(q);
 
-            // Verify they exist in your 'customer_list' collection
-            const userDoc = await getDoc(doc(db, "customer_list", user.uid));
-
-            if (userDoc.exists()) {
-                window.location.href = "../customer/home/home.html";
+            if (!querySnapshot.empty) {
+                const userData = querySnapshot.docs[0].data();
+                
+                // Compare entered password with the 'password' field in Firestore
+                if (userData.password === passwordInput) {
+                    // Success! Redirect to home
+                    window.location.href = "../customer/home/home.html";
+                } else {
+                    alert("Incorrect password. Please try again!");
+                }
             } else {
-                // This handles cases where Auth exists but Firestore record is missing
-                await signOut(auth);
-                alert("No user found. Please sign up first!");
+                alert("No user found with this email. Please sign up!");
                 window.location.href = "../customer-sign-up/customer-sign-up.html";
             }
         } catch (error) {
-            // Handle specific "Not Found" errors
-            if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
-                alert("No user found. Please sign up!");
-                window.location.href = "../customer-sign-up/customer-sign-up.html";
-            } else {
-                alert("Login failed: " + error.message);
-            }
+            console.error("Login Error:", error);
+            alert("Login failed: " + error.message);
         }
     });
 }

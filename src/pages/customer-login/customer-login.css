@@ -2,11 +2,12 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    /* Path Fix: Go up one level to 'pages', then into 'images' */
     background-image: url('../images/backgroundtest.jpeg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    /* FIX: Prevents background jumping during page load */
+    background-attachment: fixed;
     height: 100vh;
     display: flex;
     flex-direction: column;
@@ -22,6 +23,7 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
+    /* Dark overlay for contrast */
     background-color: rgba(0, 0, 0, 0.4);
     z-index: 0;
     pointer-events: none;
@@ -59,13 +61,18 @@ body::before {
 .login-container {
     position: relative;
     z-index: 1;
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.9);
+    /* High blur to match your branding */
+    backdrop-filter: blur(20px);
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     width: 90%;
     max-width: 400px;
     padding: 30px;
     text-align: center;
+    /* Pre-set transparent border to prevent twitching on hover */
+    border: 3px solid transparent;
+    transition: border-color 0.3s ease;
 }
 
 .back-button {
@@ -108,6 +115,16 @@ body::before {
     text-decoration: none;
     text-align: right;
     margin-top: -5px;
+    margin-bottom: 5px;
+        position: relative;
+        z-index: 5;
+        /* Brings it to the very front */
+        cursor: pointer;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+    color: #0056b3;
 }
 
 .login-button {
@@ -121,9 +138,6 @@ body::before {
     transition: 0.3s;
 }
 
-.login-button:hover {
-    background-color: #e45e00;
-}
 
 .google-login {
     display: flex;
@@ -138,10 +152,6 @@ body::before {
     color: #333;
     cursor: pointer;
     transition: 0.3s;
-}
-
-.google-login:hover {
-    background-color: #f0f0f0;
 }
 
 .signup-link {
