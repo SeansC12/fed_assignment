@@ -111,4 +111,13 @@
   .modal-button.primary {
     @apply bg-orange-primary text-white hover:bg-orange-primary-hover;
   }
+
+  /* Custom text colors */
+  .nea-text {
+    color: #BED73B;
+  }
+
+  .portal-text {
+    color: #58B6DD;
+  }
 }
