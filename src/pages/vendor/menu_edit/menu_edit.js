@@ -19,7 +19,7 @@ const itemId = urlParams.get('id');
 
 let currentImageUrl = "";
 
-if (!itemId) {
+if (!itemId) { // No ID provided
     alert("No item ID found. Returning to menu.");
     window.location.href = "../menu_arrange/menu_arrange.html";
 }
