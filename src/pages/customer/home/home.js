@@ -54,7 +54,8 @@ function createHawkerCard(stall) {
   const card = document.createElement("div");
   card.className = "bg-transparent rounded-2xl overflow-hidden transition-shadow cursor-pointer";
 
-  const imageUrl = stall.image || "";
+  const imageBase64 = stall.image || "";
+  console.log(imageBase64.slice(0, 30))
   const name = stall.name || "Unknown Hawker";
   const rating = stall.rating || "N/A";
   const reviewCount = stall.reviewCount || stall.reviews || 0;
@@ -66,7 +67,7 @@ function createHawkerCard(stall) {
 
   card.innerHTML = `
     <div class="relative">
-      <div class="w-full h-36 bg-light-gray object-cover rounded-lg" style="background-image: url('${imageUrl}');"></div>
+      <img class="w-full h-36 bg-light-gray object-cover rounded-lg" src="${imageBase64}" alt="${name}" />
     </div>
     <div class="py-4">
       <div class="mb-3">
