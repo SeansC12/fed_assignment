@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Vendor Email</title>
+    <link rel="stylesheet" href="vendor-login.css">
+</head>
+
+<body>
+    <div class="login-container">
+        <a href="vendor-login.html" class="back-button">← Back</a>
+        <div class="branding">
+            <img src="../../images/myhawker-logo-orange.svg" alt="Logo" class="branding-icon" />
+            <h1 class="branding-text"><span class="text-my">my</span>hawker</h1>
+        </div>
+        <h2 class="login-title">Verify Vendor Account</h2>
+        <p class="login-instruction">Enter your email to reset your vendor password.</p>
+        <form class="login-form" id="verifyEmailForm">
+            <input type="email" id="verifyEmail" placeholder="Email" required />
+            <button type="submit" class="login-button">Next</button>
+        </form>
+    </div>
+    <script type="module" src="verify-email.js"></script>
+</body>
+
+</html>

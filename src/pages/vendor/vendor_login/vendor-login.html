@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vendor Login</title>
+    <link rel="stylesheet" href="vendor-login.css" />
+</head>
+
+<body>
+    <div class="login-container">
+        <a href="../../index.html" class="back-button">← Back</a>
+
+        <div class="branding">
+            <img src="../../images/myhawker-logo-orange.svg" alt="Logo" class="branding-icon" />
+            <h1 class="branding-text">
+                <span class="text-my">my</span><span class="text-hawker">hawker</span>
+            </h1>
+        </div>
+
+        <h2 class="login-title">Vendor Portal</h2>
+        <p class="login-instruction">Enter your vendor email to manage your stall</p>
+
+        <form class="login-form" id="vendorLoginForm">
+            <input type="email" id="email" placeholder="Email" required />
+
+            <a href="verify-email.html" class="forgot-password" id="forgotPassword">Forgot your password?</a>
+
+            <input type="password" id="password" placeholder="Password" required />
+
+            <button type="submit" class="login-button">Login</button>
+            <button type="button" id="googleLogin" class="google-login">Login with Google</button>
+
+            <p class="signup-link">Don't have a stall account? <a href="../vendor_sign_up/vendor-sign-up.html">Sign
+                    up</a></p>
+        </form>
+    </div>
+
+    <script type="module" src="vendor-login.js"></script>
+</body>
+
+</html>
