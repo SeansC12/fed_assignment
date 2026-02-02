@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Item | MyHawker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+    <header class="bg-white border-b border-gray-200 py-4 px-6 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-5xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <a href="../menu_arrange/menu_arrange.html" class="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-500">
+                    <i data-lucide="arrow-left" class="w-6 h-6"></i>
+                </a>
+                <h1 class="text-xl font-bold text-gray-800">Edit Menu Item</h1>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto p-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            <div class="space-y-4">
+                <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Item Photo</label>
+                <div class="relative group aspect-square bg-white rounded-[2rem] overflow-hidden border-2 border-dashed border-gray-300 flex items-center justify-center">
+                    <img id="imagePreview" src="https://placehold.co/600x600?text=Loading..." class="w-full h-full object-cover">
+                    <label for="fileInput" class="absolute top-4 right-4 bg-white p-3 rounded-xl shadow-lg text-gray-700 hover:text-orange-600 cursor-pointer border border-gray-100">
+                        <i data-lucide="pencil-line" class="w-5 h-5"></i>
+                        <input type="file" id="fileInput" class="hidden" accept="image/*">
+                    </label>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-6">
+                <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-200 space-y-6">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Item Name</label>
+                        <input type="text" id="itemName" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-4 focus:ring-red-50 focus:outline-none transition-all">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Price ($)</label>
+                            <input type="number" id="itemPrice" step="0.10" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Category</label>
+                            <select id="itemCategory" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white">
+                                <option>Mains</option>
+                                <option>Drinks</option>
+                                <option>Sides</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Stock Status</label>
+                        <select id="itemStock" class="w-full px-4 py-3 rounded-xl border border-gray-200 bg-white">
+                            <option value="true">Available (In Stock)</option>
+                            <option value="false">Sold Out</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Description</label>
+                        <textarea id="itemDesc" rows="4" class="w-full px-4 py-3 rounded-xl border border-gray-200 resize-none"></textarea>
+                    </div>
+                </div>
+
+                <div class="flex gap-4">
+                    <button id="updateBtn" class="flex-1 bg-orange-600 text-white py-4 rounded-2xl font-bold text-lg hover:bg-orange-700 transition-all shadow-lg active:scale-[0.98]">
+                        Save Changes
+                    </button>
+                    <a href="../menu_arrange/menu_arrange.html" class="px-8 py-4 bg-gray-200 text-gray-600 rounded-2xl font-bold hover:bg-gray-300 transition-all">
+                        Cancel
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script type="module" src="menu_edit.js"></script>
+</body>
+</html>
