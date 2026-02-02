@@ -31,6 +31,10 @@
     @apply border border-light-gray text-black bg-transparent hover:bg-orange-primary/10 focus:outline-2 focus:outline-orange-primary disabled:text-neutral-600;
   }
 
+  .button[data-variant="small-outline"] {
+    @apply px-2 py-1 text-sm border border-light-gray text-black bg-transparent hover:bg-orange-primary/10 tracking-normal focus:outline-2 focus:outline-orange-primary disabled:text-neutral-600;
+  }
+
   .section-container {
     @apply max-w-375 mx-auto py-8 border-b border-light-gray;
   }
@@ -49,6 +53,10 @@
 
   .cuisine-label {
     @apply text-sm font-medium group-hover:underline;
+  }
+
+  .capsule {
+    @apply py-1 px-2 flex items-center justify-center rounded-full w-max border border-light-gray bg-orange-primary/15 text-xs font-medium transition-all whitespace-nowrap;
   }
 
   .filter-capsule {
@@ -147,5 +155,79 @@
 
   .hawker-card-badge {
     @apply absolute top-3 left-3 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-md;
+  }
+
+  /* Food item card */
+  .food-item-card {
+    @apply rounded-lg overflow-hidden hover:shadow-md transition-shadow border border-light-gray;
+  }
+
+  .food-item-card-inner {
+    @apply flex items-stretch h-full max-h-40;
+  }
+
+  .food-item-card-content {
+    @apply flex-1 p-5 flex flex-col gap-2;
+  }
+
+  .food-item-card-title {
+    @apply text-base font-semibold text-black;
+  }
+
+  .food-item-card-price {
+    @apply text-sm font-normal text-black;
+  }
+
+  .food-item-card-description {
+    @apply text-xs text-gray-600 leading-relaxed;
+  }
+
+  .food-item-card-badge {
+    @apply bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-md w-fit;
+  }
+
+  .food-item-card-image-wrapper {
+    @apply relative w-44 h-full shrink-0;
+  }
+
+  .food-item-card-image {
+    @apply w-full h-full object-cover;
+  }
+
+  .food-item-card-add-button {
+    @apply absolute bottom-3 right-3 w-10 h-10 rounded-full bg-white border-2 border-gray-300 flex items-center justify-center hover:bg-gray-50 cursor-pointer transition-colors shadow-md;
+  }
+
+  .food-item-card-like-button {
+    @apply w-8 h-8 rounded-full flex items-center justify-center hover:bg-gray-100 cursor-pointer transition-colors text-gray-400 hover:text-red-500;
+  }
+
+  .food-item-card-like-button.liked {
+    @apply text-red-500;
+  }
+
+  .food-item-card-header {
+    @apply flex items-start justify-between gap-3;
+  }
+
+  /* Menu tabs */
+  .tab-button {
+    @apply px-4 py-3 text-sm font-medium text-gray-600 border-b-2 border-transparent hover:text-black transition-colors whitespace-nowrap;
+  }
+
+  .tab-button.active {
+    @apply text-black border-black;
+  }
+
+  .menu-icon-button {
+    @apply w-8 h-8 flex items-center justify-center hover:bg-gray-100 rounded cursor-pointer transition-colors;
+  }
+
+  .scroll-button {
+    @apply w-8 h-8 flex items-center justify-center hover:bg-gray-100 rounded cursor-pointer transition-colors text-gray-600;
+  }
+
+  .tab-content {
+    @apply block;
   }
 }
