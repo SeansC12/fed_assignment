@@ -10,13 +10,13 @@
   </head>
 
   <body>
-    <header>
+    <header class="sticky top-0 z-50">
       <nav
-        class="w-full bg-off-white grid grid-cols-[1fr_2fr_1fr] items-center gap-4 px-4 py-6 max-w-375 mx-auto border-b border-light-gray"
+        class="w-full bg-off-white grid grid-cols-[1fr_2fr_1fr] items-center gap-4 px-8 py-4 max-w-375 mx-auto border-b border-light-gray"
       >
         <div class="flex gap-3 items-center">
-          <img src="/static/myhawker-logo-orange.svg" alt="Logo" class="h-12" />
-          <img src="/static/myhawker-name-orange.svg" alt="Logo" class="h-6" />
+          <img src="/static/myhawker-logo-orange.svg" alt="Logo" class="h-10" />
+          <img src="/static/myhawker-name-orange.svg" alt="Logo" class="h-4" />
         </div>
 
         <div class="relative max-w-xl mx-auto w-full">
@@ -25,26 +25,26 @@
             class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-red-600"
           ></i>
           <input
-            class="w-full p-3 pl-10 border border-light-gray rounded-full"
+            class="w-full text-sm px-3 py-2 pl-10 border border-light-gray rounded-full"
             placeholder="Search location..."
           />
         </div>
 
         <div class="flex items-center justify-end gap-3">
-          <button class="button" data-variant="solid">My Orders</button>
-          <button class="button" data-variant="outline">
+          <button class="button" data-variant="small-solid">My Orders</button>
+          <button class="button" data-variant="small-outline">
             <i data-lucide="shopping-cart" class="w-5 h-5 text-black"></i>
           </button>
-          <button class="button" data-variant="outline">
+          <button class="button" data-variant="small-outline">
             <i data-lucide="user" class="w-5 h-5 text-black"></i>
           </button>
         </div>
       </nav>
     </header>
 
-    <main>
+    <main class="px-8">
       <section
-        class="relative h-[40vh] w-full bg-cover bg-center"
+        class="relative h-[40vh] w-[calc(100% + 32px)] bg-cover bg-center -mx-8"
         style="background-image: url(&quot;/static/mixed-food.webp&quot;)"
       >
         <div
@@ -53,7 +53,7 @@
           <div
             class="bg-off-white/70 backdrop-blur-sm rounded-2xl p-8 max-w-2xl shadow-lg"
           >
-            <h1 class="text-4xl font-semibold mb-6 leading-tight text-center">
+            <h1 class="text-3xl font-semibold mb-6 leading-tight text-center">
               Enjoy the latest discounts on your favourite hawkers
             </h1>
             <button class="button px-5 mx-auto" data-variant="solid">
@@ -65,9 +65,9 @@
       </section>
 
       <section class="section-container">
-        <h2 class="section-heading px-4">Explore the top cuisines</h2>
+        <h2 class="section-heading">Explore the top cuisines</h2>
         <div
-          class="flex gap-4 overflow-x-auto pb-2 px-4 w-full justify-between"
+          class="flex gap-4 overflow-x-auto pb-2 w-full justify-between"
         >
           <div class="cuisine-item group">
             <img
@@ -170,8 +170,8 @@
 
       <!-- Filters Section -->
       <section class="section-container">
-        <h2 class="section-heading px-4">Search for anything</h2>
-        <div class="flex gap-3 overflow-x-auto pb-2 px-4">
+        <h2 class="section-heading">Search for anything</h2>
+        <div class="flex gap-3 overflow-x-auto pb-2">
           <button class="filter-capsule active">
             <span class="filter-capsule-icon">
               <i data-lucide="tag" class="w-4 h-4"></i>
@@ -195,12 +195,12 @@
           </button>
         </div>
 
-        <h2 id="results_count" class="px-4 mb-4 mt-4">0 results</h2>
+        <h2 id="results_count" class="mb-4 mt-4">0 results</h2>
         <div
           id="grid_container"
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4"
+          class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          <!-- Card 1 -->
+          <!-- This is where Hawker Stall cards go -->
         </div>
       </section>
 

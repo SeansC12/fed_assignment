@@ -52,7 +52,7 @@ async function fetchAndDisplayHawkerStalls() {
 
 function createHawkerCard(stall) {
   const card = document.createElement("div");
-  card.className = "hawker-card";
+  card.className = "bg-transparent rounded-2xl overflow-hidden transition-shadow cursor-pointer";
 
   const imageUrl = stall.image || "";
   const name = stall.name || "Unknown Hawker";
@@ -66,15 +66,14 @@ function createHawkerCard(stall) {
 
   card.innerHTML = `
     <div class="relative">
-      <div class="hawker-card-image" style="background-image: url('${imageUrl}');"></div>
+      <div class="w-full h-36 bg-light-gray object-cover rounded-lg" style="background-image: url('${imageUrl}');"></div>
     </div>
-    <div class="hawker-card-content">
-      <div class="hawker-card-header">
-        <h3 class="hawker-card-title">${name}</h3>
-        <i data-lucide="heart" class="hawker-card-favorite"></i>
+    <div class="py-4">
+      <div class="mb-3">
+        <h3 class="text-base font-semibold">${name}</h3>
       </div>
-      <div class="hawker-card-meta">
-        <div class="hawker-card-rating">
+      <div class="flex items-center gap-2 text-sm text-gray-600">
+        <div class="flex items-center gap-1 font-medium">
           <span>${rating}</span>
           <i data-lucide="star" class="w-4 h-4 fill-current text-yellow-500"></i>
         </div>
