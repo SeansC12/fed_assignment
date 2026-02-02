@@ -18,7 +18,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Fetch and display hawker stalls
 async function fetchAndDisplayHawkerStalls() {
   try {
     const hawkerStallsCol = collection(db, "hawker-stalls");
@@ -29,26 +28,21 @@ async function fetchAndDisplayHawkerStalls() {
       ...doc.data(),
     }));
 
-    // Update results count
     const resultsElement = document.querySelector("#results_count");
     if (resultsElement) {
       resultsElement.textContent = `${hawkerStalls.length} results`;
     }
 
-    // Get the grid container
     const gridContainer = document.querySelector("#grid_container");
 
     if (gridContainer) {
-      // Clear existing cards
       gridContainer.innerHTML = "";
 
-      // Create a card for each hawker stall
       hawkerStalls.forEach((stall) => {
         const card = createHawkerCard(stall);
         gridContainer.appendChild(card);
       });
 
-      // Re-initialize lucide icons for the new cards
       lucide.createIcons();
     }
   } catch (error) {
@@ -56,7 +50,6 @@ async function fetchAndDisplayHawkerStalls() {
   }
 }
 
-// Function to create a hawker card
 function createHawkerCard(stall) {
   const card = document.createElement("div");
   card.className = "hawker-card";
