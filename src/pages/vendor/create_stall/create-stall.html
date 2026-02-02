@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Stall</title>
+    <link rel="stylesheet" href="create-stall.css">
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="branding">
+            <img src="../../images/myhawker-logo-orange.svg" alt="Logo" class="branding-icon" />
+            <h1 class="branding-text">
+                <span class="text-my">my</span><span class="text-hawker">hawker</span>
+            </h1>
+        </div>
+
+        <h2 class="login-title">Register Your Stall</h2>
+        <p class="login-instruction">Please complete your profile by adding your stall details.</p>
+
+        <form class="login-form" id="createStallForm">
+            <input type="text" id="stallName" placeholder="Stall Name (e.g. Tian Tian)" required />
+            <input type="text" id="hawkerCentre" placeholder="Hawker Centre Name" required />
+            <input type="text" id="stallAddress" placeholder="Stall Address / Unit No." required />
+
+            <select id="cuisineType" required>
+                <option value="" disabled selected>Select Cuisine Type</option>
+                <option value="Chinese">Chinese</option>
+                <option value="Malay">Malay</option>
+                <option value="Indian">Indian</option>
+                <option value="Western">Western</option>
+                <option value="Japanese">Japanese</option>
+                <option value="Halal">Halal</option>
+                <option value="Dessert">Dessert</option>
+                <option value="Drinks">Drinks</option>
+            </select>
+
+            <input type="text" id="stallImage" placeholder="Image URL (Optional)" />
+
+            <button type="submit" class="login-button">Complete Setup</button>
+        </form>
+    </div>
+
+    <script type="module" src="create-stall.js"></script>
+</body>
+
+</html>

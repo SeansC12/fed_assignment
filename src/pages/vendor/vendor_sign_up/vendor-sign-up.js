@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
@@ -17,6 +17,16 @@ const db = getFirestore(app);
 
 const signUpForm = document.getElementById("vendorSignUpForm");
 
+// --- HELPER: HASHING FUNCTION (SHA-256) ---
+async function hashPassword(string) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(string);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashHex;
+}
+
 if (signUpForm) {
     signUpForm.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -24,7 +34,6 @@ if (signUpForm) {
         const name = document.getElementById("vendorName").value.trim();
         const email = document.getElementById("email").value.trim();
         const password = document.getElementById("password").value;
-        const stallCode = document.getElementById("stallCode").value.trim();
         const submitBtn = signUpForm.querySelector('button[type="submit"]');
 
         if (password.length < 6) {
@@ -33,41 +42,29 @@ if (signUpForm) {
         }
 
         submitBtn.disabled = true;
-        submitBtn.innerText = "Verifying Stall...";
+        submitBtn.innerText = "Securing & Creating...";
 
         try {
-            // 1. Verify Stall Code (NkfmlElwOWPU0Mb5L40n)
-            const stallRef = doc(db, "hawker-stalls", stallCode);
-            const stallSnap = await getDoc(stallRef);
-
-            if (!stallSnap.exists()) {
-                throw new Error("Invalid Stall Verification Code. Access Denied.");
-            }
-
-            submitBtn.innerText = "Creating Account...";
-
-            // 2. Create Auth User
+            // 1. Create User in Auth (Firebase handles this securely automatically)
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
-            // 3. Save to vendor_list
+            // 2. Hash the password for Firestore storage
+            // This ensures even if someone sees the DB, they can't read the password
+            const hashedPassword = await hashPassword(password);
+
+            // 3. Save to vendor_list with the HASHED password
             await setDoc(doc(db, "vendor_list", user.uid), {
                 name: name,
                 email: email,
-                password: password, 
-                stallId: stallCode, 
+                password: hashedPassword, // Storing the Hash, not the plain text
                 createdAt: new Date(),
                 role: "vendor",
                 method: "email"
             });
 
-            // 4. Save Session
-            localStorage.setItem("activeStallId", stallCode);
-
-            alert("Vendor account created successfully!");
-            
-            // PATH FIX: Redirect to sibling folder 'home'
-            window.location.href = "../home/home.html"; 
+            alert("Account created securely! Redirecting to stall setup...");
+            window.location.href = "../create_stall/create-stall.html"; 
             
         } catch (error) {
             submitBtn.disabled = false;

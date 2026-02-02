@@ -100,11 +100,34 @@ body::before {
     gap: 15px;
 }
 
+/* --- NEW STYLES FOR BOOKING.COM LOOK --- */
+
+.form-group {
+    text-align: left;
+    /* Aligns labels to the left */
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.input-label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    display: block;
+}
+
+/* --------------------------------------- */
+
 .login-form input {
     padding: 12px;
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 8px;
+    width: 100%;
+    /* Ensures input fills the group */
+    box-sizing: border-box;
+    /* Ensures padding doesn't break width */
 }
 
 .forgot-password {
@@ -112,11 +135,13 @@ body::before {
     color: #007bff;
     text-decoration: none;
     text-align: right;
-    margin-top: -5px;
-    margin-bottom: 5px;
+    margin-top: 5px;
+    /* Adjusted spacing */
     position: relative;
     z-index: 5;
     cursor: pointer;
+    display: block;
+    /* Ensures it sits on its own line */
 }
 
 .forgot-password:hover {

@@ -1,19 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { 
-    getAuth, 
-    GoogleAuthProvider, 
-    signInWithPopup 
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { 
-    getFirestore, 
-    collection, 
-    query, 
-    where, 
-    getDocs, 
-    doc, 
-    getDoc, 
-    setDoc 
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, collection, query, where, getDocs, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
@@ -29,7 +16,17 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
-// --- 1. FORGOT PASSWORD ---
+// --- HELPER: HASHING FUNCTION (Must match Sign Up) ---
+async function hashPassword(string) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(string);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashHex;
+}
+
+// 1. FORGOT PASSWORD
 const forgotPasswordLink = document.getElementById("forgotPassword");
 if (forgotPasswordLink) {
     forgotPasswordLink.addEventListener('click', (e) => {
@@ -38,21 +35,18 @@ if (forgotPasswordLink) {
     });
 }
 
-// --- 2. GOOGLE LOGIN (VENDOR) ---
+// 2. GOOGLE LOGIN
 const googleBtn = document.getElementById("googleLogin");
 if (googleBtn) {
     googleBtn.addEventListener('click', async () => {
         try {
             const result = await signInWithPopup(auth, provider);
             const user = result.user;
-
-            // CHECK VENDOR LIST
             const userDoc = await getDoc(doc(db, "vendor_list", user.uid));
 
             if (userDoc.exists()) {
                 window.location.href = "../home/home.html";
             } else {
-                // Auto-create vendor profile (Note: No stall ID if created this way, might need manual update later)
                 await setDoc(doc(db, "vendor_list", user.uid), {
                     email: user.email,
                     name: user.displayName,
@@ -70,7 +64,7 @@ if (googleBtn) {
     });
 }
 
-// --- 3. MANUAL LOGIN ---
+// 3. MANUAL LOGIN (UPDATED WITH HASHING)
 const loginForm = document.getElementById("vendorLoginForm");
 if (loginForm) {
     loginForm.addEventListener("submit", async (e) => {
@@ -80,15 +74,17 @@ if (loginForm) {
         const passwordInput = document.getElementById("password").value;
 
         try {
-            // QUERY VENDOR LIST
+            // Hash the entered password to match the database format
+            const hashedInput = await hashPassword(passwordInput);
+
             const q = query(collection(db, "vendor_list"), where("email", "==", emailInput));
             const querySnapshot = await getDocs(q);
 
             if (!querySnapshot.empty) {
                 const userData = querySnapshot.docs[0].data();
                 
-                if (userData.password === passwordInput) {
-                    // STORE SESSION DATA
+                // Compare HASH vs HASH
+                if (userData.password === hashedInput) {
                     if(userData.stallId) {
                         localStorage.setItem("activeStallId", userData.stallId);
                     }
@@ -98,7 +94,6 @@ if (loginForm) {
                 }
             } else {
                 alert("No vendor found with this email. Please sign up!");
-                // PATH FIX: Sibling folder redirection
                 window.location.href = "../vendor_sign_up/vendor-sign-up.html";
             }
         } catch (error) {
