@@ -6,7 +6,6 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    /* FIX: Prevents background jumping during page load */
     background-attachment: fixed;
     height: 100vh;
     display: flex;
@@ -14,6 +13,8 @@ body {
     justify-content: center;
     align-items: center;
     position: relative;
+    /* FIX: Prevents scrolling if box is slightly too tall */
+    overflow: hidden;
 }
 
 body::before {
@@ -23,7 +24,6 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    /* Dark overlay for contrast */
     background-color: rgba(0, 0, 0, 0.4);
     z-index: 0;
     pointer-events: none;
@@ -62,15 +62,14 @@ body::before {
     position: relative;
     z-index: 1;
     background-color: rgba(255, 255, 255, 0.9);
-    /* High blur to match your branding */
     backdrop-filter: blur(20px);
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     width: 90%;
     max-width: 400px;
     padding: 30px;
+    /* Default for Desktop */
     text-align: center;
-    /* Pre-set transparent border to prevent twitching on hover */
     border: 3px solid transparent;
     transition: border-color 0.3s ease;
 }
@@ -100,6 +99,7 @@ body::before {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    /* Default gap */
 }
 
 .login-form input {
@@ -116,10 +116,9 @@ body::before {
     text-align: right;
     margin-top: -5px;
     margin-bottom: 5px;
-        position: relative;
-        z-index: 5;
-        /* Brings it to the very front */
-        cursor: pointer;
+    position: relative;
+    z-index: 5;
+    cursor: pointer;
 }
 
 .forgot-password:hover {
@@ -137,7 +136,6 @@ body::before {
     cursor: pointer;
     transition: 0.3s;
 }
-
 
 .google-login {
     display: flex;
@@ -158,4 +156,56 @@ body::before {
     font-size: 14px;
     color: #333;
     margin-top: 15px;
+}
+
+/* --- MOBILE OPTIMIZATION --- */
+@media (max-width: 900px) {
+    .branding-icon {
+        width: 45px;
+    }
+
+    /* Smaller Logo */
+    .branding-text {
+        font-size: 26px;
+    }
+
+    /* Smaller Title */
+
+    .login-container {
+        padding: 20px;
+        /* Reduced padding from 30px */
+        width: 85%;
+        /* Make box slightly narrower */
+    }
+
+    .back-button {
+        margin-bottom: 15px;
+        font-size: 14px;
+    }
+
+    .login-title {
+        font-size: 20px;
+        margin-bottom: 8px;
+    }
+
+    .login-instruction {
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+    .login-form {
+        gap: 12px;
+    }
+
+    /* Tighter form spacing */
+    .login-form input {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .login-button,
+    .google-login {
+        padding: 10px;
+        font-size: 14px;
+    }
 }
