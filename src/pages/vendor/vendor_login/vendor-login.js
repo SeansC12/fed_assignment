@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getFirestore, collection, query, where, getDocs, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -14,7 +14,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const provider = new GoogleAuthProvider();
 
 // --- HELPER: HASHING FUNCTION (Must match Sign Up) ---
 async function hashPassword(string) {
@@ -35,36 +34,7 @@ if (forgotPasswordLink) {
     });
 }
 
-// 2. GOOGLE LOGIN
-const googleBtn = document.getElementById("googleLogin");
-if (googleBtn) {
-    googleBtn.addEventListener('click', async () => {
-        try {
-            const result = await signInWithPopup(auth, provider);
-            const user = result.user;
-            const userDoc = await getDoc(doc(db, "vendor_list", user.uid));
-
-            if (userDoc.exists()) {
-                window.location.href = "../home/home.html";
-            } else {
-                await setDoc(doc(db, "vendor_list", user.uid), {
-                    email: user.email,
-                    name: user.displayName,
-                    createdAt: new Date(),
-                    method: "google",
-                    role: "vendor"
-                });
-                alert("Vendor account created via Google! Please contact admin to link your Stall ID.");
-                window.location.href = "../home/home.html";
-            }
-        } catch (error) {
-            console.error("Google Login Error:", error.message);
-            alert("Error: " + error.message);
-        }
-    });
-}
-
-// 3. MANUAL LOGIN (UPDATED WITH HASHING)
+// 2. MANUAL LOGIN (UPDATED WITH HASHING)
 const loginForm = document.getElementById("vendorLoginForm");
 if (loginForm) {
     loginForm.addEventListener("submit", async (e) => {
