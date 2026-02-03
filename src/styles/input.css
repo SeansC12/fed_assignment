@@ -201,4 +201,12 @@
   .tab-content {
     @apply block;
   }
+  /* Custom text colors */
+  .nea-text {
+    color: #BED73B;
+  }
+
+  .portal-text {
+    color: #58B6DD;
+  }
 }

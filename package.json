@@ -1,7 +1,7 @@
 {
   "name": "fed_assignment",
   "version": "1.0.0",
-  "description": "",
+  "description": "Description",
   "license": "ISC",
   "author": "",
   "type": "commonjs",
@@ -16,5 +16,14 @@
     "firebase": "^12.8.0",
     "prettier": "^3.8.1",
     "tailwindcss": "^4.1.18"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SeansC12/fed_assignment.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/SeansC12/fed_assignment/issues"
+  },
+  "homepage": "https://github.com/SeansC12/fed_assignment#readme"
 }

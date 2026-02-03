@@ -1,0 +1,173 @@
+/* Reset / base */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+body {
+  height: 100vh;
+  background-color: #ffffff;
+}
+
+/* =====================
+   Desktop layout
+   ===================== */
+
+.page {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Left image panel */
+.image-panel {
+  width: 50%;
+  height: 100%;
+}
+
+.image-panel img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Right login panel */
+.login-panel {
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  position: relative;
+  z-index: 1;
+}
+
+/* Login card */
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 32px;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  background-color: #ffffff;
+}
+
+/* Header */
+.login-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.logo {
+  width: 200px;
+  margin-bottom: 5px;
+  margin-left: -30px;
+}
+
+.title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.nea-text {
+  color: #2f9e44;
+}
+
+.portal-text {
+  color: #58B6DD;
+}
+
+/* Form */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.login-form input {
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #cccccc;
+  font-size: 1rem;
+}
+
+.login-form input:focus {
+  outline: none;
+  border-color: #2f9e44;
+}
+
+.login-form button {
+  margin-top: 8px;
+  padding: 12px;
+  border-radius: 6px;
+  border: none;
+  background-color: #51cf66;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.login-form button:hover {
+  background-color: #40c057;
+}
+
+/* =====================
+   Mobile layout
+   ===================== */
+
+@media (max-width: 768px) {
+  .page {
+    position: relative;
+    flex-direction: column;
+  }
+
+  /* Fullscreen background image */
+  .image-panel {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+
+  .image-panel img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Center login above image */
+  .login-panel {
+    width: 100%;
+    min-height: 100vh;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    z-index: 1;
+  }
+
+  /* Translucent glass card */
+  .login-card {
+    max-width: 100%;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  .title {
+    font-size: 1.8rem;
+  }
+}

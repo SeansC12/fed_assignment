@@ -1,34 +1,47 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>myhawker Login</title>
     <link rel="stylesheet" href="styles.css" />
-  </head>
+</head>
 
-  <body>
-    <div class="login-container">
-      <h1>myhawker Login</h1>
-      <div class="login-options">
-        <!-- Customer -->
-        <a href="customer-login.html" class="login-option">
-          <div class="icon-placeholder"></div>
-          <div class="login-label">Customer</div>
-        </a>
+<body>
+    <div class="main-wrapper">
+        <div class="login-container">
+            <div class="branding-box">
+                <img src="images/myhawker-logo-orange.svg" alt="myhawker Logo" class="main-logo" />
+                <h1 class="main-title">
+                    <span class="text-my">my</span><span class="text-hawker">hawker</span> Login
+                </h1>
+            </div>
 
-        <!-- Vendor -->
-        <a href="vendor-login.html" class="login-option">
-          <div class="icon-placeholder"></div>
-          <div class="login-label">Vendor</div>
-        </a>
+            <div class="login-options">
+                <a href="customer/customer-login/customer-login.html" class="login-option">
+                    <div class="icon-wrapper">
+                        <img src="images/food.png" alt="Customer" class="login-icon" />
+                    </div>
+                    <div class="login-label">Customer</div>
+                </a>
 
-        <!-- NEA -->
-        <a href="nea-login.html" class="login-option">
-          <div class="icon-placeholder"></div>
-          <div class="login-label">NEA</div>
-        </a>
-      </div>
+                <a href="vendor/vendor_login/vendor-login.html" class="login-option">
+                    <div class="icon-wrapper">
+                        <img src="images/vendor.png" alt="Vendor" class="login-icon" />
+                    </div>
+                    <div class="login-label">Vendor</div>
+                </a>
+
+                <a href="nea_officer/home/home/home.html" class="login-option">
+                    <div class="icon-wrapper">
+                        <img src="images/NEA_logo.png" alt="NEA" class="login-icon" />
+                    </div>
+                    <div class="login-label">NEA</div>
+                </a>
+            </div>
+        </div>
     </div>
-  </body>
+</body>
+
 </html>

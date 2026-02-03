@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customer Login</title>
+    <link rel="stylesheet" href="customer-login.css" />
+</head>
+
+<body>
+    <div class="login-container">
+        <a href="../../index.html" class="back-button">← Back</a>
+
+        <div class="branding">
+            <img src="../../images/myhawker-logo-orange.svg" alt="Logo" class="branding-icon" />
+            <h1 class="branding-text">
+                <span class="text-my">my</span><span class="text-hawker">hawker</span>
+            </h1>
+        </div>
+
+        <h2 class="login-title">Login to your account</h2>
+        <p class="login-instruction">Enter your email below to login to your account</p>
+
+        <form class="login-form" id="customerLoginForm">
+
+            <div class="form-group">
+                <label for="email" class="input-label">Email address</label>
+                <input type="email" id="email" placeholder="Enter your email" required />
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="input-label">Password</label>
+                <input type="password" id="password" placeholder="Enter your password" required />
+            </div>
+
+            <a href="verify-email.html" class="forgot-password" id="forgotPassword">Forgot your password?</a>
+
+            <button type="submit" class="login-button">Login</button>
+            <button type="button" id="googleLogin" class="google-login">Login with Google</button>
+
+            <p class="signup-link">Don't have an account? <a href="../../customer/customer-sign-up/customer-sign-up.html">Sign
+                    up</a></p>
+        </form>
+    </div>
+
+    <script type="module" src="customer-login.js"></script>
+</body>
+
+</html>
