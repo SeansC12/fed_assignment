@@ -75,7 +75,7 @@ async function loadPromotions() {
         
         if (querySnapshot.empty) {
             listContainer.innerHTML = `
-                <div class="text-center py-20 rounded-[2.5rem] border-2 border-dashed border-gray-200">
+                <div class="bg-white text-center py-20 rounded-[2.5rem] border-2 border-dashed border-gray-200">
                     <i data-lucide="ticket-percent" class="w-12 h-12 mx-auto text-gray-200 mb-4"></i>
                     <p class="text-gray-400 font-bold text-lg">No active promotions found.</p>
                 </div>`;
@@ -85,26 +85,33 @@ async function loadPromotions() {
 
         const promoCards = await Promise.all(querySnapshot.docs.map(async (promoDoc) => {
             const data = promoDoc.data();
-            const stallName = await getStallName(data.stallid);
             
-            // 1. DATE FORMATTING HAPPENS HERE (Inside the loop)
+            // Fix 1: Ensure stallId case matches your Firestore field
+            const stallName = await getStallName(data.stallid || data.stallId);
+            
             const startDateStr = formatDate(data.dateStart);
             const endDateStr = formatDate(data.dateEnd);
 
+            // Fix 2: Use the 'affected' field for the badge text
+            const displayType = data.affected || "All Items";
+
+            // Fix 3: Map the styles based on the 'affected' field value
             const typeStyles = {
                 mains: "bg-blue-50 text-blue-600 border-blue-100",
                 sides: "bg-purple-50 text-purple-600 border-purple-100",
                 drinks: "bg-teal-50 text-teal-600 border-teal-100",
                 all: "bg-orange-50 text-orange-600 border-orange-100"
             };
-            const badgeClass = typeStyles[data.type?.toLowerCase()] || "bg-gray-50 text-gray-500 border-gray-100";
+            
+            const styleKey = displayType.toLowerCase().replace(/\s/g, ''); // removes spaces for matching
+            const badgeClass = typeStyles[styleKey] || "bg-gray-50 text-gray-500 border-gray-100";
 
             return `
             <div class="bg-white border border-gray-100 rounded-[2rem] p-8 shadow-sm hover:shadow-md transition-all flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div class="flex-1">
                     <div class="flex items-center gap-3 mb-3">
                         <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase border ${badgeClass}">
-                            ${data.type || 'All'}
+                            ${displayType}
                         </span>
                         <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">${stallName}</span>
                     </div>
