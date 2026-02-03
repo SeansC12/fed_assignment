@@ -3,7 +3,7 @@ body {
     margin: 0;
     font-family: Arial, sans-serif;
     /* PATH FIX: Step back 2 levels to reach images */
-    background-image: url('../../images/backgroundtest.jpeg');
+    background-image: url('../../../../static/backgroundtest.jpeg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
