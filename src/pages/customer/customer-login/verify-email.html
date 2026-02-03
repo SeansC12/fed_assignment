@@ -12,13 +12,16 @@
     <div class="login-container">
         <a href="customer-login.html" class="back-button">← Back</a>
         <div class="branding">
-            <img src="../images/myhawker-logo-orange.svg" alt="Logo" class="branding-icon" />
+            <img src="../../images/myhawker-logo-orange.svg" alt="Logo" class="branding-icon" />
             <h1 class="branding-text"><span class="text-my">my</span>hawker</h1>
         </div>
         <h2 class="login-title">Verify Account</h2>
-        <p class="login-instruction">Enter your email to reset your password.</p>
+        <p class="login-instruction">Enter your email to verify your account.</p>
         <form class="login-form" id="verifyEmailForm">
-            <input type="email" id="verifyEmail" placeholder="Email" required />
+            <div class="form-group">
+                <label for="verifyEmail" class="input-label">Email address</label>
+                <input type="email" id="verifyEmail" placeholder="Enter your email" required />
+            </div>
             <button type="submit" class="login-button">Next</button>
         </form>
     </div>

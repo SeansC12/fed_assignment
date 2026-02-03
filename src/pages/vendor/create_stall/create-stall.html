@@ -21,23 +21,41 @@
         <p class="login-instruction">Please complete your profile by adding your stall details.</p>
 
         <form class="login-form" id="createStallForm">
-            <input type="text" id="stallName" placeholder="Stall Name (e.g. Tian Tian)" required />
-            <input type="text" id="hawkerCentre" placeholder="Hawker Centre Name" required />
-            <input type="text" id="stallAddress" placeholder="Stall Address / Unit No." required />
 
-            <select id="cuisineType" required>
-                <option value="" disabled selected>Select Cuisine Type</option>
-                <option value="Chinese">Chinese</option>
-                <option value="Malay">Malay</option>
-                <option value="Indian">Indian</option>
-                <option value="Western">Western</option>
-                <option value="Japanese">Japanese</option>
-                <option value="Halal">Halal</option>
-                <option value="Dessert">Dessert</option>
-                <option value="Drinks">Drinks</option>
-            </select>
+            <div class="form-group">
+                <label for="stallName" class="input-label">Stall Name</label>
+                <input type="text" id="stallName" placeholder="e.g. Tian Tian Chicken Rice" required />
+            </div>
 
-            <input type="text" id="stallImage" placeholder="Image URL (Optional)" />
+            <div class="form-group">
+                <label for="hawkerCentre" class="input-label">Hawker Centre</label>
+                <input type="text" id="hawkerCentre" placeholder="e.g. Maxwell Food Centre" required />
+            </div>
+
+            <div class="form-group">
+                <label for="stallAddress" class="input-label">Stall Address / Unit No.</label>
+                <input type="text" id="stallAddress" placeholder="e.g. #01-10" required />
+            </div>
+
+            <div class="form-group">
+                <label for="cuisineType" class="input-label">Cuisine Type</label>
+                <select id="cuisineType" required>
+                    <option value="" disabled selected>Select Cuisine Type</option>
+                    <option value="Chinese">Chinese</option>
+                    <option value="Malay">Malay</option>
+                    <option value="Indian">Indian</option>
+                    <option value="Western">Western</option>
+                    <option value="Japanese">Japanese</option>
+                    <option value="Halal">Halal</option>
+                    <option value="Dessert">Dessert</option>
+                    <option value="Drinks">Drinks</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="stallImage" class="input-label">Stall Image URL (Optional)</label>
+                <input type="text" id="stallImage" placeholder="https://..." />
+            </div>
 
             <button type="submit" class="login-button">Complete Setup</button>
         </form>

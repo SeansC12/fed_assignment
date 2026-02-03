@@ -1,7 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// ADDED YOUR CONFIG HERE
 const firebaseConfig = {
   apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
   authDomain: "fed-assignment-f1456.firebaseapp.com",
@@ -15,26 +14,38 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const verifyForm = document.getElementById("verifyEmailForm");
+
 if (verifyForm) {
     verifyForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         const email = document.getElementById("verifyEmail").value.trim();
+        const submitBtn = verifyForm.querySelector("button");
+
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Verifying...";
 
         try {
-            // Search Firestore for the email
+            // Check if this email exists in your Custom Database
             const q = query(collection(db, "customer_list"), where("email", "==", email));
             const querySnapshot = await getDocs(q);
 
             if (!querySnapshot.empty) {
-                // SUCCESS: User exists. Save ID and go to change password page.
+                // SUCCESS: User found. 
+                // Save their ID so 'change-password.js' knows which document to update.
                 localStorage.setItem("resetUserId", querySnapshot.docs[0].id);
+                
+                // Redirect to the manual password change page
                 window.location.href = "change-password.html"; 
             } else {
                 alert("Account not found. Please check your email.");
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Next";
             }
         } catch (error) {
             console.error("Verification Error:", error);
             alert("Error: " + error.message);
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Next";
         }
     });
 }

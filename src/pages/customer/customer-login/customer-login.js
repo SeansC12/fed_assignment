@@ -1,19 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { 
-    getAuth, 
-    GoogleAuthProvider, 
-    signInWithPopup 
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { 
-    getFirestore, 
-    collection, 
-    query, 
-    where, 
-    getDocs, 
-    doc, 
-    getDoc, 
-    setDoc 
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, collection, query, where, getDocs, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
@@ -29,8 +16,14 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
-// --- 1. FORGOT PASSWORD REDIRECT ---
-// Redirects to your new verification page instead of sending an email
+async function hashPassword(string) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(string);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 const forgotPasswordLink = document.getElementById("forgotPassword");
 if (forgotPasswordLink) {
     forgotPasswordLink.addEventListener('click', (e) => {
@@ -39,21 +32,18 @@ if (forgotPasswordLink) {
     });
 }
 
-// --- 2. GOOGLE LOGIN (WITH AUTO-SIGNUP) ---
 const googleBtn = document.getElementById("googleLogin");
 if (googleBtn) {
     googleBtn.addEventListener('click', async () => {
         try {
             const result = await signInWithPopup(auth, provider);
             const user = result.user;
-
             const userDoc = await getDoc(doc(db, "customer_list", user.uid));
 
             if (userDoc.exists()) {
-                // User already exists, log them in
-                window.location.href = "../customer/home/home.html";
+                // PATH FIX: Up 1 level to 'customer' folder, then into 'home'
+                window.location.href = "../home/home.html";
             } else {
-                // New user: Create profile automatically
                 await setDoc(doc(db, "customer_list", user.uid), {
                     email: user.email,
                     wallet: 0, 
@@ -61,7 +51,8 @@ if (googleBtn) {
                     method: "google"
                 });
                 alert("Account created successfully via Google!");
-                window.location.href = "../customer/home/home.html";
+                // PATH FIX: Up 1 level to 'customer' folder, then into 'home'
+                window.location.href = "../home/home.html";
             }
         } catch (error) {
             console.error("Google Login Error:", error.message);
@@ -70,7 +61,6 @@ if (googleBtn) {
     });
 }
 
-// --- 3. MANUAL LOGIN (CHECKS FIRESTORE PASSWORD) ---
 const loginForm = document.getElementById("customerLoginForm");
 if (loginForm) {
     loginForm.addEventListener("submit", async (e) => {
@@ -80,23 +70,23 @@ if (loginForm) {
         const passwordInput = document.getElementById("password").value;
 
         try {
-            // Search for the user by email in the Firestore collection
+            const hashedInput = await hashPassword(passwordInput);
             const q = query(collection(db, "customer_list"), where("email", "==", emailInput));
             const querySnapshot = await getDocs(q);
 
             if (!querySnapshot.empty) {
                 const userData = querySnapshot.docs[0].data();
                 
-                // Compare entered password with the 'password' field in Firestore
-                if (userData.password === passwordInput) {
-                    // Success! Redirect to home
-                    window.location.href = "../customer/home/home.html";
+                if (userData.password === hashedInput) {
+                    // PATH FIX: Up 1 level to 'customer' folder, then into 'home'
+                    window.location.href = "../home/home.html";
                 } else {
                     alert("Incorrect password. Please try again!");
                 }
             } else {
                 alert("No user found with this email. Please sign up!");
-                window.location.href = "../customer-sign-up/customer-sign-up.html";
+                // PATH FIX: Up 2 levels to 'pages', then into 'customer-sign-up'
+                window.location.href = "../../customer-sign-up/customer-sign-up.html";
             }
         } catch (error) {
             console.error("Login Error:", error);

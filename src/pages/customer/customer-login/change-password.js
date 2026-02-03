@@ -1,7 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// ADDED YOUR CONFIG HERE
 const firebaseConfig = {
   apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
   authDomain: "fed-assignment-f1456.firebaseapp.com",
@@ -13,6 +12,16 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+// --- HELPER: HASHING FUNCTION ---
+async function hashPassword(string) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(string);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashHex;
+}
 
 const changeForm = document.getElementById("changePasswordForm");
 if (changeForm) {
@@ -34,11 +43,14 @@ if (changeForm) {
         }
 
         try {
+            // 1. Hash the NEW password before saving
+            const hashedPassword = await hashPassword(newPass);
+
             const userRef = doc(db, "customer_list", userId);
-            // Update the password in Firestore
-            await updateDoc(userRef, { password: newPass });
             
-            // Clean up and go to success page
+            // 2. Save the HASH to Firestore
+            await updateDoc(userRef, { password: hashedPassword });
+            
             localStorage.removeItem("resetUserId");
             window.location.href = "reset-success.html"; 
         } catch (error) {

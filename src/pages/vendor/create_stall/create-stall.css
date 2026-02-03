@@ -1,3 +1,4 @@
+/* create-stall.css */
 body {
     margin: 0;
     padding: 0;
@@ -70,6 +71,9 @@ body::before {
     padding: 30px;
     text-align: center;
     box-sizing: border-box;
+    /* Allow scrolling if content is tall */
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 .login-form {
@@ -77,6 +81,25 @@ body::before {
     flex-direction: column;
     gap: 15px;
 }
+
+/* --- LABEL STYLING --- */
+
+.form-group {
+    text-align: left;
+    /* Ensures labels align left */
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.input-label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    display: block;
+}
+
+/* --------------------- */
 
 .login-form input,
 .login-form select {

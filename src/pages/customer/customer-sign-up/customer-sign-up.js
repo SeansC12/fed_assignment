@@ -17,11 +17,21 @@ const db = getFirestore(app);
 
 const signUpForm = document.getElementById("customerSignUpForm");
 
+// --- HELPER: HASHING FUNCTION (SHA-256) ---
+async function hashPassword(string) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(string);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashHex;
+}
+
 if (signUpForm) {
     signUpForm.addEventListener("submit", async (e) => {
         e.preventDefault();
         
-        const email = document.getElementById("email").value;
+        const email = document.getElementById("email").value.trim();
         const password = document.getElementById("password").value;
         const submitBtn = signUpForm.querySelector('button[type="submit"]');
 
@@ -31,24 +41,28 @@ if (signUpForm) {
         }
 
         submitBtn.disabled = true;
-        submitBtn.innerText = "Creating Account...";
+        submitBtn.innerText = "Securing Account...";
 
         try {
-            // Create user in Firebase Auth
+            // 1. Create user in Firebase Auth
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
-            // Create record in Firestore customer_list
+            // 2. Hash the password for database storage
+            const hashedPassword = await hashPassword(password);
+
+            // 3. Create record in Firestore customer_list
             await setDoc(doc(db, "customer_list", user.uid), {
                 email: email,
+                password: hashedPassword, // Storing the Hash
                 wallet: 0, 
                 createdAt: new Date(),
                 method: "email"
             });
 
             alert("Account created successfully!");
-            // Redirect to home page
-            window.location.href = "../customer/home/home.html"; 
+            // Redirect to home page (Sibling folder in 'customer')
+            window.location.href = "../home/home.html"; 
             
         } catch (error) {
             submitBtn.disabled = false;
@@ -58,4 +72,3 @@ if (signUpForm) {
         }
     });
 }
-// REMOVED: No more maintenance alert here so sign-up can function

@@ -1,16 +1,14 @@
-/* vendor-sign-up.css */
+/* customer-login.css */
 body {
     margin: 0;
-    padding: 0;
     font-family: Arial, sans-serif;
-    /* PATH FIX: Up 2 levels to images */
+    /* PATH FIX: Step back 2 levels to reach images */
     background-image: url('../../images/backgroundtest.jpeg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
     height: 100vh;
-    width: 100vw;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -72,7 +70,7 @@ body::before {
     padding: 30px;
     text-align: center;
     border: 3px solid transparent;
-    transition: all 0.3s ease;
+    transition: border-color 0.3s ease;
 }
 
 .back-button {
@@ -87,13 +85,13 @@ body::before {
 .login-title {
     font-size: 24px;
     color: #333;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 
 .login-instruction {
-    font-size: 14px;
+    font-size: 16px;
     color: #555;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 .login-form {
@@ -106,7 +104,6 @@ body::before {
 
 .form-group {
     text-align: left;
-    /* Aligns text to the left */
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -126,13 +123,25 @@ body::before {
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 8px;
-    outline: none;
     width: 100%;
     box-sizing: border-box;
 }
 
-.login-form input:focus {
-    border-color: #ff6700;
+.forgot-password {
+    font-size: 14px;
+    color: #007bff;
+    text-decoration: none;
+    text-align: right;
+    margin-top: 5px;
+    position: relative;
+    z-index: 5;
+    cursor: pointer;
+    display: block;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+    color: #0056b3;
 }
 
 .login-button {
@@ -143,11 +152,22 @@ body::before {
     background-color: #ff6700;
     color: white;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: 0.3s;
 }
 
-.login-button:hover {
-    background-color: #e45e00;
+.google-login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: white;
+    color: #333;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
 .signup-link {
@@ -156,7 +176,6 @@ body::before {
     margin-top: 15px;
 }
 
-/* Mobile Optimization */
 @media (max-width: 900px) {
     .login-container {
         width: 85%;
@@ -171,9 +190,29 @@ body::before {
         font-size: 26px;
     }
 
+    .login-title {
+        font-size: 20px;
+        margin-bottom: 8px;
+    }
+
+    .login-instruction {
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+    .login-form {
+        gap: 12px;
+    }
+
     .login-form input,
-    .login-button {
+    .login-button,
+    .google-login {
         padding: 10px;
+        font-size: 14px;
+    }
+
+    .back-button {
+        margin-bottom: 15px;
         font-size: 14px;
     }
 }

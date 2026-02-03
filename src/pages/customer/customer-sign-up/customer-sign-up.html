@@ -13,7 +13,7 @@
         <a href="../customer-login/customer-login.html" class="back-button">← Back to Login</a>
 
         <div class="branding">
-            <img src="../images/myhawker-logo-orange.svg" alt="Logo" class="branding-icon" />
+            <img src="../../images/myhawker-logo-orange.svg" alt="Logo" class="branding-icon" />
             <h1 class="branding-text">
                 <span class="text-my">my</span><span class="text-hawker">hawker</span>
             </h1>
@@ -23,10 +23,19 @@
         <p class="login-instruction">Enter your details below to get started</p>
 
         <form class="login-form" id="customerSignUpForm">
-            <input type="email" id="email" placeholder="Email" required />
-            <input type="password" id="password" placeholder="Password (min. 6 characters)" required />
+
+            <div class="form-group">
+                <label for="email" class="input-label">Email address</label>
+                <input type="email" id="email" placeholder="Enter your email" required />
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="input-label">Create Password</label>
+                <input type="password" id="password" placeholder="At least 6 characters" required />
+            </div>
 
             <button type="submit" id="signUpBtn" class="login-button">Sign Up</button>
+
             <p class="signup-link">Already have an account? <a href="../customer-login/customer-login.html">Login</a>
             </p>
         </form>
