@@ -41,7 +41,7 @@ if (signUpForm) {
         }
 
         submitBtn.disabled = true;
-        submitBtn.innerText = "Securing Account...";
+        submitBtn.innerText = "Creating Account...";
 
         try {
             // 1. Create user in Firebase Auth
