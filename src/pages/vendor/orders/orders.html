@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Orders | MyHawker</title>
+    <link rel="stylesheet" href="/static/output.css" />
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="text-gray-900 font-sans">
+    <header class="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-100">
+        <nav class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+            <div class="flex-1 flex gap-3 items-center">
+                <img src="/static/myhawker-logo-orange.svg" alt="Logo" class="h-10 w-auto" onerror="this.src='https://placehold.co/40x40?text=MH'"/>
+                <img src="/static/myhawker-name-orange.svg" alt="MyHawker" class="h-5 w-auto" onerror="this.style.display='none'"/>
+            </div>
+
+            <ul class="hidden lg:flex flex-2 justify-center items-center space-x-8 font-semibold text-orange-primary">
+                <li class = "mr-4"><a href="../dashboard/dashboard.html" class="hover:text-orange-700 transition-colors">Dashboard</a></li>
+                <li><a href="../menu_arrange/menu_arrange.html" class="hover:text-orange-700 transition-colors">Menu</a></li>
+                <li><a href="../orders/orders.html" class="text-orange-700 border-b-2 border-orange-500 pb-1">Orders</a></li>
+                <li><a href="../promotions/promotions.html" class="hover:text-orange-700 transition-colors">Promotions</a></li>
+                <li><a href="../sales/sales.html" class="hover:text-orange-700 transition-colors">Sales</a></li>
+            </ul>
+
+            <div class="flex-1 text-right">
+                <a href="../account/account.html" class="inline-block p-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 transition-all border border-gray-200">
+                    <i data-lucide="circle-user-round" class="w-6 h-6"></i>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-10">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-8">
+            <div>
+                <div class="flex items-center gap-3">
+                    <h1 class="text-3xl font-black text-gray-900">Live Orders</h1>
+                    <span id="order-count-badge" class="bg-orange-500 text-white text-xs font-black px-2.5 py-1 rounded-full shadow-sm hidden">
+                        0 PENDING
+                    </span>
+                </div>
+                <p id="stallDisplay" class="text-gray-500 font-medium">Loading stall info...</p>
+            </div>
+            
+            <div class="bg-white p-1 rounded-xl shadow-sm border border-gray-200 flex gap-1">
+                <button onclick="filterOrders('pending')" id="btn-pending" class="px-5 py-2 rounded-lg font-bold transition-all">
+                    Pending
+                </button>
+                <button onclick="filterOrders('completed')" id="btn-completed" class="px-5 py-2 rounded-lg font-bold transition-all">
+                    Completed
+                </button>
+            </div>
+        </div>
+
+        <div id="orders-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            </div>
+    </main>
+
+    <script type="module" src="orders.js"></script>
+</body>
+</html>

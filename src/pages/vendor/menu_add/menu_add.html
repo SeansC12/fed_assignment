@@ -151,7 +151,6 @@
         addDoc,
       } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-      // --- PASTE YOUR FIREBASE CONFIG HERE ---
       const firebaseConfig = {
         apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
         authDomain: "fed-assignment-f1456.firebaseapp.com",
@@ -160,11 +159,19 @@
         messagingSenderId: "646434763443",
         appId: "1:646434763443:web:40ca6ecd4edd45e2edf6c6",
       };
-      // ---------------------------------------
 
       const app = initializeApp(firebaseConfig);
       const db = getFirestore(app);
       const menuCol = collection(db, "vendor_menu");
+
+      // --- STALL ID LOGIC ---
+      let stallId = localStorage.getItem("activeStallId");
+
+      // PLACEHOLDER: Use this until your login page is ready
+      if (!stallId) {
+        stallId = "NkfmlElwOWPU0Mb5L40n"; 
+        console.warn("Using placeholder Stall ID for new menu item:", stallId);
+      }
 
       let encodedImage = "https://placehold.co/600x600?text=No+Image+Selected";
 
@@ -193,10 +200,10 @@
 
         if (isConfirmed) {
           try {
-            // Convert price to a number for sorting/math later
             const priceNumber = parseFloat(priceInput);
 
             await addDoc(menuCol, {
+              stallId: stallId, // <--- NEW FIELD ADDED HERE
               name: name,
               price: priceNumber,
               category: document.getElementById("itemCategory").value,
@@ -206,13 +213,10 @@
               createdAt: new Date(),
             });
 
-            // Redirect back
             window.location.href = "../menu_arrange/menu_arrange.html";
           } catch (error) {
             console.error("Error adding document: ", error);
-            alert(
-              "Failed to save to database. Check your configuration or internet connection.",
-            );
+            alert("Failed to save to database.");
           }
         }
       };
