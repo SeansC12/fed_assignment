@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hawker locations</title>
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+    <!--Navbar with Logo on left size-->
+    <!--Logo & Navbar in seperate boxes, use flexboxes to align them differently-->
+    <div style="display: flex;">
+        <img src="\static\NEA_logo_white.png" alt="NEA Logo" class="Logo">
+        <div style="flex: auto;">
+            <ul class="navbar">
+                <!--nea_officer home page link below not working btw-->
+                <li><a href="src\pages\nea_officer\home\home\home.html">Home</a></li>
+                <li><a href="HawkerMap.html">Hawker Map</a></li>
+                <li><a href="Smth suppose to be here">I cannot remember</a></li>
+            </ul>
+        </div>
+    </div>
+    <hr>
+    <!--Main map with hawker locations-->
+    <!-- Map Section - Can be pasted into your existing webpage -->
+    <section id="hawker-map-section">
+        <div class="map-container">
+            <!-- Search Bar -->
+            <div class="search-wrapper">
+                <div class="search-container">
+                    <input type="text" id="hawker-search" class="search-input" placeholder="Search for a hawker center..."
+                        autocomplete="off" />
+                    <button id="clear-search" class="clear-button" style="display: none;">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                    </button>
+                </div>
+                <div id="search-suggestions" class="suggestions-dropdown"></div>
+            </div>
+    
+            <!-- Map -->
+            <div id="map"></div>
+    
+            <!-- Loading Indicator -->
+            <div id="loading-indicator" class="loading">
+                <div class="spinner"></div>
+                <p>Loading hawker centers...</p>
+            </div>
+    
+            <!-- Status Filter (Optional - hidden by default) -->
+            <div class="status-info">
+                <span class="status-badge existing">Existing</span>
+                <span class="status-badge interim">Interim Centre</span>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Main JS -->
+    <script src="HawkerMap.js"></script>
+</body>
+</html>
