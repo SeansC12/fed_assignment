@@ -2,7 +2,7 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
+    font-family: "Poppins", ui-sans-serif, system-ui, sans-serif;
     background-image: url('../../static/backgroundtest.jpeg');
     background-size: cover;
     background-position: center;

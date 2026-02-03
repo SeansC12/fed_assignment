@@ -1,7 +1,7 @@
 /* customer-login.css */
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: "Poppins", ui-sans-serif, system-ui, sans-serif;
     /* PATH FIX: Step back 2 levels to reach images */
     background-image: url('../../../../static/backgroundtest.jpeg');
     background-size: cover;

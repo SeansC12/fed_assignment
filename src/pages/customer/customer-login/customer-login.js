@@ -86,7 +86,7 @@ if (loginForm) {
             } else {
                 alert("No user found with this email. Please sign up!");
                 // PATH FIX: Up 2 levels to 'pages', then into 'customer-sign-up'
-                window.location.href = "../../customer-sign-up/customer-sign-up.html";
+                window.location.href = "../customer-sign-up/customer-sign-up.html";
             }
         } catch (error) {
             console.error("Login Error:", error);

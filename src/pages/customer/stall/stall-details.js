@@ -249,7 +249,7 @@ function updateCategoryTabs(categories) {
 
   // Add tab switching functionality
   document.querySelectorAll(".tab-button").forEach((button) => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", (e) => {
       document
         .querySelectorAll(".tab-button")
         .forEach((btn) => btn.classList.remove("active"));
@@ -298,6 +298,18 @@ async function initializePage() {
 
   // Update page with stall information
   updateStallInfo(stall);
+
+  // --- CONNECT COMPLAINT BUTTON ---
+  // This connects the "File a Complaint" button to the new file_complaint.html page
+  const complaintBtn = document.getElementById("file-complaint-btn");
+  if (complaintBtn) {
+    complaintBtn.addEventListener("click", () => {
+      // Navigate to file complaint page, passing the stallId
+      // Logic: Go up 1 level (..) from 'stall' to 'customer', then down to 'file_complaint'
+      window.location.href = `../file_complaint/file_complaint.html?stallId=${stallId}`;
+    });
+  }
+  // -------------------------------
 
   // Display menu items
   displayMenuItems(menuItems);
