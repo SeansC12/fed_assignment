@@ -8,18 +8,21 @@ Credits:
 # Adding icons
 
 ## 1. Add lucide.dev script tag in head
+
 ```html
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 ```
 
 ## 2. Run the lucide.createIcons() in your JavaScript
+
 ```html
 <script>
-      lucide.createIcons();
+  lucide.createIcons();
 </script>
 ```
 
 ## 3. Start using icons in html using an `<i>` tag
+
 ```html
 <i data-lucide="icon_name" class="any-class-you-want"></i>
 ```

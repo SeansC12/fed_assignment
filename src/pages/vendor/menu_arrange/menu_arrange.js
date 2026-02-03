@@ -126,7 +126,7 @@ window.addEventListener("click", () => filterMenu.classList.add("hidden"));
 // Expose functions to window (needed because we are in a module)
 window.deleteItem = deleteItem;
 window.editItem = (id) => {
-    window.location.href = `../menu_edit/menu_edit.html?id=${id}`;
+  window.location.href = `../menu_edit/menu_edit.html?id=${id}`;
 };
 
 lucide.createIcons();

@@ -52,37 +52,38 @@ async function fetchAndDisplayHawkerStalls() {
 
 function createHawkerCard(stall) {
   const card = document.createElement("div");
-  card.className = "bg-transparent rounded-2xl overflow-hidden transition-shadow cursor-pointer";
+  card.className =
+    "bg-transparent rounded-2xl overflow-hidden transition-shadow cursor-pointer";
 
   const imageBase64 = stall.image || "";
-  console.log(imageBase64.slice(0, 30))
+  console.log(imageBase64.slice(0, 30));
   const name = stall.name || "Unknown Hawker";
   const rating = stall.rating || "N/A";
   const reviewCount = stall.reviewCount || stall.reviews || 0;
   const deliveryTime = stall.deliveryTime || stall.delivery_time || "N/A";
 
-  card.addEventListener("click", () => {
-    window.location.href = `/src/pages/customer/stall/stall-details.html?id=${stall.id}`;
-  });
+  console.log(stall.id);
 
   card.innerHTML = `
-    <div class="relative">
-      <img class="w-full h-36 bg-light-gray object-cover rounded-lg" src="${imageBase64}" alt="${name}" />
-    </div>
-    <div class="py-4">
-      <div class="mb-3">
-        <h3 class="text-base font-semibold">${name}</h3>
+    <a href="/src/pages/customer/stall/stall-details.html?id=${stall.id}">
+      <div class="relative">
+        <img class="w-full h-36 bg-light-gray object-cover rounded-lg" src="${imageBase64}" alt="${name}" />
       </div>
-      <div class="flex items-center gap-2 text-sm text-gray-600">
-        <div class="flex items-center gap-1 font-medium">
-          <span>${rating}</span>
-          <i data-lucide="star" class="w-4 h-4 fill-current text-yellow-500"></i>
+      <div class="py-4">
+        <div class="mb-3">
+          <h3 class="text-base font-semibold">${name}</h3>
         </div>
-        <span>(${reviewCount.toLocaleString()}+)</span>
-        <span>•</span>
-        <span>${deliveryTime} min</span>
+        <div class="flex items-center gap-2 text-sm text-gray-600">
+          <div class="flex items-center gap-1 font-medium">
+            <span>${rating}</span>
+            <i data-lucide="star" class="w-4 h-4 fill-current text-yellow-500"></i>
+          </div>
+          <span>(${reviewCount.toLocaleString()}+)</span>
+          <span>•</span>
+          <span>${deliveryTime} min</span>
+        </div>
       </div>
-    </div>
+    </a>
   `;
 
   return card;
