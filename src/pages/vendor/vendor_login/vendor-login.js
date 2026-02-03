@@ -15,7 +15,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// --- HELPER: HASHING FUNCTION (Must match Sign Up) ---
+// --- HELPER: HASHING FUNCTION ---
 async function hashPassword(string) {
     const encoder = new TextEncoder();
     const data = encoder.encode(string);
@@ -30,11 +30,11 @@ const forgotPasswordLink = document.getElementById("forgotPassword");
 if (forgotPasswordLink) {
     forgotPasswordLink.addEventListener('click', (e) => {
         e.preventDefault();
-        window.location.href = "verify-email.html";
+        window.location.href = "vendor-verify-email.html"; // Ensure you created this file as discussed
     });
 }
 
-// 2. MANUAL LOGIN (UPDATED WITH HASHING)
+// 2. MANUAL LOGIN
 const loginForm = document.getElementById("vendorLoginForm");
 if (loginForm) {
     loginForm.addEventListener("submit", async (e) => {
@@ -58,7 +58,11 @@ if (loginForm) {
                     if(userData.stallId) {
                         localStorage.setItem("activeStallId", userData.stallId);
                     }
-                    window.location.href = "../home/home.html";
+                    
+                    // --- PATH FIX: Redirect to menu_arrange.html ---
+                    // Up 1 level to 'vendor', then into 'menu_arrange'
+                    window.location.href = "../menu_arrange/menu_arrange.html";
+                    
                 } else {
                     alert("Incorrect password. Please try again!");
                 }

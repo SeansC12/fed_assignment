@@ -18,7 +18,7 @@ const db = getFirestore(app);
 const form = document.getElementById("createStallForm");
 let currentUser = null;
 
-// 1. Ensure user is logged in (they just signed up)
+// 1. Ensure user is logged in
 onAuthStateChanged(auth, (user) => {
     if (user) {
         currentUser = user;
@@ -45,7 +45,7 @@ if (form) {
         const image = document.getElementById("stallImage").value.trim();
 
         try {
-            // TASK 2: Create Stall Document in 'hawker-stalls'
+            // TASK 2: Create Stall Document
             const stallRef = await addDoc(collection(db, "hawker-stalls"), {
                 name: stallName,
                 hawkerCentre: hawkerCentre,
@@ -56,17 +56,19 @@ if (form) {
                 ownerId: currentUser.uid
             });
 
-            // TASK 3: Link Stall ID to Vendor in 'vendor_list'
+            // TASK 3: Link Stall ID to Vendor
             const vendorRef = doc(db, "vendor_list", currentUser.uid);
             await updateDoc(vendorRef, {
-                stallId: stallRef.id // <--- This copies the ID to the user profile
+                stallId: stallRef.id
             });
 
-            // Save for session
             localStorage.setItem("activeStallId", stallRef.id);
             
-            alert("Stall created successfully! Taking you to the dashboard.");
-            window.location.href = "../../home/home.html";
+            alert("Stall created successfully! Taking you to menu setup.");
+
+            // --- PATH FIX ---
+            // Up 1 level (../) to 'vendor', then into 'menu_arrange'
+            window.location.href = "../menu_arrange/menu_arrange.html";
 
         } catch (error) {
             console.error("Error:", error);
