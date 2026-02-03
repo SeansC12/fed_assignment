@@ -6,9 +6,10 @@ import {
   doc,
   getDoc,
   deleteDoc,
+  query,
+  where
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// REPLACE WITH YOUR CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
   authDomain: "fed-assignment-f1456.firebaseapp.com",
@@ -26,17 +27,31 @@ let menuData = [];
 let activeFilter = "All";
 let activeSearch = "";
 
-// 1. REAL-TIME LISTENER (replaces LocalStorage loading)
-onSnapshot(menuCol, (snapshot) => {
+let stallId = localStorage.getItem("activeStallId");
+
+// Placeholder logic for testing
+if (!stallId) {
+    stallId = "NkfmlElwOWPU0Mb5L40n"; 
+    console.warn("Using placeholder Stall ID:", stallId);
+}
+
+// 1. UPDATED REAL-TIME LISTENER
+// Now uses a query to only fetch items where stallId matches
+const q = query(menuCol, where("stallId", "==", stallId));
+
+onSnapshot(q, (snapshot) => {
   menuData = snapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
   }));
+  console.log(`Loaded ${menuData.length} items for stall: ${stallId}`);
   renderItems();
 });
 
 function renderItems() {
   const grid = document.getElementById("menu-grid");
+  
+  // Client-side filtering for category and search
   const filteredData = menuData.filter((item) => {
     const matchesCat = activeFilter === "All" || item.category === activeFilter;
     const matchesSearch = item.name
@@ -47,9 +62,9 @@ function renderItems() {
 
   if (filteredData.length === 0) {
     grid.innerHTML = `
-            <div class="col-span-full text-center py-20rounded-2xl border-2 border-dashed border-gray-200">
+            <div class="col-span-full text-center py-20 rounded-2xl border-2 border-dashed border-gray-200">
                 <i data-lucide="search-x" class="w-12 h-12 mx-auto text-gray-300 mb-2"></i>
-                <p class="text-gray-500 font-medium">No items found.</p>
+                <p class="text-gray-500 font-medium">No items found for this stall.</p>
             </div>`;
   } else {
     grid.innerHTML = filteredData
@@ -85,7 +100,7 @@ function renderItems() {
       )
       .join("");
   }
-  lucide.createIcons();
+  if (window.lucide) lucide.createIcons();
 }
 
 // 2. DELETE FROM FIREBASE
@@ -103,30 +118,38 @@ async function deleteItem(id) {
 // 3. FILTER & SEARCH LOGIC
 window.filterByCategory = (category) => {
   activeFilter = category;
-  document.getElementById("filterMenu").classList.add("hidden");
+  const filterMenu = document.getElementById("filterMenu");
+  if (filterMenu) filterMenu.classList.add("hidden");
   renderItems();
 };
 
-document.getElementById("searchInput").addEventListener("input", (e) => {
-  activeSearch = e.target.value;
-  renderItems();
-});
+const searchInput = document.getElementById("searchInput");
+if (searchInput) {
+    searchInput.addEventListener("input", (e) => {
+      activeSearch = e.target.value;
+      renderItems();
+    });
+}
 
 // 4. UI DROPDOWN LOGIC
 const filterBtn = document.getElementById("filterBtn");
 const filterMenu = document.getElementById("filterMenu");
 
-filterBtn.addEventListener("click", (e) => {
-  e.stopPropagation();
-  filterMenu.classList.toggle("hidden");
+if (filterBtn && filterMenu) {
+    filterBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      filterMenu.classList.toggle("hidden");
+    });
+}
+
+window.addEventListener("click", () => {
+    if (filterMenu) filterMenu.classList.add("hidden");
 });
 
-window.addEventListener("click", () => filterMenu.classList.add("hidden"));
-
-// Expose functions to window (needed because we are in a module)
+// Expose functions to window
 window.deleteItem = deleteItem;
 window.editItem = (id) => {
   window.location.href = `../menu_edit/menu_edit.html?id=${id}`;
 };
 
-lucide.createIcons();
+if (window.lucide) lucide.createIcons();
