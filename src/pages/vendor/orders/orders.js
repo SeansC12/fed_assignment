@@ -180,7 +180,7 @@ async function renderOrders(orders) {
 
             <div class="flex items-center justify-between pt-6 border-t border-gray-50">
                 <div>
-                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Stall Total</p>
+                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total Price</p>
                     <p class="text-2xl font-black text-gray-900">$${subtotal.toFixed(2)}</p>
                 </div>
                 ${isPending ? `
