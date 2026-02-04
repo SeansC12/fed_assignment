@@ -5,6 +5,7 @@ import {
   collection,
   getDocs,
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { updateCartBadge, initCartBadge } from "../cart-utils.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
