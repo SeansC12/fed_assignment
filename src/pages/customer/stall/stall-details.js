@@ -258,6 +258,19 @@ function updateCategoryTabs(categories) {
   });
 }
 
+// Hide loading overlay and show main content
+function hideLoadingOverlay() {
+  const loadingOverlay = document.querySelector("#loading-overlay");
+  const mainContent = document.querySelector("#main-content");
+
+  if (loadingOverlay) {
+    loadingOverlay.classList.add("hidden");
+  }
+  if (mainContent) {
+    mainContent.classList.remove("hidden");
+  }
+}
+
 // Initialize the page
 async function initializePage() {
   const stallId = getStallIdFromUrl();
@@ -307,6 +320,9 @@ async function initializePage() {
   if (searchInput) {
     searchInput.placeholder = `Search in ${stall.name}`;
   }
+
+  // Hide loading overlay and show content
+  hideLoadingOverlay();
 }
 
 // Run initialization when DOM is loaded
