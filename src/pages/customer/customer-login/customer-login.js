@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getFirestore, collection, query, where, getDocs, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -16,13 +16,13 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
-async function hashPassword(string) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(string);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-}
+// Check if user is already logged in
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        // User is already logged in, redirect to home
+        window.location.href = "../home/home.html";
+    }
+});
 
 const forgotPasswordLink = document.getElementById("forgotPassword");
 if (forgotPasswordLink) {
@@ -41,7 +41,8 @@ if (googleBtn) {
             const userDoc = await getDoc(doc(db, "customer_list", user.uid));
 
             if (userDoc.exists()) {
-                // PATH FIX: Up 1 level to 'customer' folder, then into 'home'
+                // Set cookie for compatibility
+                document.cookie = `customerId=${user.uid}; path=/; max-age=${400 * 24 * 60 * 60}`;
                 window.location.href = "../home/home.html";
             } else {
                 await setDoc(doc(db, "customer_list", user.uid), {
@@ -50,8 +51,8 @@ if (googleBtn) {
                     createdAt: new Date(),
                     method: "google"
                 });
+                // Set cookie for compatibility
                 alert("Account created successfully via Google!");
-                // PATH FIX: Up 1 level to 'customer' folder, then into 'home'
                 window.location.href = "../home/home.html";
             }
         } catch (error) {
@@ -68,32 +69,58 @@ if (loginForm) {
         
         const emailInput = document.getElementById("email").value.trim();
         const passwordInput = document.getElementById("password").value;
+        const submitBtn = loginForm.querySelector('button[type="submit"]');
+
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Logging in...";
+        }
 
         try {
-            const hashedInput = await hashPassword(passwordInput);
-            const q = query(collection(db, "customer_list"), where("email", "==", emailInput));
-            const querySnapshot = await getDocs(q);
+            // Use Firebase Auth to sign in
+            const userCredential = await signInWithEmailAndPassword(auth, emailInput, passwordInput);
+            const user = userCredential.user;
 
-            if (!querySnapshot.empty) {
-                const userData = querySnapshot.docs[0].data();
-                
-                if (userData.password === hashedInput) {
-                    // PATH FIX: Up 1 level to 'customer' folder, then into 'home'
-                    window.location.href = "../home/home.html";
-
-                    const userId = querySnapshot.docs[0].id;
-                    document.cookie = `customerId=${userId}; path=/; max-age=${400 * 24 * 60 * 60}`; // 400 days expiry
-                } else {
-                    alert("Incorrect password. Please try again!");
-                }
-            } else {
-                alert("No user found with this email. Please sign up!");
-                // PATH FIX: Up 2 levels to 'pages', then into 'customer-sign-up'
-                window.location.href = "../../customer-sign-up/customer-sign-up.html";
+            // Verify user exists in customer_list
+            const userDoc = await getDoc(doc(db, "customer_list", user.uid));
+            
+            if (!userDoc.exists()) {
+                // User authenticated but not in customer_list - create record
+                await setDoc(doc(db, "customer_list", user.uid), {
+                    email: user.email,
+                    wallet: 0,
+                    createdAt: new Date(),
+                    method: "email"
+                });
             }
+
+            // Set cookie for compatibility
+            document.cookie = `customerId=${user.uid}; path=/; max-age=${400 * 24 * 60 * 60}`;
+            
+            // Redirect to home
+            window.location.href = "../home/home.html";
+            
         } catch (error) {
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Login";
+            }
+            
             console.error("Login Error:", error);
-            alert("Login failed: " + error.message);
+            
+            // Provide user-friendly error messages
+            if (error.code === 'auth/user-not-found') {
+                alert("No account found with this email. Please sign up!");
+                window.location.href = "../../customer-sign-up/customer-sign-up.html";
+            } else if (error.code === 'auth/wrong-password') {
+                alert("Incorrect password. Please try again!");
+            } else if (error.code === 'auth/invalid-email') {
+                alert("Invalid email address format.");
+            } else if (error.code === 'auth/invalid-credential') {
+                alert("Invalid email or password. Please try again!");
+            } else {
+                alert("Login failed: " + error.message);
+            }
         }
     });
 }

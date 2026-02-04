@@ -28,6 +28,7 @@ let currentUser = null;
 // Listen for auth state changes
 onAuthStateChanged(auth, (user) => {
   currentUser = user;
+  console.log(currentUser);
 });
 
 // Cart management functions
@@ -232,8 +233,7 @@ async function submitOrder() {
   }
 
   // Get customer name (use auth user or default)
-  const customerName =
-    currentUser?.displayName || currentUser?.email || "Guest User";
+  const customerId = await window.cookieStore.get("customerId") ?? "";
 
   // Calculate total price
   const totalPrice = calculateSubtotal(cart);
@@ -247,7 +247,7 @@ async function submitOrder() {
 
   // Create order object
   const order = {
-    customerName: customerName,
+    customerId: currentUser.uid,
     items: orderItems,
     orderedAt: serverTimestamp(),
     status: "pending",
