@@ -20,12 +20,12 @@
             <img
               src="/static/myhawker-logo-orange.svg"
               alt="Logo"
-              class="h-10"
+              class="h-12"
             />
             <img
               src="/static/myhawker-name-orange.svg"
               alt="Logo"
-              class="h-4"
+              class="h-5"
             />
           </div>
         </a>
@@ -43,8 +43,9 @@
 
         <div class="flex items-center justify-end gap-3">
           <button class="button" data-variant="small-solid">My Orders</button>
-          <button
-            class="button relative"
+          <a
+            href="/src/pages/customer/cart/cart.html"
+            class="button relative border-2 border-orange-primary"
             data-variant="small-outline"
             id="cart-button"
           >
@@ -54,10 +55,14 @@
               class="hidden absolute -top-2 -right-2 bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
               >0</span
             >
-          </button>
-          <button class="button" data-variant="small-outline">
+          </a>
+          <a
+            href="/src/pages/customer/profile/profile.html"
+            class="button"
+            data-variant="small-outline"
+          >
             <i data-lucide="user" class="w-5 h-5 text-black"></i>
-          </button>
+          </a>
         </div>
       </nav>
     </header>
@@ -82,7 +87,10 @@
       </div>
 
       <!-- Empty Cart Message -->
-      <div id="empty-cart" class="hidden text-center py-16">
+      <div
+        id="empty-cart"
+        class="hidden text-center py-16 flex items-center flex-col"
+      >
         <i
           data-lucide="shopping-cart"
           class="w-20 h-20 mx-auto mb-4 text-gray-400"
@@ -93,8 +101,8 @@
         </p>
         <a
           href="/src/pages/customer/home/home.html"
-          class="button"
-          data-variant="solid"
+          class="button w-max h-max"
+          data-variant="small-solid"
         >
           Browse Menu
         </a>

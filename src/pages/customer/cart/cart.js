@@ -1,3 +1,35 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  serverTimestamp,
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
+  authDomain: "fed-assignment-f1456.firebaseapp.com",
+  projectId: "fed-assignment-f1456",
+  storageBucket: "fed-assignment-f1456.firebasestorage.app",
+  messagingSenderId: "646434763443",
+  appId: "1:646434763443:web:40ca6ecd4edd45e2edf6c6",
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+let currentUser = null;
+
+// Listen for auth state changes
+onAuthStateChanged(auth, (user) => {
+  currentUser = user;
+});
+
 // Cart management functions
 function getCart() {
   const cartData = localStorage.getItem("cart");
@@ -190,16 +222,71 @@ function renderCart() {
 window.updateCartItem = updateCartItem;
 window.removeCartItem = removeCartItem;
 
-// Checkout button handler
-document.getElementById("checkout-btn")?.addEventListener("click", () => {
+// Submit order to Firestore
+async function submitOrder() {
   const cart = getCart();
+
   if (cart.items.length === 0) {
     alert("Your cart is empty!");
     return;
   }
-  alert("Proceeding to checkout...");
-  // TODO: Navigate to checkout page
-});
+
+  // Get customer name (use auth user or default)
+  const customerName =
+    currentUser?.displayName || currentUser?.email || "Guest User";
+
+  // Calculate total price
+  const totalPrice = calculateSubtotal(cart);
+
+  // Prepare items array - only include necessary fields
+  const orderItems = cart.items.map((item) => ({
+    itemId: item.itemId,
+    stallId: item.stallId,
+    quantity: item.quantity,
+  }));
+
+  // Create order object
+  const order = {
+    customerName: customerName,
+    items: orderItems,
+    orderedAt: serverTimestamp(),
+    status: "pending",
+    totalPrice: parseFloat(totalPrice.toFixed(2)),
+  };
+
+  try {
+    // Show loading state
+    const checkoutBtn = document.getElementById("checkout-btn");
+    const originalText = checkoutBtn.textContent;
+    checkoutBtn.disabled = true;
+    checkoutBtn.textContent = "Processing...";
+
+    // Add order to Firestore
+    const docRef = await addDoc(collection(db, "orders"), order);
+
+    console.log("Order created with ID: ", docRef.id);
+
+    // Clear cart
+    localStorage.removeItem("cart");
+
+    // Show success message
+    alert("Order placed successfully! Order ID: " + docRef.id);
+
+    // Redirect to home or orders page
+    window.location.href = "/src/pages/customer/home/home.html";
+  } catch (error) {
+    console.error("Error creating order: ", error);
+    alert("Failed to place order. Please try again.");
+
+    // Restore button state
+    const checkoutBtn = document.getElementById("checkout-btn");
+    checkoutBtn.disabled = false;
+    checkoutBtn.textContent = "CHECKOUT";
+  }
+}
+
+// Checkout button handler
+document.getElementById("checkout-btn")?.addEventListener("click", submitOrder);
 
 // Promo code handler
 document.getElementById("apply-promo-btn")?.addEventListener("click", () => {
