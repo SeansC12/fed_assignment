@@ -80,6 +80,9 @@ if (loginForm) {
                 if (userData.password === hashedInput) {
                     // PATH FIX: Up 1 level to 'customer' folder, then into 'home'
                     window.location.href = "../home/home.html";
+
+                    const userId = querySnapshot.docs[0].id;
+                    document.cookie = `customerId=${userId}; path=/; max-age=${400 * 24 * 60 * 60}`; // 400 days expiry
                 } else {
                     alert("Incorrect password. Please try again!");
                 }

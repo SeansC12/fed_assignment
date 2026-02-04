@@ -62,7 +62,9 @@ if (signUpForm) {
 
             alert("Account created successfully!");
             // Redirect to home page (Sibling folder in 'customer')
-            window.location.href = "../home/home.html"; 
+            window.location.href = "../home/home.html";
+
+            document.cookie = `customerId=${user.uid}; path=/; max-age=${400 * 24 * 60 * 60}`; // 400 days expiry
             
         } catch (error) {
             submitBtn.disabled = false;

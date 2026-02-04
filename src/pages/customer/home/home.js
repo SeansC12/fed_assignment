@@ -19,6 +19,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+(async () => {
+  const cookie = await window.cookieStore.get("customerId");
+  console.log(cookie);
+})();
+
 async function fetchAndDisplayHawkerStalls() {
   try {
     const hawkerStallsCol = collection(db, "hawker-stalls");
