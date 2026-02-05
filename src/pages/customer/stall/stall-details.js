@@ -9,6 +9,8 @@ import {
   where,
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+import { updateCartBadge, initCartBadge } from "../cart-utils.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
   authDomain: "fed-assignment-f1456.firebaseapp.com",
@@ -21,10 +23,184 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+// Store current stall and menu data globally
+let currentStall = null;
+let currentMenuItems = [];
+
 // Get stall ID from URL
 function getStallIdFromUrl() {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get("id");
+}
+
+// Cart management functions
+function getCart() {
+  const cartData = localStorage.getItem("cart");
+  if (!cartData) {
+    return { items: [] };
+  }
+  return JSON.parse(cartData);
+}
+
+function saveCart(cart) {
+  localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+function addToCart(itemId) {
+  // Find the item in current menu items
+  const menuItem = currentMenuItems.find((item) => item.id === itemId);
+
+  if (!menuItem) {
+    console.error("Item not found:", itemId);
+    return;
+  }
+
+  // Check if item is in stock
+  if (menuItem.stock === false) {
+    alert("This item is currently out of stock");
+    return;
+  }
+
+  // Get current cart
+  const cart = getCart();
+
+  // Check if item already exists in cart
+  const existingItemIndex = cart.items.findIndex(
+    (item) => item.itemId === itemId && item.stallId === currentStall.id,
+  );
+
+  if (existingItemIndex !== -1) {
+    // Increment quantity if item already in cart
+    cart.items[existingItemIndex].quantity += 1;
+  } else {
+    // Add new item to cart
+    cart.items.push({
+      itemId: menuItem.id,
+      stallId: currentStall.id,
+      stallName: currentStall.name,
+      name: menuItem.name,
+      price: menuItem.price,
+      image: menuItem.image,
+      quantity: 1,
+      desc: menuItem.desc || "",
+    });
+  }
+
+  // Save updated cart
+  saveCart(cart);
+
+  // Update the UI for this specific card
+  updateCardQuantityUI(itemId);
+
+  // Update cart badge
+  updateCartBadge();
+}
+
+function removeFromCart(itemId) {
+  const cart = getCart();
+
+  const existingItemIndex = cart.items.findIndex(
+    (item) => item.itemId === itemId && item.stallId === currentStall.id,
+  );
+
+  if (existingItemIndex !== -1) {
+    if (cart.items[existingItemIndex].quantity > 1) {
+      // Decrement quantity
+      cart.items[existingItemIndex].quantity -= 1;
+    } else {
+      // Remove item from cart
+      cart.items.splice(existingItemIndex, 1);
+    }
+
+    saveCart(cart);
+    updateCardQuantityUI(itemId);
+    updateCartBadge();
+  }
+}
+
+function getItemQuantityInCart(itemId) {
+  const cart = getCart();
+  const item = cart.items.find(
+    (item) => item.itemId === itemId && item.stallId === currentStall.id,
+  );
+  return item ? item.quantity : 0;
+}
+
+function updateCardQuantityUI(itemId) {
+  const quantity = getItemQuantityInCart(itemId);
+  const buttonWrapper = document.getElementById(`item-wrapper-${itemId}`);
+
+  if (!buttonWrapper) return;
+
+  // Check if we already have quantity controls
+  const existingControls = buttonWrapper.querySelector(
+    ".flex.items-center.gap-2.bg-orange-500",
+  );
+  const addButton = buttonWrapper.querySelector(".food-item-card-add-button");
+
+  if (quantity > 0) {
+    if (existingControls) {
+      // Just update the quantity number
+      const quantitySpan = existingControls.querySelector("span");
+      if (quantitySpan) {
+        quantitySpan.textContent = quantity;
+      }
+    } else {
+      // Replace add button with quantity controls
+      if (addButton) {
+        addButton.outerHTML = `
+          <div class="flex items-center gap-2 bg-orange-500 rounded-full px-2 py-1.5 absolute bottom-2 right-2 transition-all duration-300 ease-in-out">
+            <button class="quantity-decrease text-white hover:bg-orange-600 rounded-full w-6 h-6 flex items-center justify-center cursor-pointer transition-transform hover:scale-110" data-item-id="${itemId}">
+              <i data-lucide="minus" class="w-4 h-4"></i>
+            </button>
+            <span class="text-white font-semibold min-w-5 text-center">${quantity}</span>
+            <button class="quantity-increase text-white hover:bg-orange-600 rounded-full w-6 h-6 flex items-center justify-center cursor-pointer transition-transform hover:scale-110" data-item-id="${itemId}">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+            </button>
+          </div>
+        `;
+        lucide.createIcons();
+        attachQuantityEventListeners();
+      }
+    }
+  } else {
+    // Show regular add button
+    if (existingControls) {
+      existingControls.outerHTML = `
+        <button class="food-item-card-add-button transition-all duration-300 ease-in-out" data-item-id="${itemId}">
+          <i data-lucide="plus" class="w-5 h-5"></i>
+        </button>
+      `;
+      lucide.createIcons();
+      attachQuantityEventListeners();
+    }
+  }
+}
+
+function attachQuantityEventListeners() {
+  document.querySelectorAll(".quantity-increase").forEach((button) => {
+    button.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const itemId = button.dataset.itemId;
+      addToCart(itemId);
+    });
+  });
+
+  document.querySelectorAll(".quantity-decrease").forEach((button) => {
+    button.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const itemId = button.dataset.itemId;
+      removeFromCart(itemId);
+    });
+  });
+
+  document.querySelectorAll(".food-item-card-add-button").forEach((button) => {
+    button.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const itemId = button.dataset.itemId;
+      addToCart(itemId);
+    });
+  });
 }
 
 // Fetch stall details
@@ -63,29 +239,24 @@ async function fetchMenuItems(stallId) {
   }
 }
 
-// Update stall information in the page
 function updateStallInfo(stall) {
-  // Update stall name
   const stallNameElement = document.querySelector("#stall-name");
   if (stallNameElement) {
     stallNameElement.textContent = stall.name || "Unknown Stall";
   }
 
-  // Update stall image
   const stallImageElement = document.querySelector("#stall-image");
   if (stallImageElement && stall.image) {
     stallImageElement.src = stall.image;
     stallImageElement.alt = stall.name || "Stall Image";
   }
 
-  // Update address
   const addressElement = document.querySelector("#stall-address");
   if (addressElement) {
     const fullAddress = `${stall.address || ""}, ${stall.hawkerCentre || ""}`;
     addressElement.textContent = fullAddress;
   }
 
-  // Update cuisine types
   const categoriesElement = document.querySelector("#stall-categories");
   if (
     categoriesElement &&
@@ -96,31 +267,48 @@ function updateStallInfo(stall) {
       .map((cuisine) => `<span>• ${cuisine}</span>`)
       .join("\n        ");
 
-    // Keep the rating and add cuisines
     const ratingHtml =
       categoriesElement.querySelector(".flex.items-center.gap-0\\.5")
         ?.outerHTML || "";
     categoriesElement.innerHTML = ratingHtml + "\n        " + cuisinesHtml;
   }
 
-  // Update hearts (likes)
   const heartsElement = document.querySelector("#stall-hearts");
   if (heartsElement) {
     heartsElement.textContent = `(${stall.hearts || 0})`;
   }
 }
 
-// Create a food item card
 function createFoodItemCard(item) {
   const card = document.createElement("div");
-  card.className = "food-item-card";
+  card.className = `food-item-card ${!item.stock && item.stock !== undefined ? "cursor-not-allowed opacity-60" : "cursor-pointer"}`;
 
   const imageBase64 = item.image || "/static/placeholder-food.jpg";
   const name = item.name || "Unknown Item";
   const price = item.price ? `$${item.price.toFixed(2)}` : "N/A";
   const description = item.desc || "";
   const category = item.category || "";
-  const inStock = item.stock !== false; // Default to true if not specified
+  const inStock = item.stock !== false;
+  const quantity = getItemQuantityInCart(item.id);
+
+  const addButtonHTML =
+    quantity > 0
+      ? `
+    <div class="flex items-center gap-2 bg-orange-500 rounded-full px-2 py-1.5 absolute bottom-2 right-2 transition-all duration-300 ease-in-out">
+      <button class="quantity-decrease text-white hover:bg-orange-600 rounded-full w-6 h-6 flex items-center justify-center cursor-pointer transition-transform hover:scale-110" data-item-id="${item.id}">
+        <i data-lucide="minus" class="w-4 h-4"></i>
+      </button>
+      <span class="text-white font-semibold min-w-5 text-center">${quantity}</span>
+      <button class="quantity-increase text-white hover:bg-orange-600 rounded-full w-6 h-6 flex items-center justify-center cursor-pointer transition-transform hover:scale-110" data-item-id="${item.id}">
+        <i data-lucide="plus" class="w-4 h-4"></i>
+      </button>
+    </div>
+  `
+      : `
+    <button class="food-item-card-add-button transition-all duration-300 ease-in-out" ${!inStock ? "hidden" : ""} data-item-id="${item.id}">
+      <i data-lucide="plus" class="w-5 h-5"></i>
+    </button>
+  `;
 
   card.innerHTML = `
     <div class="food-item-card-inner">
@@ -135,19 +323,23 @@ function createFoodItemCard(item) {
         ${description ? `<p class="food-item-card-description">${description}</p>` : ""}
         ${!inStock ? '<span class="food-item-card-badge bg-gray-500">Out of Stock</span>' : ""}
       </div>
-      <div class="food-item-card-image-wrapper">
+      <div class="food-item-card-image-wrapper" id="item-wrapper-${item.id}">
         <img src="${imageBase64}" alt="${name}" class="food-item-card-image" />
-        <button class="food-item-card-add-button" ${!inStock ? "disabled" : ""} data-item-id="${item.id}">
-          <i data-lucide="plus" class="w-5 h-5"></i>
-        </button>
+        ${addButtonHTML}
       </div>
     </div>
   `;
 
+  card.addEventListener("click", (e) => {
+    if (e.target.closest("button") || !inStock) {
+      return;
+    }
+    addToCart(item.id);
+  });
+
   return card;
 }
 
-// Group menu items by category
 function groupMenuItemsByCategory(menuItems) {
   const grouped = {};
   menuItems.forEach((item) => {
@@ -160,7 +352,6 @@ function groupMenuItemsByCategory(menuItems) {
   return grouped;
 }
 
-// Display menu items
 function displayMenuItems(menuItems) {
   const menuContainer = document.querySelector("#menu-sections");
   if (!menuContainer) return;
@@ -215,6 +406,9 @@ function displayMenuItems(menuItems) {
       button.classList.toggle("liked");
     });
   });
+
+  // Attach quantity control event listeners
+  attachQuantityEventListeners();
 }
 
 // Update category tabs
@@ -258,6 +452,19 @@ function updateCategoryTabs(categories) {
   });
 }
 
+// Hide loading overlay and show main content
+function hideLoadingOverlay() {
+  const loadingOverlay = document.querySelector("#loading-overlay");
+  const mainContent = document.querySelector("#main-content");
+
+  if (loadingOverlay) {
+    loadingOverlay.classList.add("hidden");
+  }
+  if (mainContent) {
+    mainContent.classList.remove("hidden");
+  }
+}
+
 // Initialize the page
 async function initializePage() {
   const stallId = getStallIdFromUrl();
@@ -299,6 +506,10 @@ async function initializePage() {
   // Update page with stall information
   updateStallInfo(stall);
 
+  // Store stall and menu data globally for cart functionality
+  currentStall = stall;
+  currentMenuItems = menuItems;
+
   // Display menu items
   displayMenuItems(menuItems);
 
@@ -307,6 +518,12 @@ async function initializePage() {
   if (searchInput) {
     searchInput.placeholder = `Search in ${stall.name}`;
   }
+
+  // Initialize cart badge
+  updateCartBadge();
+
+  // Hide loading overlay and show content
+  hideLoadingOverlay();
 }
 
 // Run initialization when DOM is loaded
