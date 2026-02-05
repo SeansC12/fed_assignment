@@ -86,16 +86,56 @@
 
   <!-- Hygiene Grade Input -->
   <div class="w-full md:w-1/3">
-    <label class="block text-xs uppercase font-bold text-slate-500 mb-2">
-      Hygiene Grade
+  <label class="block text-xs uppercase font-bold text-slate-500 mb-3">
+    Hygiene Grade
+  </label>
+
+  <div class="flex rounded-lg overflow-hidden border border-slate-300">
+
+    <!-- A -->
+    <label class="flex-1 cursor-pointer">
+      <input type="radio" name="grade" value="A" class="hidden peer">
+      <div class="text-center py-3 bg-slate-50 
+                  peer-checked:bg-[#009481] peer-checked:text-white
+                  font-bold transition-all">
+        A
+      </div>
     </label>
-    <input
-      id="gradeInput"
-      maxlength="1"
-      placeholder="A, B, C or D"
-      class="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-slate-50 focus:ring-2 focus:ring-[#009481] outline-none"
-    >
+
+    <!-- B -->
+    <label class="flex-1 cursor-pointer border-l border-slate-300">
+      <input type="radio" name="grade" value="B" class="hidden peer">
+      <div class="text-center py-3 bg-slate-50 
+                  peer-checked:bg-[#009481] peer-checked:text-white
+                  font-bold transition-all">
+        B
+      </div>
+    </label>
+
+    <!-- C -->
+    <label class="flex-1 cursor-pointer border-l border-slate-300">
+      <input type="radio" name="grade" value="C" class="hidden peer">
+      <div class="text-center py-3 bg-slate-50 
+                  peer-checked:bg-[#009481] peer-checked:text-white
+                  font-bold transition-all">
+        C
+      </div>
+    </label>
+
+    <!-- D -->
+    <label class="flex-1 cursor-pointer border-l border-slate-300">
+      <input type="radio" name="grade" value="D" class="hidden peer">
+      <div class="text-center py-3 bg-slate-50 
+                  peer-checked:bg-[#009481] peer-checked:text-white
+                  font-bold transition-all">
+        D
+      </div>
+    </label>
+
   </div>
+</div>
+
+
 
   <!-- Upload Section -->
   <div class="flex items-center gap-4">

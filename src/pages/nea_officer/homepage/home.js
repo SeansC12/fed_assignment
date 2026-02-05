@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
     type: 'line',
     data: {
       labels: ['Jan','Feb','Mar','Apr','May','Jun'],
-      datasets: [{
+      datasets:  [{
         label: 'Hygiene Grade',
         data: gradeData,
         borderColor: '#009481',
