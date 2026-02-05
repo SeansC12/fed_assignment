@@ -7,22 +7,41 @@
     <link href="style.css" rel="stylesheet" type="text/css">
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Tailwind -->
+    <link rel="stylesheet" href="/static/output.css" />
 </head>
 <body>
-    <!--Navbar with Logo on left size-->
-    <!--Logo & Navbar in seperate boxes, use flexboxes to align them differently-->
-    <div style="display: flex;">
-        <img src="\static\NEA_logo_white.png" alt="NEA Logo" class="Logo">
-        <div style="flex: auto;">
-            <ul class="navbar">
-                <!--nea_officer home page link below not working btw-->
-                <li><a href="src\pages\nea_officer\home\home\home.html">Home</a></li>
-                <li><a href="HawkerMap.html">Hawker Map</a></li>
-                <li><a href="Smth suppose to be here">I cannot remember</a></li>
-            </ul>
+    <!-- ================= HEADER ================= -->
+    <header class="bg-[#009481] text-white shadow-md">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+    
+            <!-- LOGO -->
+            <img src="/static/NEA_pictures/NEA_Logo.png" alt="NEA Logo" class="h-20 w-40 brightness-0 invert" />
+    
+            <!-- NAV LINKS CENTERED -->
+            <nav class="flex gap-20 items-center mx-auto">
+                <a href="../homepage/home.html" class="text-xl font-semibold hover:text-[#18e667] transition-colors">Home</a>
+                <a href="../Report/cust_exp2.html" class="text-xl font-semibold hover:text-[#18e667] transition-colors">Dashboard</a>
+                <a href="../Map/HawkerMap.html" class="text-xl font-semibold hover:text-[#18e667] transition-colors border-b-2 border-white pb-1">Hawker Centre</a>
+                <a href="#" class="text-xl font-semibold hover:text-[#18e667] transition-colors">Policy</a>
+            </nav>
+    
+            <!-- USER INFO -->
+            <div class="flex items-center gap-3">
+                <div class="text-right hidden sm:block">
+                    <p class="text-[10px] uppercase tracking-widest text-slate-200 font-bold">Authenticated Personnel</p>
+                    <p class="text-sm font-medium">Officer Chan</p>
+                </div>
+                <div
+                    class="h-10 w-10 rounded-full bg-white flex items-center justify-center text-[#009481] font-bold shadow-inner">
+                    OC
+                </div>
+            </div>
+    
         </div>
-    </div>
-    <hr>
+    </header>
+    <!-- ================= END HEADER ================= -->
+    
     <!--Main map with hawker locations-->
     <!-- Map Section - Can be pasted into your existing webpage -->
     <section id="hawker-map-section">
