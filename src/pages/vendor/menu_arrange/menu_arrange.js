@@ -4,7 +4,7 @@ import {
   collection,
   onSnapshot,
   doc,
-  getDoc,
+  getDocs,
   deleteDoc,
   query,
   where
@@ -41,6 +41,7 @@ onAuthStateChanged(auth, async (user) => {
 
             if (!stallSnap.empty) {
                 stallId = stallSnap.docs[0].id;
+                console.log("User logged in:", user.uid);
                 console.log("Managing Stall:", stallId);
                 
                 // 2. Start the real-time menu listener for this specific stall

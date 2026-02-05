@@ -66,7 +66,7 @@ async function initDashboard() {
 }
 async function getStallIdByOwner(uid) {
     try {
-        const stallsRef = collection(db, "stalls");
+        const stallsRef = collection(db, "hawker-stalls");
         const q = query(stallsRef, where("ownerId", "==", uid));
         const snap = await getDocs(q);
         return !snap.empty ? snap.docs[0].id : null;

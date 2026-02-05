@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, onSnapshot, doc, getDoc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, onSnapshot, doc, getDocs, getDoc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 
@@ -244,5 +244,7 @@ async function renderOrders(orders) {
 
     const allCards = await Promise.all(orderHTMLPromises);
     grid.innerHTML = allCards.join('');
-    if (window.lucide) lucide.createIcons();
+    lucide.createIcons();
 }
+lucide.createIcons();
+

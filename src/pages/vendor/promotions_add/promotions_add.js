@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc, doc, getDoc, getDocs, query, where, Timestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
@@ -12,13 +13,42 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
+const auth = getAuth(app);
+let currentStallId = "NkfmlElwOWPU0Mb5L40n"; // Placeholder until we get real stall ID
 // Refresh Icons
 window.lucide.createIcons();
 
+onAuthStateChanged(auth, async (user) => {
+    const displayElement = document.getElementById("displayStallName");
+    
+    if (user) {
+        try {
+            // Find the stall where the ownerId matches the logged-in User UID
+            const stallsRef = collection(db, "hawker-stalls");
+            const q = query(stallsRef, where("ownerId", "==", user.uid));
+            const querySnapshot = await getDocs(q);
+
+            if (!querySnapshot.empty) {
+                const stallDoc = querySnapshot.docs[0];
+                currentStallId = stallDoc.id;
+                displayElement.textContent = stallDoc.data().name;
+                console.log("Authenticated for stall:", currentStallId);
+            } else {
+                displayElement.textContent = "No stall found for this account";
+            }
+        } catch (e) {
+            console.error("Error fetching stall name:", e);
+            displayElement.textContent = "Error loading stall";
+        }
+    } else {
+        // No user is signed in, redirect to login
+        //window.location.href = "../login/login.html";
+        console.log("No user logged in. Defaulting to preview mode.");
+    }
+});
+
 // --- GET LOGGED IN STALL ---
 // Replace 'currentStallId' with the key you use in your login logic
-const currentStallId = localStorage.getItem('stallId') || "NkfmlElwOWPU0Mb5L40n";
 
 async function loadCurrentStallName() {
     const displayElement = document.getElementById("displayStallName");
