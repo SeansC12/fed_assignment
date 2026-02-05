@@ -8,8 +8,10 @@ import {
   query,
   where,
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 import { updateCartBadge, initCartBadge } from "../cart-utils.js";
+import { setupUserProfilePopup } from "../user-utils.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
@@ -22,6 +24,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
 // Store current stall and menu data globally
 let currentStall = null;
@@ -536,7 +539,11 @@ async function initializePage() {
 
 // Run initialization when DOM is loaded
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initializePage);
+  document.addEventListener("DOMContentLoaded", () => {
+    initializePage();
+    setupUserProfilePopup();
+  });
 } else {
   initializePage();
+  setupUserProfilePopup();
 }

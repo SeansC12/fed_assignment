@@ -62,13 +62,32 @@
               >0</span
             >
           </a>
-          <a
-            href="/src/pages/customer/profile/profile.html"
-            class="button"
-            data-variant="solid-gray-small"
-          >
-            <i data-lucide="user" class="w-5 h-5 text-black"></i>
-          </a>
+          <div class="relative">
+            <button
+              id="user-profile-button"
+              class="button"
+              data-variant="solid-gray-small"
+            >
+              <i data-lucide="user" class="w-5 h-5 text-black"></i>
+            </button>
+            <div
+              id="user-profile-popup"
+              class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
+            >
+              <div class="py-2">
+                <button
+                  id="logout-button"
+                  class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                >
+                  <i
+                    data-lucide="log-out"
+                    class="w-4 h-4 inline-block mr-2"
+                  ></i>
+                  Log Out
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </nav>
     </header>

@@ -10,6 +10,7 @@ import {
   onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { updateCartBadge, initCartBadge } from "../cart-utils.js";
+import { setupUserProfilePopup } from "../user-utils.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
@@ -189,6 +190,8 @@ function updateCapsuleText(modalId) {
 
   lucide.createIcons();
 }
+
+setupUserProfilePopup();
 
 // Re-init lucide icons after modal interaction
 setTimeout(() => lucide.createIcons(), 100);

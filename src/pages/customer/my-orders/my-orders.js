@@ -12,6 +12,7 @@ import {
   getAuth,
   onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { setupUserProfilePopup } from "../user-utils.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
@@ -256,3 +257,5 @@ function getStatusConfig(status) {
 
   return configs[status] || configs["pending"];
 }
+
+setupUserProfilePopup();

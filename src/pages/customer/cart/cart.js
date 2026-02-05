@@ -9,6 +9,7 @@ import {
   getAuth,
   onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { setupUserProfilePopup } from "../user-utils.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
@@ -308,7 +309,11 @@ document.getElementById("apply-promo-btn")?.addEventListener("click", () => {
 
 // Initialize cart on page load
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", renderCart);
+  document.addEventListener("DOMContentLoaded", () => {
+    renderCart();
+    setupUserProfilePopup();
+  });
 } else {
   renderCart();
+  setupUserProfilePopup();
 }
