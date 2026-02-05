@@ -9,6 +9,7 @@ import {
   query,
   where
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
@@ -22,17 +23,61 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const menuCol = collection(db, "vendor_menu");
+const auth = getAuth(app);
 
 let menuData = [];
 let activeFilter = "All";
 let activeSearch = "";
+let stallId = "NkfmlElwOWPU0Mb5L40n"; // Placeholder until we get real stall ID
+let unsubscribe = null;
 
-let stallId = localStorage.getItem("activeStallId");
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        try {
+            // 1. Find the stall owned by this user
+            const stallsRef = collection(db, "hawker-stalls");
+            const qStall = query(stallsRef, where("ownerId", "==", user.uid));
+            const stallSnap = await getDocs(qStall);
 
-// Placeholder logic for testing
-if (!stallId) {
-    stallId = "NkfmlElwOWPU0Mb5L40n"; 
-    console.warn("Using placeholder Stall ID:", stallId);
+            if (!stallSnap.empty) {
+                stallId = stallSnap.docs[0].id;
+                console.log("Managing Stall:", stallId);
+                
+                // 2. Start the real-time menu listener for this specific stall
+                startMenuListener();
+            } else {
+                console.error("No stall found for this user.");
+                // Optional: redirect to a "Create Stall" page
+            }
+        } catch (error) {
+            console.error("Error fetching stall data:", error);
+        }
+    } else {
+        // No user logged in? Send them to login
+        //window.location.href = "../login/login.html"; //edit this once login page is ready
+    }
+    startMenuListener();
+});
+
+function startMenuListener() {
+    // If a listener already exists, stop it first
+    if (unsubscribe) unsubscribe();
+
+    if (!stallId) return;
+
+    const q = query(menuCol, where("stallId", "==", stallId));
+    
+    unsubscribe = onSnapshot(q, (snapshot) => {
+        menuData = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+        renderItems();
+    });
+}
+
+if (!localStorage.getItem("stallStartTime")) {
+    localStorage.setItem("stallStartTime", new Date().toISOString());
 }
 
 // 1. UPDATED REAL-TIME LISTENER

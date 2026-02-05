@@ -149,7 +149,11 @@
         getFirestore,
         collection,
         addDoc,
+        query,
+        where,
+        getDocs,
       } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+      import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
       const firebaseConfig = {
         apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
@@ -163,17 +167,34 @@
       const app = initializeApp(firebaseConfig);
       const db = getFirestore(app);
       const menuCol = collection(db, "vendor_menu");
+      const auth = getAuth(app);
 
       // --- STALL ID LOGIC ---
-      let stallId = localStorage.getItem("activeStallId");
-
-      // PLACEHOLDER: Use this until your login page is ready
-      if (!stallId) {
-        stallId = "NkfmlElwOWPU0Mb5L40n"; 
-        console.warn("Using placeholder Stall ID for new menu item:", stallId);
-      }
+      let stallId = "NkfmlElwOWPU0Mb5L40n"; // Placeholder until we get real stall ID
 
       let encodedImage = "https://placehold.co/600x600?text=No+Image+Selected";
+
+
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          // Find the stall owned by this specific user
+          const stallsRef = collection(db, "hawker-stalls");
+          const q = query(stallsRef, where("ownerId", "==", user.uid));
+          const snap = await getDocs(q);
+
+          if (!snap.empty) {
+            stallId = snap.docs[0].id;
+            console.log("Authenticated stall found:", stallId);
+          } else {
+            console.warn("User logged in but no stall found. Using placeholder.");
+            stallId = "NkfmlElwOWPU0Mb5L40n"; 
+          }
+        } else {
+          // Redirect to login if not authenticated
+          console.log("No user logged in. Defaulting to preview mode.");
+          //window.location.href = "../login/login.html"; 
+        }
+      });
 
       // Preview logic
       window.previewImage = (event) => {
