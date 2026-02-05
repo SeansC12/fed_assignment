@@ -13,7 +13,17 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+// --- ADDED: HASHING FUNCTION ---
+async function hashPassword(string) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(string);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 const changeForm = document.getElementById("changePasswordForm");
+
 if (changeForm) {
     changeForm.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -33,12 +43,18 @@ if (changeForm) {
         }
 
         try {
-            // TARGET VENDOR_LIST
+            // 1. Hash the NEW password before saving
+            const hashedPassword = await hashPassword(newPass);
+
+            // 2. Update Firestore with the HASH, not the plain text
             const userRef = doc(db, "vendor_list", userId);
-            await updateDoc(userRef, { password: newPass });
+            await updateDoc(userRef, { password: hashedPassword });
             
             localStorage.removeItem("resetUserId");
-            window.location.href = "reset-success.html"; 
+            
+            alert("Password updated successfully!");
+            window.location.href = "vendor-login.html"; // Redirect to login
+            
         } catch (error) {
             console.error("Update Error:", error);
             alert("Failed to update password: " + error.message);
