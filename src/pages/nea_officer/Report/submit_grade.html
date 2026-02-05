@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Stall Inspection</title>
+<link rel="stylesheet" href="/static/output.css" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body class="bg-[#f4f7f6] text-slate-800 min-h-screen flex flex-col font-sans">
+
+
+<!-- ================= HEADER ================= -->
+<header class="bg-[#009481] text-white shadow-md">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+
+        <!-- LOGO -->
+        <img 
+            src="/static/NEA_pictures/NEA_Logo.png" 
+            alt="NEA Logo"
+            class="h-20 w-40 brightness-0 invert"
+        />
+
+        <!-- NAV LINKS CENTERED -->
+        <nav class="flex gap-20 items-center mx-auto">
+            <a href="#" class="text-xl font-semibold hover:text-[#18e667] transition-colors border-b-2 border-white pb-1">Home</a>
+            <a href="cust_exp2.html" class="text-xl font-semibold hover:text-[#18e667] transition-colors">Dashboard</a>
+            <a href="#" class="text-xl font-semibold hover:text-[#18e667] transition-colors">Hawker Centre</a>
+            <a href="#" class="text-xl font-semibold hover:text-[#18e667] transition-colors">Policy</a>
+        </nav>
+
+        <!-- USER INFO -->
+        <div class="flex items-center gap-3">
+            <div class="text-right hidden sm:block">
+                <p class="text-[10px] uppercase tracking-widest text-slate-200 font-bold">Authenticated Personnel</p>
+                <p class="text-sm font-medium">Officer Chan</p>
+            </div> 
+            <div class="h-10 w-10 rounded-full bg-white flex items-center justify-center text-[#009481] font-bold shadow-inner">
+                OC
+            </div>
+        </div>
+
+    </div>
+</header>
+
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="grow max-w-7xl mx-auto p-6 space-y-6">
+
+    <!-- ===== STALL INFO ===== -->
+
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 grid md:grid-cols-3 gap-6">
+
+        <div>
+            <p class="text-xs uppercase font-bold text-slate-500 mb-1">Stall ID</p>
+            <p class="font-semibold text-slate-700">ST1023</p>
+        </div>
+
+        <div>
+            <p class="text-xs uppercase font-bold text-slate-500 mb-1">Stall Name</p>
+            <p class="font-semibold text-slate-700">Golden Wok Chicken Rice</p>
+        </div>
+
+        <div>
+            <p class="text-xs uppercase font-bold text-slate-500 mb-1">Hawker Centre</p>
+            <p class="font-semibold text-slate-700">Maxwell Food Centre</p>
+        </div>
+
+    </div>
+
+    <!-- ===== SUBMISSION FORM ===== -->
+
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+
+        <h2 class="font-bold text-slate-700 mb-6">
+            Submit New Inspection Result
+        </h2>
+
+        <div class="grid md:grid-cols-3 gap-6">
+
+<!-- Grade + Upload -->
+<div class="md:col-span-3 flex flex-col gap-6">
+
+  <!-- Hygiene Grade Input -->
+  <div class="w-full md:w-1/3">
+    <label class="block text-xs uppercase font-bold text-slate-500 mb-2">
+      Hygiene Grade
+    </label>
+    <input
+      id="gradeInput"
+      maxlength="1"
+      placeholder="A, B, C or D"
+      class="w-full px-4 py-2.5 rounded-lg border border-slate-300 bg-slate-50 focus:ring-2 focus:ring-[#009481] outline-none"
+    >
+  </div>
+
+  <!-- Upload Section -->
+  <div class="flex items-center gap-4">
+    <!-- Label -->
+    <label class="text-xs uppercase font-bold text-slate-500 min-w-max">
+      Upload Inspection Images
+    </label>
+
+    <!-- Hidden file input -->
+    <input
+      type="file"
+      id="imageUpload"
+      multiple
+      accept="image/*"
+      class="hidden"
+      onchange="handleFiles(this.files)"
+    >
+
+    <!-- Circle button -->
+    <label for="imageUpload" class="w-12 h-12 flex items-center justify-center rounded-full bg-[#009481] text-white text-2xl cursor-pointer hover:bg-[#007f6e] transition-all shadow-md">
+      +
+    </label>
+
+    <!-- Optional file preview -->
+    <div id="filePreview" class="text-sm text-slate-600 truncate max-w-xs"></div>
+  </div>
+
+  <!-- Remarks -->
+  <div>
+    <label class="block text-xs uppercase font-bold text-slate-500 mb-2">
+      Remarks
+    </label>
+    <textarea
+      id="remarks"
+      rows="4"
+      placeholder="Describe cleanliness issues or justification for grade..."
+      class="w-full px-4 py-3 rounded-lg border border-slate-300 bg-slate-50 focus:ring-2 focus:ring-[#009481] outline-none resize-none"
+    ></textarea>
+  </div>
+
+  <!-- Submit -->
+  <div class="flex justify-end">
+    <button
+      onclick="submitInspection()"
+      class="bg-[#009481] text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-[#007f6e] transition"
+    >
+      Submit Inspection
+    </button>
+  </div>
+
+</div>
+</main>
+<!-- ================= FOOTER ================= -->
+<footer class="mt-auto py-8 bg-slate-900 text-slate-500 text-xs">
+    <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+        <p>© 2026 National Environment Agency, Singapore. <span class="text-slate-700 mx-2">|</span> Internal Use Only.</p>
+        <div class="flex gap-6">
+            <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+            <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+            <a href="#" class="hover:text-white transition-colors">Support</a>
+        </div>
+    </div>
+</footer>
+
+<script src="submit_grade.js"></script>
+
+</body>
+</html>
