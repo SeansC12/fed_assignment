@@ -13,7 +13,7 @@
       class="sticky top-0 z-50 w-full bg-off-white border-b border-light-gray"
     >
       <nav
-        class="w-full bg-off-white grid grid-cols-[1fr_2fr_1fr] items-center gap-4 px-8 py-4 max-w-375 mx-auto border-b border-light-gray"
+        class="w-full bg-off-white grid grid-cols-[1fr_2fr_1fr] items-center gap-4 px-8 py-4 max-w-375 mx-auto"
       >
         <a href="/src/pages/customer/home/home.html">
           <div class="flex gap-3 items-center">
@@ -25,7 +25,7 @@
             <img
               src="/static/myhawker-name-orange.svg"
               alt="Logo"
-              class="h-4"
+              class="h-5"
             />
           </div>
         </a>
@@ -33,117 +33,169 @@
         <div class="relative max-w-xl mx-auto w-full">
           <i
             data-lucide="map-pin"
-            class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-red-600"
+            class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-900"
           ></i>
           <input
-            class="w-full text-sm px-3 py-2 pl-10 border border-light-gray rounded-full"
+            class="w-full text-sm px-3.5 py-2 pl-11 bg-linear-to-r font-semibold from-light-gray to-extra-light-gray rounded-full text-neutral-900"
             placeholder="Search location..."
           />
         </div>
 
         <div class="flex items-center justify-end gap-3">
-          <button class="button" data-variant="small-solid">My Orders</button>
-          <button class="button" data-variant="small-outline">
+          <a
+            href="../my-orders/my-orders.html"
+            class="button"
+            data-variant="small-solid"
+            >My Orders</a
+          >
+          <a
+            href="/src/pages/customer/cart/cart.html"
+            class="button relative"
+            data-variant="solid-gray-small"
+            id="cart-button"
+          >
             <i data-lucide="shopping-cart" class="w-5 h-5 text-black"></i>
-          </button>
-          <button class="button" data-variant="small-outline">
-            <i data-lucide="user" class="w-5 h-5 text-black"></i>
-          </button>
+            <span
+              id="cart-badge"
+              class="hidden absolute -top-2 -right-2 bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
+              >0</span
+            >
+          </a>
+          <div class="relative">
+            <button
+              id="user-profile-button"
+              class="button"
+              data-variant="solid-gray-small"
+            >
+              <i data-lucide="user" class="w-5 h-5 text-black"></i>
+            </button>
+            <div
+              id="user-profile-popup"
+              class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
+            >
+              <div class="py-2">
+                <button
+                  id="logout-button"
+                  class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                >
+                  <i
+                    data-lucide="log-out"
+                    class="w-4 h-4 inline-block mr-2"
+                  ></i>
+                  Log Out
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </nav>
     </header>
 
-    <section class="section-container pt-4 border-0! max-w-5xl mx-auto px-4">
-      <img
-        id="stall-image"
-        src="/static/specific_stall_assets/chinese-food.jpg"
-        alt="Stall Image"
-        class="w-full h-44 object-cover rounded-lg mb-4"
-      />
-      <div class="flex justify-between items-center w-full mt-8">
-        <h1 id="stall-name" class="text-2xl font-semibold">
-          Liao Fan Hawker Chan
-        </h1>
-        <button class="button" data-variant="small-outline">
-          File a Complaint
-        </button>
-      </div>
+    <div
+      id="loading-overlay"
+      class="absolute w-full h-full inset-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-40 flex items-center justify-center"
+    >
+      <i
+        data-lucide="loader"
+        class="w-6 h-6 text-orange-500 animate-spin mr-3"
+      ></i>
+      <span>Loading stall details...</span>
+    </div>
 
-      <!-- Rating and Categories -->
-      <div
-        id="stall-categories"
-        class="mt-2 flex items-center gap-1 flex-wrap text-sm text-gray-600"
-      >
-        <div class="flex items-center gap-0.5">
-          <span class="font-semibold text-black">4.7</span>
-          <span class="text-yellow-500 text-sm">⭐</span>
-          <span id="stall-hearts" class="text-gray-500">(9,000+)</span>
-        </div>
-        <span>• Chinese</span>
-        <span>• Noodles</span>
-        <span>• Chicken</span>
-        <span>• Dumplings</span>
-        <span>• Vegetarian</span>
-        <span>• Non-halal</span>
-        <span>• Vegetarian Friendly</span>
-        <span>• Alcohol</span>
-      </div>
-
-      <!-- Address -->
-      <div id="stall-address" class="mt-1 text-sm text-gray-600">
-        500 Clemenceau Ave N, Singapore 229495
-      </div>
-
-      <!-- Menu Section -->
-      <div class="mt-8">
-        <!-- Menu Header with Tabs and Search -->
-        <div class="flex items-center justify-between mb-3">
-          <h2 class="text-lg font-bold">Menu</h2>
-          <div class="relative">
-            <i
-              data-lucide="search"
-              class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
-            ></i>
-            <input
-              id="menu-search"
-              type="text"
-              class="pl-10 pr-4 py-2 border border-gray-300 rounded-md text-sm w-80"
-              placeholder="Search in Liao Fan Hawker Chan"
-            />
-          </div>
+    <div id="main-content" class="hidden">
+      <section class="section-container pt-4 border-0! max-w-5xl mx-auto px-4">
+        <img
+          id="stall-image"
+          src="/static/specific_stall_assets/chinese-food.jpg"
+          alt="Stall Image"
+          class="w-full h-44 object-cover rounded-lg mb-4"
+        />
+        <div class="flex justify-between items-center w-full mt-8">
+          <h1 id="stall-name" class="text-2xl font-semibold">
+            Liao Fan Hawker Chan
+          </h1>
+          <button class="button" data-variant="solid-gray-small">
+            File a Complaint
+          </button>
         </div>
 
-        <!-- Category Tabs -->
+        <!-- Rating and Categories -->
         <div
-          id="category-tabs"
-          class="flex items-center gap-6 border-b border-gray-200 mb-8 overflow-x-auto"
+          id="stall-categories"
+          class="mt-2 flex items-center gap-1 flex-wrap text-sm text-gray-600"
         >
-          <button class="tab-button active" data-tab="rice-dishes">
-            Rice Dishes
-          </button>
-          <button class="tab-button" data-tab="noodle-dishes">
-            Noodle Dishes
-          </button>
-          <button class="tab-button" data-tab="dumplings">
-            Dumplings & Dim Sum
-          </button>
-          <button class="tab-button" data-tab="sides">Sides & Drinks</button>
-          <div class="grow flex items-center justify-end">
-            <button class="scroll-button">
-              <i data-lucide="chevron-left" class="w-5 h-5"></i>
-            </button>
-            <button class="scroll-button">
-              <i data-lucide="chevron-right" class="w-5 h-5"></i>
-            </button>
+          <div class="flex items-center gap-0.5">
+            <span class="font-semibold text-black">4.7</span>
+            <span class="text-yellow-500 text-sm">⭐</span>
+            <span id="stall-hearts" class="text-gray-500">(9,000+)</span>
           </div>
+          <span>• Chinese</span>
+          <span>• Noodles</span>
+          <span>• Chicken</span>
+          <span>• Dumplings</span>
+          <span>• Vegetarian</span>
+          <span>• Non-halal</span>
+          <span>• Vegetarian Friendly</span>
+          <span>• Alcohol</span>
         </div>
 
-        <!-- Dynamic Menu Sections -->
-        <div id="menu-sections">
-          <!-- Menu items will be loaded dynamically -->
+        <!-- Address -->
+        <div id="stall-address" class="mt-1 text-sm text-gray-600">
+          500 Clemenceau Ave N, Singapore 229495
         </div>
-      </div>
-    </section>
+
+        <!-- Menu Section -->
+        <div class="mt-8">
+          <!-- Menu Header with Tabs and Search -->
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-lg font-bold">Menu</h2>
+            <div class="relative">
+              <i
+                data-lucide="search"
+                class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+              ></i>
+              <input
+                id="menu-search"
+                type="text"
+                class="pl-10 pr-4 py-2 border border-gray-300 rounded-md text-sm w-80"
+                placeholder="Search in Liao Fan Hawker Chan"
+              />
+            </div>
+          </div>
+
+          <!-- Category Tabs -->
+          <div
+            id="category-tabs"
+            class="flex items-center gap-6 border-b border-gray-200 mb-8 overflow-x-auto"
+          >
+            <button class="tab-button active" data-tab="rice-dishes">
+              Rice Dishes
+            </button>
+            <button class="tab-button" data-tab="noodle-dishes">
+              Noodle Dishes
+            </button>
+            <button class="tab-button" data-tab="dumplings">
+              Dumplings & Dim Sum
+            </button>
+            <button class="tab-button" data-tab="sides">Sides & Drinks</button>
+            <div class="grow flex items-center justify-end">
+              <button class="scroll-button">
+                <i data-lucide="chevron-left" class="w-5 h-5"></i>
+              </button>
+              <button class="scroll-button">
+                <i data-lucide="chevron-right" class="w-5 h-5"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Dynamic Menu Sections -->
+          <div id="menu-sections">
+            <!-- Menu items will be loaded dynamically -->
+          </div>
+        </div>
+      </section>
+    </div>
+    <!-- End Main Content -->
   </body>
 
   <script>

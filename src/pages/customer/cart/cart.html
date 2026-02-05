@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/output.css" />
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script type="module" src="./cart.js" defer></script>
+    <title>Your Cart - MyHawker</title>
+  </head>
+  <body class="bg-graay-50">
+    <header
+      class="sticky top-0 z-50 w-full bg-off-white border-b border-light-gray"
+    >
+      <nav
+        class="w-full bg-off-white grid grid-cols-[1fr_2fr_1fr] items-center gap-4 px-8 py-4 max-w-375 mx-auto"
+      >
+        <a href="/src/pages/customer/home/home.html">
+          <div class="flex gap-3 items-center">
+            <img
+              src="/static/myhawker-logo-orange.svg"
+              alt="Logo"
+              class="h-10"
+            />
+            <img
+              src="/static/myhawker-name-orange.svg"
+              alt="Logo"
+              class="h-5"
+            />
+          </div>
+        </a>
+
+        <div class="relative max-w-xl mx-auto w-full">
+          <i
+            data-lucide="map-pin"
+            class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-900"
+          ></i>
+          <input
+            class="w-full text-sm px-3.5 py-2 pl-11 bg-linear-to-r font-semibold from-light-gray to-extra-light-gray rounded-full text-neutral-900"
+            placeholder="Search location..."
+          />
+        </div>
+
+        <div class="flex items-center justify-end gap-3">
+          <a
+            href="../my-orders/my-orders.html"
+            class="button"
+            data-variant="small-solid"
+            >My Orders</a
+          >
+          <a
+            href="/src/pages/customer/cart/cart.html"
+            class="button relative border-2 border-orange-primary"
+            data-variant="solid-gray-small"
+            id="cart-button"
+          >
+            <i data-lucide="shopping-cart" class="w-5 h-5 text-black"></i>
+            <span
+              id="cart-badge"
+              class="hidden absolute -top-2 -right-2 bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
+              >0</span
+            >
+          </a>
+          <div class="relative">
+            <button
+              id="user-profile-button"
+              class="button"
+              data-variant="solid-gray-small"
+            >
+              <i data-lucide="user" class="w-5 h-5 text-black"></i>
+            </button>
+            <div
+              id="user-profile-popup"
+              class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
+            >
+              <div class="py-2">
+                <button
+                  id="logout-button"
+                  class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                >
+                  <i
+                    data-lucide="log-out"
+                    class="w-4 h-4 inline-block mr-2"
+                  ></i>
+                  Log Out
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+      <!-- Cart Header -->
+      <div class="mb-8">
+        <h1 class="text-4xl font-bold mb-6">Your Cart</h1>
+        <div
+          class="flex justify-between items-center pb-4 border-b border-gray-300"
+        >
+          <a
+            href="/src/pages/customer/home/home.html"
+            class="text-gray-600 hover:text-orange-500 transition-colors"
+          >
+            Continue Shopping
+          </a>
+          <div class="text-gray-800 font-semibold" id="cart-item-count">
+            0 Items
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty Cart Message -->
+      <div
+        id="empty-cart"
+        class="hidden text-center py-16 flex items-center flex-col"
+      >
+        <i
+          data-lucide="shopping-cart"
+          class="w-20 h-20 mx-auto mb-4 text-gray-400"
+        ></i>
+        <h2 class="text-2xl font-semibold mb-2">Your cart is empty</h2>
+        <p class="text-gray-600 mb-6">
+          Add some delicious items to get started!
+        </p>
+        <a
+          href="/src/pages/customer/home/home.html"
+          class="button w-max h-max"
+          data-variant="small-solid"
+        >
+          Browse Menu
+        </a>
+      </div>
+
+      <!-- Cart Content -->
+      <div id="cart-content" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Left Side - Cart Items -->
+        <div class="lg:col-span-2">
+          <div id="cart-items" class="space-y-4">
+            <!-- Cart items will be dynamically inserted here -->
+          </div>
+        </div>
+
+        <!-- Right Side - Summary -->
+        <div class="lg:col-span-1">
+          <div
+            class="bg-white rounded-lg p-6 shadow-sm border border-gray-200 sticky top-24"
+          >
+            <!-- Promo Code -->
+            <div class="mb-6">
+              <label class="block text-sm font-semibold mb-2"
+                >Enter Discount Code</label
+              >
+              <div class="flex gap-2">
+                <input
+                  type="text"
+                  id="promo-code-input"
+                  placeholder="Promo Code"
+                  class="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                />
+                <button
+                  id="apply-promo-btn"
+                  class="button"
+                  data-variant="solid"
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+
+            <!-- Promotions -->
+            <div class="mb-6 pb-6 border-b border-gray-200">
+              <h3 class="font-semibold mb-2">Discount codes</h3>
+              <div class="text-sm text-gray-600 flex justify-between">
+                <span>SAVE10</span>
+                <span class="text-green-600" id="shipping-discount-display"
+                  >-$10.00</span
+                >
+              </div>
+            </div>
+
+            <!-- Price Breakdown -->
+            <div class="space-y-3 mb-6">
+              <div class="flex justify-between text-sm">
+                <span class="text-gray-600">Subtotal</span>
+                <span class="font-semibold" id="subtotal">$0.00</span>
+              </div>
+              <div class="flex justify-between text-sm">
+                <span class="text-green-600">Promotion 1</span>
+                <span class="text-green-600" id="shipping-cost"
+                  >Not implemented yet</span
+                >
+              </div>
+              <div class="flex justify-between text-sm">
+                <span class="text-green-600">Promotion 2</span>
+                <span class="text-green-600" id="shipping-discount"
+                  >Not implemented yet</span
+                >
+              </div>
+            </div>
+
+            <!-- Total -->
+            <div class="pt-6 border-t border-gray-200 mb-6">
+              <div class="flex justify-between items-center">
+                <span class="font-semibold text-lg">Estimated Total</span>
+                <span class="font-bold text-2xl" id="total">$0.00</span>
+              </div>
+            </div>
+
+            <!-- Checkout Button -->
+            <button
+              id="checkout-btn"
+              class="button w-full"
+              data-variant="solid"
+            >
+              CHECKOUT
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</html>

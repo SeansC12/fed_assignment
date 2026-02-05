@@ -1,14 +1,20 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Momo+Signature&family=Orbitron:wght@400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 
 @source "../pages";
 
 @theme {
   --color-orange-primary: #ff6700;
   --color-orange-primary-hover: #e45e00;
-  --color-off-white: #f4f1ea;
-  --color-light-gray: #d3d3d3;
-  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  /* --color-off-white: #f4f1ea; */
+  /* --color-off-white: #f9fafb; */
+  --color-off-white: #fff;
+  /* --color-light-gray: #d3d3d3; */
+  --color-light-gray: #F1F1F1;
+  --color-extra-light-gray: #f3f3f3;
+  --color-hover-gray: #DDDDDD;
+  --font-sans: "Roboto", ui-sans-serif, system-ui, sans-serif;
   --default-font-family: var(--font-sans);
 }
 
@@ -20,7 +26,15 @@
 
 @layer components {
   .button {
-    @apply flex h-fit flex-row items-center justify-center rounded-sm px-4 py-3 leading-[140%] font-semibold tracking-[1.08px] transition-colors hover:cursor-pointer;
+    @apply flex h-fit flex-row items-center justify-center rounded-sm px-4 py-3 font-semibold transition-colors hover:cursor-pointer;
+  }
+
+  .button[data-variant="solid-gray-small"] {
+    @apply bg-extra-light-gray py-2 hover:bg-hover-gray border-0 disabled:bg-neutral-600;
+  }
+  
+  .button[data-variant="solid-gray"] {
+    @apply bg-extra-light-gray hover:bg-hover-gray border-0 disabled:bg-neutral-600;
   }
 
   .button[data-variant="solid"] {
@@ -28,7 +42,7 @@
   }
 
   .button[data-variant="small-solid"] {
-    @apply text-sm py-2 bg-orange-primary text-white hover:bg-orange-primary-hover tracking-normal font-medium focus:outline-4 focus:outline-green-400 disabled:bg-neutral-600;
+    @apply text-sm py-2 bg-orange-primary text-white hover:bg-orange-primary-hover font-medium focus:outline-4 focus:outline-green-400 disabled:bg-neutral-600;
   }
 
   .button[data-variant="outline"] {
@@ -36,7 +50,7 @@
   }
 
   .button[data-variant="small-outline"] {
-    @apply px-2 py-2 text-sm border border-light-gray text-black bg-transparent hover:bg-orange-primary/10 tracking-normal focus:outline-2 focus:outline-orange-primary disabled:text-neutral-600;
+    @apply px-2 py-2 text-sm border border-light-gray text-black bg-transparent hover:bg-orange-primary/10 focus:outline-2 focus:outline-orange-primary disabled:text-neutral-600;
   }
 
   .section-container {

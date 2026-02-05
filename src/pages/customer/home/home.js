@@ -1,10 +1,16 @@
 // Firebase imports and initialization
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import {
   getFirestore,
   collection,
   getDocs,
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { updateCartBadge, initCartBadge } from "../cart-utils.js";
+import { setupUserProfilePopup } from "../user-utils.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
@@ -17,6 +23,15 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
+
+// Check authentication state
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    // User is not logged in, redirect to login page
+    window.location.href = "../customer-login/customer-login.html";
+  }
+});
 
 async function fetchAndDisplayHawkerStalls() {
   try {
@@ -175,6 +190,8 @@ function updateCapsuleText(modalId) {
 
   lucide.createIcons();
 }
+
+setupUserProfilePopup();
 
 // Re-init lucide icons after modal interaction
 setTimeout(() => lucide.createIcons(), 100);

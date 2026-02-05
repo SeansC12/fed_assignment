@@ -30,7 +30,7 @@ const forgotPasswordLink = document.getElementById("forgotPassword");
 if (forgotPasswordLink) {
     forgotPasswordLink.addEventListener('click', (e) => {
         e.preventDefault();
-        window.location.href = "vendor-verify-email.html"; // Ensure you created this file as discussed
+        window.location.href = "verify-email.html"; // Ensure you created this file as discussed
     });
 }
 
