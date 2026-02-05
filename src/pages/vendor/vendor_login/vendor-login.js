@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getFirestore, collection, query, where, getDocs, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
@@ -15,26 +15,24 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// --- HELPER: HASHING FUNCTION ---
-async function hashPassword(string) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(string);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    return hashHex;
-}
+// Check if user is already logged in
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        // You can uncomment this to auto-redirect if session exists
+        // window.location.href = "../menu_arrange/menu_arrange.html";
+    }
+});
 
 // 1. FORGOT PASSWORD
 const forgotPasswordLink = document.getElementById("forgotPassword");
 if (forgotPasswordLink) {
     forgotPasswordLink.addEventListener('click', (e) => {
         e.preventDefault();
-        window.location.href = "verify-email.html"; // Ensure you created this file as discussed
+        window.location.href = "verify-email.html";
     });
 }
 
-// 2. MANUAL LOGIN
+// 2. MANUAL LOGIN (Using Firebase Auth)
 const loginForm = document.getElementById("vendorLoginForm");
 if (loginForm) {
     loginForm.addEventListener("submit", async (e) => {
@@ -42,37 +40,55 @@ if (loginForm) {
         
         const emailInput = document.getElementById("email").value.trim();
         const passwordInput = document.getElementById("password").value;
+        const submitBtn = loginForm.querySelector('button[type="submit"]');
+
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Logging in...";
+        }
 
         try {
-            // Hash the entered password to match the database format
-            const hashedInput = await hashPassword(passwordInput);
+            // 1. Authenticate with Firebase Auth
+            const userCredential = await signInWithEmailAndPassword(auth, emailInput, passwordInput);
+            const user = userCredential.user;
 
-            const q = query(collection(db, "vendor_list"), where("email", "==", emailInput));
-            const querySnapshot = await getDocs(q);
+            // 2. Check Vendor Record in Firestore
+            const userDocRef = doc(db, "vendor_list", user.uid);
+            const userDoc = await getDoc(userDocRef);
 
-            if (!querySnapshot.empty) {
-                const userData = querySnapshot.docs[0].data();
+            if (userDoc.exists()) {
+                const userData = userDoc.data();
                 
-                // Compare HASH vs HASH
-                if (userData.password === hashedInput) {
-                    if(userData.stallId) {
-                        localStorage.setItem("activeStallId", userData.stallId);
-                    }
-                    
-                    // --- PATH FIX: Redirect to menu_arrange.html ---
-                    // Up 1 level to 'vendor', then into 'menu_arrange'
-                    window.location.href = "../menu_arrange/menu_arrange.html";
-                    
-                } else {
-                    alert("Incorrect password. Please try again!");
+                // Store active stall ID if available
+                if(userData.stallId) {
+                    localStorage.setItem("activeStallId", userData.stallId);
                 }
+
+                // Redirect to Menu Arrange
+                window.location.href = "../menu_arrange/menu_arrange.html";
             } else {
-                alert("No vendor found with this email. Please sign up!");
+                // User authenticated but no record in vendor_list (rare, but good safety)
+                alert("Vendor profile not found. Please sign up.");
                 window.location.href = "../vendor_sign_up/vendor-sign-up.html";
             }
+
         } catch (error) {
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Login";
+            }
             console.error("Login Error:", error);
-            alert("Login failed: " + error.message);
+
+            // User-friendly error messages
+            if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
+                alert("Invalid email or password.");
+            } else if (error.code === 'auth/wrong-password') {
+                alert("Invalid email or password.");
+            } else if (error.code === 'auth/invalid-email') {
+                alert("Invalid email format.");
+            } else {
+                alert("Login failed: " + error.message);
+            }
         }
     });
 }

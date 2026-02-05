@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -15,17 +15,15 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-const signUpForm = document.getElementById("vendorSignUpForm");
+// Check if user is already logged in
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        // Optional: Redirect if already logged in (commented out for vendor creation flow)
+        // window.location.href = "../create_stall/create-stall.html";
+    }
+});
 
-// --- HELPER: HASHING FUNCTION (SHA-256) ---
-async function hashPassword(string) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(string);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    return hashHex;
-}
+const signUpForm = document.getElementById("vendorSignUpForm");
 
 if (signUpForm) {
     signUpForm.addEventListener("submit", async (e) => {
@@ -45,22 +43,17 @@ if (signUpForm) {
         submitBtn.innerText = "Securing & Creating...";
 
         try {
-            // 1. Create User in Auth (Firebase handles this securely automatically)
+            // 1. Create User in Firebase Auth (Handles security automatically)
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
-            // 2. Hash the password for Firestore storage
-            // This ensures even if someone sees the DB, they can't read the password
-            const hashedPassword = await hashPassword(password);
-
-            // 3. Save to vendor_list with the HASHED password
+            // 2. Save Vendor Details to Firestore (NO PASSWORD stored here)
             await setDoc(doc(db, "vendor_list", user.uid), {
                 name: name,
                 email: email,
-                password: hashedPassword, // Storing the Hash, not the plain text
-                createdAt: new Date(),
                 role: "vendor",
-                method: "email"
+                method: "email",
+                createdAt: new Date()
             });
 
             alert("Account created securely! Redirecting to stall setup...");
@@ -70,7 +63,15 @@ if (signUpForm) {
             submitBtn.disabled = false;
             submitBtn.innerText = "Sign Up";
             console.error("Sign up failed:", error.message);
-            alert("Sign up failed: " + error.message);
+
+            // User-friendly error messages
+            if (error.code === 'auth/email-already-in-use') {
+                alert("This email is already registered. Please login.");
+            } else if (error.code === 'auth/weak-password') {
+                alert("Password is too weak.");
+            } else {
+                alert("Sign up failed: " + error.message);
+            }
         }
     });
 }
