@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, getDoc, deleteDoc, query, where} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
@@ -12,8 +13,29 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
 const stallCache = {};
+let activeStallId = "NkfmlElwOWPU0Mb5L40n"; // This will hold the ID once the user logs in
+
+
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        // Find the stall owned by this user
+        const stallsRef = collection(db, "hawker-stalls");
+        const q = query(stallsRef, where("ownerId", "==", user.uid));
+        const snap = await getDocs(q);
+        
+        if (!snap.empty) {
+            activeStallId = snap.docs[0].id;
+            loadPromotions(); // Now safe to load data
+        }
+    } else {
+        //window.location.href = "/src/pages/index.html"; // Send them away if not logged in
+        console.log("No user logged in. Defaulting to preview mode.");
+    }
+    loadPromotions();
+});
 
 // --- ICON HELPER ---
 function refreshIcons() {
@@ -72,7 +94,9 @@ async function loadPromotions() {
     const now = new Date(); // Get current date and time
     
     try {
-        const querySnapshot = await getDocs(collection(db, "promotions"));
+        const promotionsRef = collection(db, "promotions");
+        const q = query(promotionsRef, where("stallid", "==", activeStallId)); 
+        const querySnapshot = await getDocs(q);
         
         const allPromos = await Promise.all(querySnapshot.docs.map(async (promoDoc) => {
             const data = promoDoc.data();
@@ -86,7 +110,12 @@ async function loadPromotions() {
         const validPromos = allPromos.filter(promo => promo !== null);
 
         if (validPromos.length === 0) {
-            // ... (empty state)
+            listContainer.innerHTML = `
+                <div class="text-center py-20 text-gray-400">
+                    <i data-lucide="package-open" class="w-12 h-12 mx-auto mb-4 opacity-20"></i>
+                    <p>No promotions found for this stall.</p>
+                </div>`;
+            refreshIcons(); // <--- MUST call this here too!
             return;
         }
 
@@ -166,5 +195,3 @@ async function loadPromotions() {
         console.error("Error loading promos:", error);
     }
 }
-
-loadPromotions();

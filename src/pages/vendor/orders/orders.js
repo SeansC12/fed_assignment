@@ -1,5 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, onSnapshot, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, onSnapshot, doc, getDoc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
 
 const firebaseConfig = {
     apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
@@ -12,54 +14,99 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
-let stallId = localStorage.getItem("activeStallId") || "NkfmlElwOWPU0Mb5L40n";
+const auth = getAuth(app);
+let stallId = "NkfmlElwOWPU0Mb5L40n"; // Placeholder until we get real stall ID
 let currentStatusFilter = 'pending';
 
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        // 1. Find the stall that belongs to this user's UID
+        const stallsRef = collection(db, "hawker-stalls");
+        const q = query(stallsRef, where("ownerId", "==", user.uid));
+        const snap = await getDocs(q);
+
+        if (!snap.empty) {
+            stallId = snap.docs[0].id;
+            console.log("Logged in stall:", stallId);
+            
+            // 2. Now that we have the ID, run your UI functions
+            displayStallName();
+            startOrderListener();
+        } else {
+            console.error("No stall found for this user.");
+            // Optional: redirect to a setup page
+        }
+    } else {
+        // No user? Send them to login
+        //window.location.href = "../login/login.html"; //edit this once login page is ready
+        console.log("No user logged in. Defaulting to preview mode.");
+    }
+    displayStallName();
+    startOrderListener();
+});
 // --- HELPERS ---
 
-const menuCache = {}; // Cache to avoid redundant database reads
+const menuCache = {}; 
+const customerCache = {}; // NEW: Cache to store customer names
 
 async function fetchItemDetails(itemId) {
-    if (!itemId) return { name: "Missing ID", price: 0 }; // Handle missing ID gracefully
-    if (menuCache[itemId]) return menuCache[itemId]; // Return cached data if available
+    if (!itemId) return { name: "Missing ID", price: 0 };
+    if (menuCache[itemId]) return menuCache[itemId];
 
     try { 
         const itemRef = doc(db, "vendor_menu", itemId);
-        const itemSnap = await getDoc(itemRef); // Await the promise
-        if (itemSnap.exists()) { // Check if document exists
-            menuCache[itemId] = itemSnap.data(); // Cache the data
-            return menuCache[itemId]; // Return the fetched data
+        const itemSnap = await getDoc(itemRef);
+        if (itemSnap.exists()) {
+            menuCache[itemId] = itemSnap.data();
+            return menuCache[itemId];
         }
-    } catch (e) { console.error("Error fetching menu item:", e); } // Log any errors
-    return { name: "Unknown Item", price: 0 }; // Fallback for missing items
+    } catch (e) { console.error("Error fetching menu item:", e); }
+    return { name: "Unknown Item", price: 0 };
+}
+
+// Helper to fetch Customer Name from customer_list
+async function fetchCustomerName(customerId) {
+    if (!customerId) return "Guest User";
+    if (customerCache[customerId]) return customerCache[customerId];
+
+    try {
+        const custRef = doc(db, "customer_list", customerId);
+        const custSnap = await getDoc(custRef);
+        
+        if (custSnap.exists()) {
+            const data = custSnap.data();
+            
+            // 1. Check for customer_name
+            if (data.customerName) {
+                customerCache[customerId] = data.customerName;
+                return data.customerName;
+            }
+            
+            // 2. Fallback to Email Prefix (e.g., "john.doe" from "john.doe@gmail.com")
+            if (data.email) {
+                const emailPrefix = data.email.split('@')[0];
+                customerCache[customerId] = emailPrefix;
+                return emailPrefix;
+            }
+        }
+    } catch (e) { 
+        console.error("Error fetching customer data:", e); 
+    }
+    
+    return "Guest Customer"; 
 }
 
 function getTimeAgo(orderedAt) { 
-    if (!orderedAt) return "Just now"; // Handle missing date gracefully
-
-    let past;
-    
-    // Check if it's a Firestore Timestamp (has a toDate method)
-    if (typeof orderedAt.toDate === 'function') {
-        past = orderedAt.toDate();
-    } else {
-        // Otherwise, try to parse it as a standard date/string
-        past = new Date(orderedAt);
-    }
-
-    // Check if the date is actually valid
+    if (!orderedAt) return "Just now";
+    let past = typeof orderedAt.toDate === 'function' ? orderedAt.toDate() : new Date(orderedAt);
     if (isNaN(past.getTime())) return "Just now";
 
-    const now = new Date(); // Current time
-    const diffInMs = now - past; // Difference in milliseconds
-    const diffInMins = Math.floor(diffInMs / 60000); // Convert to minutes
+    const now = new Date();
+    const diffInMins = Math.floor((now - past) / 60000);
 
-    if (diffInMins < 1) return "Just now"; // Less than a minute
-    if (diffInMins < 60) return `${diffInMins}m ago`; // Less than an hour
-    
-    const hours = Math.floor(diffInMins / 60); // Convert to hours
-    return `${hours}h ago`; // Return hours ago
+    if (diffInMins < 1) return "Just now";
+    if (diffInMins < 60) return `${diffInMins}m ago`;
+    return `${Math.floor(diffInMins / 60)}h ago`;
 }
 
 function updateCounterUI(currentCount) {
@@ -88,35 +135,33 @@ async function displayStallName() {
     const stallRef = doc(db, "hawker-stalls", stallId);
     const stallSnap = await getDoc(stallRef);
     if (stallSnap.exists()) {
-        document.getElementById("stallDisplay").innerText = `Managing: ${stallSnap.data().name}`;
+        const display = document.getElementById("stallDisplay");
+        if(display) display.innerText = `Managing: ${stallSnap.data().name}`;
     }
 }
 
 // --- CORE LOGIC ---
 
 const startOrderListener = () => {
+    if (!stallId) return;
     const ordersRef = collection(db, "orders");
     
     onSnapshot(ordersRef, async (snapshot) => {
         let allOrders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-        // 1. Filter for THIS stall
         const myStallOrders = allOrders.filter(order => 
             order.items && order.items.some(item => item.stallId === stallId)
         );
 
-        // 2. Sort: Oldest first for Pending (urgency), Newest first for Completed
         myStallOrders.sort((a, b) => {
-            const timeA = new Date(a.orderedAt || 0);
-            const timeB = new Date(b.orderedAt || 0);
+            const timeA = new Date(a.orderedAt?.seconds * 1000 || 0);
+            const timeB = new Date(b.orderedAt?.seconds * 1000 || 0);
             return currentStatusFilter === 'pending' ? timeA - timeB : timeB - timeA;
         });
 
-        // 3. Update Badge
         const pendingCount = myStallOrders.filter(o => o.status === 'pending').length;
         updateCounterUI(pendingCount);
 
-        // 4. Render current view
         const statusFiltered = myStallOrders.filter(o => o.status === currentStatusFilter);
         await renderOrders(statusFiltered);
     });
@@ -124,21 +169,18 @@ const startOrderListener = () => {
 
 async function renderOrders(orders) {
     const grid = document.getElementById("orders-grid");
-    
     const isPending = currentStatusFilter === 'pending';
+    
+    // UI Button state logic...
     const activeClass = 'bg-orange-500 text-white px-6 py-2.5 rounded-xl font-bold shadow-md shadow-orange-100';
     const inactiveClass = 'text-gray-500 hover:bg-gray-50 px-6 py-2.5 rounded-xl font-bold';
-    
-    document.getElementById('btn-pending').className = isPending ? activeClass : inactiveClass;
-    document.getElementById('btn-completed').className = !isPending ? activeClass : inactiveClass;
+    const btnP = document.getElementById('btn-pending');
+    const btnC = document.getElementById('btn-completed');
+    if(btnP) btnP.className = isPending ? activeClass : inactiveClass;
+    if(btnC) btnC.className = !isPending ? activeClass : inactiveClass;
 
     if (orders.length === 0) {
-        grid.innerHTML = `
-            <div class="col-span-full py-20 bg-white rounded-[2rem] border-2 border-dashed border-gray-200 text-center">
-                <i data-lucide="clock" class="w-12 h-12 mx-auto text-gray-200 mb-4"></i>
-                <p class="text-gray-400 font-bold text-lg">No ${currentStatusFilter} orders found.</p>
-            </div>`;
-        if (window.lucide) lucide.createIcons();
+        grid.innerHTML = `<div class="col-span-full py-20 text-center text-gray-400 font-bold">No ${currentStatusFilter} orders.</div>`;
         return;
     }
 
@@ -146,10 +188,14 @@ async function renderOrders(orders) {
         const myItems = order.items.filter(item => item.stallId === stallId);
         const timeAgo = getTimeAgo(order.orderedAt);
 
-        const itemsWithDetails = await Promise.all(myItems.map(async (item) => {
-            const details = await fetchItemDetails(item.itemId);
-            return { ...item, name: details.name, price: details.price };
-        }));
+        // Fetch Customer Name and Item Details in parallel
+        const [customerName, itemsWithDetails] = await Promise.all([
+            fetchCustomerName(order.customerId), // FETCHING NAME VIA ID
+            Promise.all(myItems.map(async (item) => {
+                const details = await fetchItemDetails(item.itemId);
+                return { ...item, name: details.name, price: details.price };
+            }))
+        ]);
 
         const subtotal = itemsWithDetails.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
@@ -160,18 +206,18 @@ async function renderOrders(orders) {
             </div>
 
             <div class="flex justify-between items-center mb-6">
-                <span class="text-xs font-black text-orange-primary bg-orange-50 px-3 py-1 rounded-full uppercase tracking-tighter">
+                <span class="text-xs font-black text-orange-500 bg-orange-50 px-3 py-1 rounded-full uppercase tracking-tighter">
                     Order #${order.id.slice(-4).toUpperCase()}
                 </span>
             </div>
 
-            <h3 class="text-2xl font-black text-gray-900 mb-4">${order.customerName || "Customer"}</h3>
+            <h3 class="text-2xl font-black text-gray-900 mb-4">${customerName}</h3>
             
             <div class="space-y-3 mb-8">
                 ${itemsWithDetails.map(item => `
                     <div class="flex justify-between items-center">
                         <span class="text-gray-600 font-medium">
-                            <span class="text-orange-primary font-bold">${item.quantity}x</span> ${item.name}
+                            <span class="text-orange-500 font-bold">${item.quantity}x</span> ${item.name}
                         </span>
                         <span class="text-gray-900 font-black">$${(item.price * item.quantity).toFixed(2)}</span>
                     </div>
@@ -200,7 +246,3 @@ async function renderOrders(orders) {
     grid.innerHTML = allCards.join('');
     if (window.lucide) lucide.createIcons();
 }
-
-// --- INITIALIZATION ---
-displayStallName();
-startOrderListener();
