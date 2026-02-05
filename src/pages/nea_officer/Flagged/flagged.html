@@ -17,43 +17,45 @@
 
 <body class="bg-[#f8fafc] text-slate-800 min-h-screen flex flex-col font-sans">
 
-<header class="bg-[#064e3b] text-white shadow-md border-b-4 ">
+<header class="bg-[#009481] text-white shadow-md">
     <div class="container mx-auto px-6 py-4 flex justify-between items-center">
 
-        <div class="flex items-center gap-10">
-            <img 
-                src="/static/NEA_pictures/NEA_Logo.png" 
-                alt="NEA Logo"
-                class="h-20 w-25 brightness-0 invert"
-            />
+        <!-- LOGO -->
+        <img 
+            src="/static/NEA_pictures/NEA_Logo.png" 
+            alt="NEA Logo"
+            class="h-20 w-40 brightness-0 invert"
+        />
 
-            <nav class="flex gap-8 items-center pt-2">
-                <a href="#" class="text-sm font-semibold hover:text-[#18e667] transition-colors border-b-2 border-[#18e667] pb-1">Home</a>
-                <a href="cust_exp2.html" class="text-sm font-semibold  hover:text-[#18e667] transition-colors ">Dashboard</a>
-                <a href="#" class="text-sm font-semibold  hover:text-[#18e667] transition-colors">Hawker Centre</a>
-                <a href="#" class="text-sm font-semibold  hover:text-[#18e667] transition-colors">Policy</a>
-            </nav>
-        </div>
+        <!-- NAV LINKS CENTERED -->
+        <nav class="flex gap-20 items-center mx-auto">
+            <a href="#" class="text-xl font-semibold hover:text-[#18e667] transition-colors border-b-2 border-white pb-1">Home</a>
+            <a href="cust_exp2.html" class="text-xl font-semibold hover:text-[#18e667] transition-colors">Dashboard</a>
+            <a href="#" class="text-xl font-semibold hover:text-[#18e667] transition-colors">Hawker Centre</a>
+            <a href="#" class="text-xl font-semibold hover:text-[#18e667] transition-colors">Policy</a>
+        </nav>
 
+        <!-- USER INFO -->
         <div class="flex items-center gap-3">
             <div class="text-right hidden sm:block">
-                <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Authenticated Personnel</p>
+                <p class="text-[10px] uppercase tracking-widest text-slate-200 font-bold">Authenticated Personnel</p>
                 <p class="text-sm font-medium">Officer Chan</p>
-            </div>
-            <div class="h-10 w-10 rounded-full bg-[#18e667] flex items-center justify-center text-[#064e3b] font-bold shadow-inner">
+            </div> 
+            <div class="h-10 w-10 rounded-full bg-white flex items-center justify-center text-[#009481] font-bold shadow-inner">
                 OC
             </div>
         </div>
+
     </div>
 </header>
+
+
 
 <main class="container mx-auto px-6 py-8 grow">
 
     <nav class="flex text-sm text-slate-500 mb-6" aria-label="Breadcrumb">
         <ol class="flex items-center space-x-2">
             <li><a href="#" class="hover:text-emerald-700">Home</a></li>
-            <li><span class="text-slate-400">/</span></li>
-            <li><a href="#" class="hover:text-emerald-700">Inspections</a></li>
             <li><span class="text-slate-400">/</span></li>
             <li class="text-slate-900 font-bold">Flagged Violations</li>
         </ol>
@@ -99,7 +101,7 @@
 
     <div class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
 
-        <div class="bg-slate-50 px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+        <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
             <div class="flex items-center gap-2">
                 <div class="w-2 h-6 bg-[#18e667] rounded-full"></div>
                 <h2 class="font-bold text-slate-700 text-lg">Priority Monitoring List</h2>
