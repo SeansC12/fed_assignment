@@ -8,7 +8,10 @@ import {
   doc,
   getDoc,
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
@@ -23,12 +26,12 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// Wait for auth state
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     await loadOrders(user.uid);
   } else {
-    window.location.href = "/src/pages/customer/customer-login/customer-login.html";
+    window.location.href =
+      "/src/pages/customer/customer-login/customer-login.html";
   }
 });
 
@@ -40,10 +43,7 @@ async function loadOrders(userId) {
   try {
     // Query orders for this user
     const ordersRef = collection(db, "orders");
-    const q = query(
-      ordersRef,
-      where("customerId", "==", userId)
-    );
+    const q = query(ordersRef, where("customerId", "==", userId));
 
     const querySnapshot = await getDocs(q);
     const orders = [];
@@ -102,7 +102,8 @@ async function loadOrders(userId) {
 
 async function createOrderCard(order) {
   const card = document.createElement("div");
-  card.className = "bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow";
+  card.className =
+    "bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow";
 
   // Format date
   const orderDate = order.orderedAt.toDate();

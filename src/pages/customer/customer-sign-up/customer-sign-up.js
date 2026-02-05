@@ -54,12 +54,9 @@ if (signUpForm) {
                 method: "email"
             });
 
-            // 3. Set cookie for compatibility
-            document.cookie = `customerId=${user.uid}; path=/; max-age=${400 * 24 * 60 * 60}`;
-
             alert("Account created successfully!");
             
-            // 4. Redirect to home page
+            // 3. Redirect to home page
             window.location.href = "../home/home.html";
             
         } catch (error) {

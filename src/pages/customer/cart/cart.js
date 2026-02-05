@@ -232,8 +232,11 @@ async function submitOrder() {
     return;
   }
 
-  // Get customer name (use auth user or default)
-  const customerId = await window.cookieStore.get("customerId") ?? "";
+  if (!currentUser) {
+    alert("Please log in to place an order.");
+    window.location.href = "../customer-login/customer-login.html";
+    return;
+  }
 
   // Calculate total price
   const totalPrice = calculateSubtotal(cart);

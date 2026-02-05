@@ -41,8 +41,6 @@ if (googleBtn) {
             const userDoc = await getDoc(doc(db, "customer_list", user.uid));
 
             if (userDoc.exists()) {
-                // Set cookie for compatibility
-                document.cookie = `customerId=${user.uid}; path=/; max-age=${400 * 24 * 60 * 60}`;
                 window.location.href = "../home/home.html";
             } else {
                 await setDoc(doc(db, "customer_list", user.uid), {
@@ -51,7 +49,6 @@ if (googleBtn) {
                     createdAt: new Date(),
                     method: "google"
                 });
-                // Set cookie for compatibility
                 alert("Account created successfully via Google!");
                 window.location.href = "../home/home.html";
             }
@@ -77,15 +74,12 @@ if (loginForm) {
         }
 
         try {
-            // Use Firebase Auth to sign in
             const userCredential = await signInWithEmailAndPassword(auth, emailInput, passwordInput);
             const user = userCredential.user;
 
-            // Verify user exists in customer_list
             const userDoc = await getDoc(doc(db, "customer_list", user.uid));
             
             if (!userDoc.exists()) {
-                // User authenticated but not in customer_list - create record
                 await setDoc(doc(db, "customer_list", user.uid), {
                     email: user.email,
                     wallet: 0,
@@ -94,10 +88,6 @@ if (loginForm) {
                 });
             }
 
-            // Set cookie for compatibility
-            document.cookie = `customerId=${user.uid}; path=/; max-age=${400 * 24 * 60 * 60}`;
-            
-            // Redirect to home
             window.location.href = "../home/home.html";
             
         } catch (error) {
