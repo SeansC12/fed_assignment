@@ -30,11 +30,11 @@
   }
 
   .button[data-variant="solid-gray-small"] {
-    @apply bg-extra-light-gray py-2 hover:bg-hover-gray border-0 focus:outline-4 focus:outline-orange-primary disabled:bg-neutral-600;
+    @apply bg-extra-light-gray py-2 hover:bg-hover-gray border-0 disabled:bg-neutral-600;
   }
   
   .button[data-variant="solid-gray"] {
-    @apply bg-extra-light-gray hover:bg-hover-gray border-0 focus:outline-4 focus:outline-orange-primary disabled:bg-neutral-600;
+    @apply bg-extra-light-gray hover:bg-hover-gray border-0 disabled:bg-neutral-600;
   }
 
   .button[data-variant="solid"] {

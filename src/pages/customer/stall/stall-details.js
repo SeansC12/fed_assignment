@@ -160,7 +160,6 @@ function updateCardQuantityUI(itemId) {
           </div>
         `;
         lucide.createIcons();
-        attachQuantityEventListeners();
       }
     }
   } else {
@@ -172,34 +171,38 @@ function updateCardQuantityUI(itemId) {
         </button>
       `;
       lucide.createIcons();
-      attachQuantityEventListeners();
     }
   }
 }
 
 function attachQuantityEventListeners() {
-  document.querySelectorAll(".quantity-increase").forEach((button) => {
-    button.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const itemId = button.dataset.itemId;
-      addToCart(itemId);
-    });
-  });
+  // Use event delegation to handle dynamically created buttons
+  const menuContainer = document.querySelector("#menu-sections");
+  if (!menuContainer) return;
 
-  document.querySelectorAll(".quantity-decrease").forEach((button) => {
-    button.addEventListener("click", (e) => {
+  // Remove any existing listeners by cloning and replacing the container
+  const newMenuContainer = menuContainer.cloneNode(true);
+  menuContainer.parentNode.replaceChild(newMenuContainer, menuContainer);
+
+  // Attach single delegated event listener
+  newMenuContainer.addEventListener("click", (e) => {
+    const increaseBtn = e.target.closest(".quantity-increase");
+    const decreaseBtn = e.target.closest(".quantity-decrease");
+    const addBtn = e.target.closest(".food-item-card-add-button");
+
+    if (increaseBtn) {
       e.stopPropagation();
-      const itemId = button.dataset.itemId;
+      const itemId = increaseBtn.dataset.itemId;
+      addToCart(itemId);
+    } else if (decreaseBtn) {
+      e.stopPropagation();
+      const itemId = decreaseBtn.dataset.itemId;
       removeFromCart(itemId);
-    });
-  });
-
-  document.querySelectorAll(".food-item-card-add-button").forEach((button) => {
-    button.addEventListener("click", (e) => {
+    } else if (addBtn) {
       e.stopPropagation();
-      const itemId = button.dataset.itemId;
+      const itemId = addBtn.dataset.itemId;
       addToCart(itemId);
-    });
+    }
   });
 }
 
@@ -407,7 +410,12 @@ function displayMenuItems(menuItems) {
     });
   });
 
-  // Attach quantity control event listeners
+  // Update all item UIs to reflect current cart state
+  menuItems.forEach((item) => {
+    updateCardQuantityUI(item.id);
+  });
+
+  // Attach quantity control event listeners ONCE after all UI updates
   attachQuantityEventListeners();
 }
 
