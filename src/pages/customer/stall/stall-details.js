@@ -7,6 +7,8 @@ import {
   getDoc,
   query,
   where,
+  addDoc,
+  Timestamp,
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
@@ -242,6 +244,409 @@ async function fetchMenuItems(stallId) {
   } catch (error) {
     console.error("Error fetching menu items:", error);
     return [];
+  }
+}
+
+// Fetch reviews for a stall
+async function fetchReviews(stallId) {
+  try {
+    const reviewsQuery = query(
+      collection(db, "reviews"),
+      where("stallId", "==", stallId),
+    );
+    const reviewsSnapshot = await getDocs(reviewsQuery);
+    const reviews = reviewsSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    return reviews;
+  } catch (error) {
+    console.error("Error fetching reviews:", error);
+    return [];
+  }
+}
+
+// Calculate rating distribution
+function calculateRatingDistribution(reviews) {
+  const distribution = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+
+  reviews.forEach((review) => {
+    const rating = review.rating;
+    if (rating >= 1 && rating <= 5) {
+      distribution[rating]++;
+    }
+  });
+
+  return distribution;
+}
+
+// Calculate average rating
+function calculateAverageRating(reviews) {
+  if (reviews.length === 0) return 0;
+
+  const sum = reviews.reduce((acc, review) => acc + review.rating, 0);
+  return (sum / reviews.length).toFixed(1);
+}
+
+// Render star rating
+function renderStars(rating) {
+  const fullStars = Math.floor(rating);
+  const hasHalfStar = rating % 1 >= 0.5;
+  let starsHTML = "";
+
+  for (let i = 0; i < fullStars; i++) {
+    starsHTML +=
+      '<i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>';
+  }
+
+  if (hasHalfStar && fullStars < 5) {
+    starsHTML +=
+      '<i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>'; // For simplicity, showing full star for half star
+  }
+
+  // Fill remaining with empty stars up to 5
+  const totalStars = hasHalfStar ? fullStars + 1 : fullStars;
+  for (let i = totalStars; i < 5; i++) {
+    starsHTML += '<i data-lucide="star" class="w-4 h-4 text-gray-300"></i>';
+  }
+
+  return starsHTML;
+}
+
+// Format date
+function formatReviewDate(timestamp) {
+  if (!timestamp) return "Unknown date";
+
+  let date;
+  if (timestamp.toDate) {
+    // Firestore Timestamp
+    date = timestamp.toDate();
+  } else if (timestamp instanceof Date) {
+    date = timestamp;
+  } else if (typeof timestamp === "string") {
+    date = new Date(timestamp);
+  } else {
+    return "Unknown date";
+  }
+
+  const options = { year: "numeric", month: "long", day: "numeric" };
+  return date.toLocaleDateString("en-US", options);
+}
+
+// Display rating distribution
+function displayRatingDistribution(distribution, totalReviews) {
+  const container = document.getElementById("rating-distribution");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  for (let star = 5; star >= 1; star--) {
+    const count = distribution[star] || 0;
+    const percentage = totalReviews > 0 ? (count / totalReviews) * 100 : 0;
+
+    const row = document.createElement("div");
+    row.className = "flex items-center gap-2 text-sm";
+    row.innerHTML = `
+      <span class="w-3 text-right">${star}</span>
+      <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
+      <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+        <div class="h-full bg-gray-800 transition-all duration-500" style="width: ${percentage}%"></div>
+      </div>
+      <span class="w-8 text-right text-gray-600">${count}</span>
+    `;
+    container.appendChild(row);
+  }
+  // Initialize Lucide icons for the newly added stars
+  lucide.createIcons();
+}
+
+// Display individual reviews
+function displayReviews(reviews) {
+  const container = document.getElementById("reviews-container");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  if (reviews.length === 0) {
+    container.innerHTML = `
+      <div class="text-center py-8 text-gray-500">
+        <p>No reviews yet. Be the first to review this stall!</p>
+      </div>
+    `;
+    return;
+  }
+
+  // Sort reviews by date (newest first)
+  const sortedReviews = [...reviews].sort((a, b) => {
+    const dateA = a.date?.toDate ? a.date.toDate() : new Date(a.date);
+    const dateB = b.date?.toDate ? b.date.toDate() : new Date(b.date);
+    return dateB - dateA;
+  });
+
+  sortedReviews.forEach((review) => {
+    const reviewCard = document.createElement("div");
+    reviewCard.className = "border-b border-gray-200 pb-6";
+
+    const maxDescLength = 200;
+    const needsExpansion =
+      review.description && review.description.length > maxDescLength;
+    const truncatedDesc = needsExpansion
+      ? review.description.substring(0, maxDescLength) + "..."
+      : review.description;
+
+    reviewCard.innerHTML = `
+      <div class="flex items-start justify-between mb-2">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="font-semibold text-sm">Anonymous User</span>
+          </div>
+          <div class="flex items-center gap-0.5 mb-1">
+            ${renderStars(review.rating)}
+          </div>
+        </div>
+        <span class="text-xs text-gray-500">${formatReviewDate(review.date)}</span>
+      </div>
+      <div class="text-sm text-gray-700">
+        <p class="review-description ${needsExpansion ? "truncated" : ""}" data-full="${review.description || ""}" data-truncated="${truncatedDesc}">
+          ${truncatedDesc}
+        </p>
+        ${
+          needsExpansion
+            ? `
+          <button class="show-more-btn text-blue-600 hover:underline text-xs mt-1">
+            Show more
+          </button>
+        `
+            : ""
+        }
+      </div>
+    `;
+
+    container.appendChild(reviewCard);
+  });
+
+  // Initialize Lucide icons for the newly added stars
+  lucide.createIcons();
+
+  // Add event listeners for "Show more" buttons
+  container.querySelectorAll(".show-more-btn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      const button = e.target;
+      const descriptionElement = button.previousElementSibling;
+      const fullText = descriptionElement.dataset.full;
+      const truncatedText = descriptionElement.dataset.truncated;
+      const isExpanded = button.textContent.trim() === "Show less";
+
+      if (isExpanded) {
+        descriptionElement.textContent = truncatedText;
+        button.textContent = "Show more";
+      } else {
+        descriptionElement.textContent = fullText;
+        button.textContent = "Show less";
+      }
+    });
+  });
+}
+
+// Load and display reviews
+async function loadReviews(stallId) {
+  const reviews = await fetchReviews(stallId);
+
+  // Calculate statistics
+  const averageRating = calculateAverageRating(reviews);
+  const distribution = calculateRatingDistribution(reviews);
+
+  // Update overall rating display
+  const overallRatingElement = document.getElementById("overall-rating");
+  const overallStarsElement = document.getElementById("overall-stars");
+  const totalReviewsElement = document.getElementById("total-reviews");
+
+  if (overallRatingElement) {
+    overallRatingElement.textContent = averageRating;
+  }
+
+  if (overallStarsElement) {
+    overallStarsElement.innerHTML = renderStars(parseFloat(averageRating));
+    lucide.createIcons();
+  }
+
+  if (totalReviewsElement) {
+    totalReviewsElement.textContent = `${reviews.length} review${reviews.length !== 1 ? "s" : ""}`;
+  }
+
+  // Display rating distribution
+  displayRatingDistribution(distribution, reviews.length);
+
+  // Display individual reviews
+  displayReviews(reviews);
+}
+
+// Review Modal Functions
+let selectedRating = 0;
+
+function openReviewModal() {
+  const modal = document.getElementById("review-modal");
+  if (modal) {
+    modal.classList.remove("hidden");
+    // Reset form
+    selectedRating = 0;
+    updateStarSelection(selectedRating);
+    document.getElementById("review-text").value = "";
+    document.getElementById("rating-error").classList.add("hidden");
+    lucide.createIcons();
+  }
+}
+
+function closeReviewModal() {
+  const modal = document.getElementById("review-modal");
+  if (modal) {
+    modal.classList.add("hidden");
+  }
+}
+
+function updateStarSelection(selectedRating) {
+  console.log("Updating star selection to:", selectedRating);
+  const starButtons = document.querySelectorAll(".star-btn");
+  console.log("Found star buttons:", starButtons.length);
+
+  starButtons.forEach((btn, index) => {
+    // Find the <i> element specifically (before lucide converts it)
+    const icon = btn.querySelector('[data-lucide="star"]');
+    console.log(`Button ${index}: icon found:`, !!icon, icon);
+
+    if (!icon) return;
+
+    // Update classes on the original <i> element
+    if (index < selectedRating) {
+      icon.classList.remove("text-gray-300");
+      icon.classList.add("fill-yellow-400", "text-yellow-400");
+      console.log(`Button ${index}: highlighted`);
+    } else {
+      icon.classList.remove("fill-yellow-400", "text-yellow-400");
+      icon.classList.add("text-gray-300");
+      console.log(`Button ${index}: not highlighted`);
+    }
+  });
+
+  // Reinitialize lucide icons to apply the updated classes
+  lucide.createIcons();
+}
+
+function setupReviewModal() {
+  const writeReviewBtn = document.getElementById("write-review-btn");
+  const closeModalBtn = document.getElementById("close-modal");
+  const cancelBtn = document.getElementById("cancel-review");
+  const reviewForm = document.getElementById("review-form");
+  const starRatingSelector = document.getElementById("star-rating-selector");
+
+  // Open modal
+  if (writeReviewBtn) {
+    writeReviewBtn.addEventListener("click", () => {
+      // Check if user is logged in
+      if (!auth.currentUser) {
+        alert("Please log in to write a review");
+        return;
+      }
+      openReviewModal();
+    });
+  }
+
+  // Close modal
+  if (closeModalBtn) {
+    closeModalBtn.addEventListener("click", closeReviewModal);
+  }
+
+  if (cancelBtn) {
+    cancelBtn.addEventListener("click", closeReviewModal);
+  }
+
+  // Close modal when clicking outside
+  const modal = document.getElementById("review-modal");
+  if (modal) {
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        closeReviewModal();
+      }
+    });
+  }
+
+  // Star rating selection using event delegation
+  if (starRatingSelector) {
+    starRatingSelector.addEventListener("click", (e) => {
+      const starBtn = e.target.closest(".star-btn");
+      if (starBtn) {
+        selectedRating = parseInt(starBtn.dataset.rating);
+        console.log("Selected rating:", selectedRating);
+        updateStarSelection(selectedRating);
+        const ratingError = document.getElementById("rating-error");
+        if (ratingError) {
+          ratingError.classList.add("hidden");
+        }
+      }
+    });
+  }
+
+  // Form submission
+  if (reviewForm) {
+    reviewForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      // Validate rating
+      if (selectedRating === 0) {
+        document.getElementById("rating-error").classList.remove("hidden");
+        return;
+      }
+
+      const reviewText = document.getElementById("review-text").value.trim();
+
+      if (!reviewText) {
+        alert("Please write a review");
+        return;
+      }
+
+      // Check if user is logged in
+      if (!auth.currentUser) {
+        alert("Please log in to submit a review");
+        return;
+      }
+
+      const submitBtn = document.getElementById("submit-review");
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = "Submitting...";
+      submitBtn.disabled = true;
+
+      try {
+        const stallId = getStallIdFromUrl();
+
+        // Create review object
+        const reviewData = {
+          customerID: auth.currentUser.uid,
+          stallId: stallId,
+          rating: selectedRating,
+          description: reviewText,
+          date: Timestamp.now(),
+          itemID: "", // Empty for stall review
+        };
+
+        // Add review to Firestore
+        await addDoc(collection(db, "reviews"), reviewData);
+
+        // Close modal
+        closeReviewModal();
+
+        // Show success message
+        alert("Review submitted successfully!");
+
+        // Reload reviews
+        await loadReviews(stallId);
+      } catch (error) {
+        console.error("Error submitting review:", error);
+        alert("Failed to submit review. Please try again.");
+      } finally {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+      }
+    });
   }
 }
 
@@ -535,6 +940,9 @@ async function initializePage() {
   // Display menu items
   displayMenuItems(menuItems);
 
+  // Load and display reviews
+  await loadReviews(stallId);
+
   // Update search placeholder
   const searchInput = document.querySelector("#menu-search");
   if (searchInput) {
@@ -543,6 +951,9 @@ async function initializePage() {
 
   // Initialize cart badge
   updateCartBadge();
+
+  // Setup review modal
+  setupReviewModal();
 
   // Hide loading overlay and show content
   hideLoadingOverlay();
