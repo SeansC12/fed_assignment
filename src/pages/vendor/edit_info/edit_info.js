@@ -48,7 +48,7 @@ onAuthStateChanged(auth, async (user) => {
 
             // Populate Fields
             document.getElementById("stallName").value = data.name || "";
-            document.getElementById("stallLocation").value = data.location || "";
+            document.getElementById("stallLocation").value = data.address || "";
 
             // FIX: Handle the image display
             if (data.image) {
@@ -105,7 +105,7 @@ document.getElementById("editForm").addEventListener("submit", async (e) => {
 
     const updatedData = {
         name: document.getElementById("stallName").value,
-        location: document.getElementById("stallLocation").value,
+        address: document.getElementById("stallLocation").value,
         cuisineTypes: [selectedCuisine], 
         lastUpdated: Timestamp.now()
     };

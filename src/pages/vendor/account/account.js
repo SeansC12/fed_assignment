@@ -81,7 +81,7 @@ function loadStallDetails(id) {
         if (docSnap.exists()) {
             const data = docSnap.data();
             document.getElementById("displayStallName").textContent = data.name || "N/A";
-            document.getElementById("displayLocation").textContent = data.location || "N/A";
+            document.getElementById("displayLocation").textContent = data.address || "N/A";
             
             const cuisineData = data.cuisineTypes;
             document.getElementById("displayCuisine").textContent = 
