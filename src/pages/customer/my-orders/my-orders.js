@@ -258,4 +258,4 @@ function getStatusConfig(status) {
   return configs[status] || configs["pending"];
 }
 
-setupUserProfilePopup();
+setupUserProfilePopup(auth);

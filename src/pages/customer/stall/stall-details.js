@@ -1044,9 +1044,9 @@ async function initializePage() {
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", () => {
     initializePage();
-    setupUserProfilePopup();
+    setupUserProfilePopup(auth);
   });
 } else {
   initializePage();
-  setupUserProfilePopup();
+  setupUserProfilePopup(auth);
 }

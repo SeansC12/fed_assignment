@@ -17,9 +17,9 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", setupUserProfilePopup);
+  document.addEventListener("DOMContentLoaded", () => setupUserProfilePopup(auth));
 } else {
-  setupUserProfilePopup();
+  setupUserProfilePopup(auth);
 }
 
 // 1. Get Stall ID from URL parameters

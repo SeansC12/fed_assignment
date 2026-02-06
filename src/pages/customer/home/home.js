@@ -190,7 +190,7 @@ function updateCapsuleText(modalId) {
   lucide.createIcons();
 }
 
-setupUserProfilePopup();
+setupUserProfilePopup(auth);
 
 // Re-init lucide icons after modal interaction
 setTimeout(() => lucide.createIcons(), 100);

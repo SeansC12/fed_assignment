@@ -322,9 +322,9 @@ document.getElementById("apply-promo-btn")?.addEventListener("click", () => {
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", () => {
     renderCart();
-    setupUserProfilePopup();
+    setupUserProfilePopup(auth);
   });
 } else {
   renderCart();
-  setupUserProfilePopup();
+  setupUserProfilePopup(auth);
 }

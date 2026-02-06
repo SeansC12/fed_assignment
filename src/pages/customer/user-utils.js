@@ -1,10 +1,11 @@
-import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 /**
  * Sets up the user profile popup with logout functionality
  * Must be called after the DOM is loaded and Firebase app is initialized
+ * @param {Auth} auth - Firebase Auth instance from the calling page
  */
-export function setupUserProfilePopup() {
+export function setupUserProfilePopup(auth) {
   const userButton = document.getElementById("user-profile-button");
   const popup = document.getElementById("user-profile-popup");
   const logoutButton = document.getElementById("logout-button");
@@ -28,7 +29,11 @@ export function setupUserProfilePopup() {
   if (logoutButton) {
     logoutButton.addEventListener("click", async () => {
       try {
-        const auth = getAuth();
+        if (!auth) {
+          console.error("Auth instance not provided");
+          alert("Failed to log out. Please try again.");
+          return;
+        }
         await signOut(auth);
         window.location.href = "/src/pages/index.html";
       } catch (error) {
