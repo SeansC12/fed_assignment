@@ -427,7 +427,7 @@ function displayRatingDistribution(distribution, totalReviews) {
 }
 
 // Display individual reviews
-function displayReviews(reviews) {
+async function displayReviews(reviews) {
   const container = document.getElementById("reviews-container");
   if (!container) return;
 
@@ -449,7 +449,35 @@ function displayReviews(reviews) {
     return dateB - dateA;
   });
 
-  sortedReviews.forEach((review) => {
+  // Fetch customer/vendor data for each review
+  for (const review of sortedReviews) {
+    let customerName = "Anonymous User";
+
+    if (review.customerID) {
+      try {
+        // Try customer_list first
+        let userDoc = await getDoc(doc(db, "customer_list", review.customerID));
+
+        // If not found in customer_list, try vendor_list
+        if (!userDoc.exists()) {
+          userDoc = await getDoc(doc(db, "vendor_list", review.customerID));
+        }
+
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          // Use name if available, otherwise use email prefix
+          if (userData.name) {
+            customerName = userData.name;
+          } else if (userData.email) {
+            // Extract name from email (part before @)
+            customerName = userData.email.split("@")[0];
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    }
+
     const reviewCard = document.createElement("div");
     reviewCard.className = "border-b border-gray-200 pb-6";
 
@@ -464,7 +492,7 @@ function displayReviews(reviews) {
       <div class="flex items-start justify-between mb-2">
         <div>
           <div class="flex items-center gap-2 mb-1">
-            <span class="font-semibold text-sm">Anonymous User</span>
+            <span class="font-semibold text-sm">${customerName}</span>
           </div>
           <div class="flex items-center gap-0.5 mb-1">
             ${renderStars(review.rating)}
@@ -489,7 +517,7 @@ function displayReviews(reviews) {
     `;
 
     container.appendChild(reviewCard);
-  });
+  }
 
   // Initialize Lucide icons for the newly added stars
   lucide.createIcons();
@@ -544,7 +572,7 @@ async function loadReviews(stallId) {
   displayRatingDistribution(distribution, reviews.length);
 
   // Display individual reviews
-  displayReviews(reviews);
+  await displayReviews(reviews);
 }
 
 // Review Modal Functions

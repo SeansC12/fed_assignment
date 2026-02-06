@@ -17,30 +17,30 @@ export function getTotalCartItems() {
 
 // Update cart badge in navbar
 export function updateCartBadge() {
-  const badge = document.getElementById('cart-badge');
+  const badge = document.getElementById("cart-badge");
   if (!badge) return;
-  
+
   const totalItems = getTotalCartItems();
-  
+
   if (totalItems > 0) {
-    badge.textContent = totalItems > 99 ? '99+' : totalItems;
-    badge.classList.remove('hidden');
+    badge.textContent = totalItems > 99 ? "99+" : totalItems;
+    badge.classList.remove("hidden");
   } else {
-    badge.classList.add('hidden');
+    badge.classList.add("hidden");
   }
 }
 
 // Initialize cart badge on page load
 export function initCartBadge() {
   // Wait for DOM to be ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', updateCartBadge);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", updateCartBadge);
   } else {
     updateCartBadge();
   }
 }
 
 // Auto-initialize if this script is loaded
-if (typeof document !== 'undefined') {
+if (typeof document !== "undefined") {
   initCartBadge();
 }
