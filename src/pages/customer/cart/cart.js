@@ -101,7 +101,18 @@ function createCartItemCard(item) {
   const card = document.createElement("div");
   card.className = "bg-white rounded-lg p-6 shadow-sm border border-gray-200";
 
-  const totalPrice = item.price * item.quantity;
+  const hasDiscount = item.discount && item.discount > 0 && item.originalPrice;
+  const displayPrice = item.price;
+  const totalPrice = displayPrice * item.quantity;
+
+  // Price display HTML - show original and discounted if applicable
+  const priceHTML = hasDiscount
+    ? `<div>
+         <p class="text-xs text-gray-400 line-through">$${item.originalPrice.toFixed(2)}</p>
+         <p class="font-semibold text-orange-500">$${displayPrice.toFixed(2)}</p>
+         <span class="bg-orange-500 text-white text-xs px-1.5 py-0.5 rounded-full">${item.discount}% OFF</span>
+       </div>`
+    : `<p class="font-semibold">$${displayPrice.toFixed(2)}</p>`;
 
   card.innerHTML = `
     <div class="flex gap-6">
@@ -136,7 +147,7 @@ function createCartItemCard(item) {
           <div class="flex items-center gap-8">
             <div>
               <p class="text-xs text-gray-500 mb-1">Each</p>
-              <p class="font-semibold">$${item.price.toFixed(2)}</p>
+              ${priceHTML}
             </div>
             
             <div>

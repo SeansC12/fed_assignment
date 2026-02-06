@@ -31,6 +31,7 @@ const auth = getAuth(app);
 // Store current stall and menu data globally
 let currentStall = null;
 let currentMenuItems = [];
+let activePromotions = [];
 
 // Get stall ID from URL
 function getStallIdFromUrl() {
@@ -78,13 +79,22 @@ function addToCart(itemId) {
     // Increment quantity if item already in cart
     cart.items[existingItemIndex].quantity += 1;
   } else {
+    // Calculate final price
+    const discount = getItemDiscount(menuItem.id);
+    const finalPrice =
+      discount > 0
+        ? calculateDiscountedPrice(menuItem.price, discount)
+        : menuItem.price;
+
     // Add new item to cart
     cart.items.push({
       itemId: menuItem.id,
       stallId: currentStall.id,
       stallName: currentStall.name,
       name: menuItem.name,
-      price: menuItem.price,
+      price: finalPrice,
+      originalPrice: menuItem.price,
+      discount: discount,
       image: menuItem.image,
       quantity: 1,
       desc: menuItem.desc || "",
@@ -245,6 +255,62 @@ async function fetchMenuItems(stallId) {
     console.error("Error fetching menu items:", error);
     return [];
   }
+}
+
+// Fetch promotions for a stall
+async function fetchPromotions(stallId) {
+  try {
+    const promotionsQuery = query(
+      collection(db, "promotions"),
+      where("stallid", "==", stallId),
+    );
+    const promotionsSnapshot = await getDocs(promotionsQuery);
+    const promotions = promotionsSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    return promotions;
+  } catch (error) {
+    console.error("Error fetching promotions:", error);
+    return [];
+  }
+}
+
+// Check if a promotion is currently active
+function isPromotionActive(promotion) {
+  if (!promotion.dateStart || !promotion.dateEnd) return false;
+
+  const now = new Date();
+  const startDate = promotion.dateStart.toDate
+    ? promotion.dateStart.toDate()
+    : new Date(promotion.dateStart);
+  const endDate = promotion.dateEnd.toDate
+    ? promotion.dateEnd.toDate()
+    : new Date(promotion.dateEnd);
+
+  return now >= startDate && now <= endDate;
+}
+
+// Get active promotions and filter them
+function getActivePromotions(promotions) {
+  return promotions.filter(isPromotionActive);
+}
+
+// Get discount for a specific menu item
+function getItemDiscount(itemId) {
+  for (const promotion of activePromotions) {
+    if (promotion.affectedId && promotion.affectedId.includes(itemId)) {
+      console.log(promotion);
+      return parseFloat(promotion.discount) || 0;
+    }
+  }
+  return 0;
+}
+
+// Calculate discounted price
+function calculateDiscountedPrice(originalPrice, discountPercent) {
+  console.log("discount percentage", discountPercent);
+  return originalPrice * (1 - discountPercent / 100);
 }
 
 // Fetch reviews for a stall
@@ -528,7 +594,6 @@ function updateStarSelection(selectedRating) {
     }
   });
 
-  // Reinitialize lucide icons to apply the updated classes
   lucide.createIcons();
 }
 
@@ -696,7 +761,22 @@ function createFoodItemCard(item) {
 
   const imageBase64 = item.image || "/static/placeholder-food.jpg";
   const name = item.name || "Unknown Item";
-  const price = item.price ? `$${item.price.toFixed(2)}` : "N/A";
+  const originalPrice = item.price || 0;
+  const discount = getItemDiscount(item.id);
+  const hasDiscount = discount > 0;
+  const discountedPrice = hasDiscount
+    ? calculateDiscountedPrice(originalPrice, discount)
+    : originalPrice;
+
+  // Format prices
+  const priceHTML = hasDiscount
+    ? `<div class="flex items-center gap-2">
+         <span class="text-gray-400 line-through text-sm">$${originalPrice.toFixed(2)}</span>
+         <span class="text-orange-500 font-bold">$${discountedPrice.toFixed(2)}</span>
+         <span class="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full">${discount}% OFF</span>
+       </div>`
+    : `$${originalPrice.toFixed(2)}`;
+
   const description = item.desc || "";
   const category = item.category || "";
   const inStock = item.stock !== false;
@@ -730,7 +810,7 @@ function createFoodItemCard(item) {
             <i data-lucide="heart" class="w-5 h-5"></i>
           </button>
         </div>
-        <p class="food-item-card-price">${price}</p>
+        <p class="food-item-card-price">${priceHTML}</p>
         ${description ? `<p class="food-item-card-description">${description}</p>` : ""}
         ${!inStock ? '<span class="food-item-card-badge bg-gray-500">Out of Stock</span>' : ""}
       </div>
@@ -899,10 +979,11 @@ async function initializePage() {
     return;
   }
 
-  // Fetch stall details and menu items in parallel
-  const [stall, menuItems] = await Promise.all([
+  // Fetch ALL stall details in parallel
+  const [stall, menuItems, promotions] = await Promise.all([
     fetchStallDetails(stallId),
     fetchMenuItems(stallId),
+    fetchPromotions(stallId),
   ]);
 
   if (!stall) {
@@ -925,17 +1006,17 @@ async function initializePage() {
   // Store stall and menu data globally for cart functionality
   currentStall = stall;
   currentMenuItems = menuItems;
-  // --- CONNECT COMPLAINT BUTTON ---
-  // This connects the "File a Complaint" button to the new file_complaint.html page
+
+  // Filter and store active promotions
+  activePromotions = getActivePromotions(promotions);
+  console.log("Active promotions:", activePromotions);
+
   const complaintBtn = document.getElementById("file-complaint-btn");
   if (complaintBtn) {
     complaintBtn.addEventListener("click", () => {
-      // Navigate to file complaint page, passing the stallId
-      // Logic: Go up 1 level (..) from 'stall' to 'customer', then down to 'file_complaint'
       window.location.href = `../file_complaint/file_complaint.html?stallId=${stallId}`;
     });
   }
-  // -------------------------------
 
   // Display menu items
   displayMenuItems(menuItems);
