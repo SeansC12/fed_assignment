@@ -15,11 +15,12 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+let isSigningUp = false;
+
 // Check if user is already logged in
 onAuthStateChanged(auth, (user) => {
-    if (user) {
-        // Optional: Redirect if already logged in (commented out for vendor creation flow)
-        // window.location.href = "../create_stall/create-stall.html";
+    if (user && !isSigningUp) {
+        window.location.href = "../create_stall/create-stall.html";
     }
 });
 
@@ -41,6 +42,8 @@ if (signUpForm) {
 
         submitBtn.disabled = true;
         submitBtn.innerText = "Securing & Creating...";
+        
+        isSigningUp = true;
 
         try {
             // 1. Create User in Firebase Auth (Handles security automatically)
@@ -60,11 +63,11 @@ if (signUpForm) {
             window.location.href = "../create_stall/create-stall.html"; 
             
         } catch (error) {
+            isSigningUp = false;
             submitBtn.disabled = false;
             submitBtn.innerText = "Sign Up";
             console.error("Sign up failed:", error.message);
 
-            // User-friendly error messages
             if (error.code === 'auth/email-already-in-use') {
                 alert("This email is already registered. Please login.");
             } else if (error.code === 'auth/weak-password') {

@@ -15,9 +15,12 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+// Flag to prevent redirect during login process
+let isSigningIn = false;
+
 // Check if user is already logged in
 onAuthStateChanged(auth, async (user) => {
-    if (user) {
+    if (user && !isSigningIn) {
         // You can uncomment this to auto-redirect if session exists
         // window.location.href = "../menu_arrange/menu_arrange.html";
     }
@@ -46,6 +49,9 @@ if (loginForm) {
             submitBtn.disabled = true;
             submitBtn.innerText = "Logging in...";
         }
+        
+        // Prevent onAuthStateChanged from redirecting during login
+        isSigningIn = true;
 
         try {
             // 1. Authenticate with Firebase Auth
@@ -73,6 +79,7 @@ if (loginForm) {
             }
 
         } catch (error) {
+            isSigningIn = false; // Reset flag on error
             if (submitBtn) {
                 submitBtn.disabled = false;
                 submitBtn.innerText = "Login";

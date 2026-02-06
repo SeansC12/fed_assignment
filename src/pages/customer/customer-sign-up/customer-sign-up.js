@@ -15,10 +15,12 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+let isSigningUp = false;
+
 // Check if user is already logged in
 onAuthStateChanged(auth, (user) => {
-    if (user) {
-        // User is already logged in, redirect to home
+    if (user && !isSigningUp) {
+        console.log("Customer sign up", user)
         window.location.href = "../home/home.html";
     }
 });
@@ -40,23 +42,37 @@ if (signUpForm) {
 
         submitBtn.disabled = true;
         submitBtn.innerText = "Creating Account...";
+        
+        isSigningUp = true;
 
         try {
-            // 1. Create user in Firebase Auth (Auth handles password hashing)
+            // 1. Create user in Firebase Auth
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
-            // 2. Create record in Firestore customer_list (no password needed - Auth handles it)
-            await setDoc(doc(db, "customer_list", user.uid), {
-                email: email,
-                wallet: 0, 
-                createdAt: new Date(),
-                method: "email"
-            });
+            console.log(userCredential, "User created with UID:", user.uid);
+
+            // 2. Create record in Firestore customer_list
+            console.log("Attempting to create Firestore document...");
+            try {
+                await setDoc(doc(db, "customer_list", user.uid), {
+                    email: email,
+                    wallet: 0, 
+                    createdAt: new Date(),
+                    method: "email"
+                });
+                console.log("Firestore document created successfully!");
+            } catch (firestoreError) {
+                console.error("Firestore document creation failed:", firestoreError);
+                console.error("Error code:", firestoreError.code);
+                console.error("Error message:", firestoreError.message);
+                throw firestoreError;
+            }
 
             alert("Account created successfully!");
             
             // 3. Redirect to home page
+            isSigningUp = false;
             window.location.href = "../home/home.html";
             
         } catch (error) {
