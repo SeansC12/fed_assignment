@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEA Dashboard</title>
+
+<!-- Tailwind CSS -->
+<link rel="stylesheet" href="/static/output.css" />
+
+</head>
+<body class="bg-[#f4f7f6] text-slate-800 min-h-screen flex flex-col font-sans">
+
+<!-- ================= HEADER ================= -->
+<header class="bg-[#009481] text-white shadow-md">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+
+        <!-- LOGO -->
+        <img 
+            src="/static/NEA_pictures/NEA_Logo.png" 
+            alt="NEA Logo"
+            class="h-20 w-40 brightness-0 invert"
+        />
+
+        <!-- NAV LINKS CENTERED -->
+        <nav class="flex gap-20 items-center mx-auto">
+            <a href="#" class="text-xl font-semibold hover:text-[#18e667] transition-colors border-b-2 border-white pb-1">Home</a>
+            <a href="cust_exp2.html" class="text-xl font-semibold hover:text-[#18e667] transition-colors">Dashboard</a>
+            <a href="#" class="text-xl font-semibold hover:text-[#18e667] transition-colors">Hawker Centre</a>
+            <a href="#" class="text-xl font-semibold hover:text-[#18e667] transition-colors">Policy</a>
+        </nav>
+
+        <!-- USER INFO -->
+        <div class="flex items-center gap-3">
+            <div class="text-right hidden sm:block">
+                <p class="text-[10px] uppercase tracking-widest text-slate-200 font-bold">Authenticated Personnel</p>
+                <p class="text-sm font-medium">Officer Chan</p>
+            </div> 
+            <div class="h-10 w-10 rounded-full bg-white flex items-center justify-center text-[#009481] font-bold shadow-inner">
+                OC
+            </div>
+        </div>
+
+    </div>
+</header>
+<!-- ================= END HEADER ================= -->
+
+
+<!-- ================= MAIN ================= -->
+<main class="container mx-auto px-6 py-8 grow">
+
+    <h1 class="text-2xl font-bold text-slate-800 mb-8">Dashboard</h1>
+
+    <!-- Grid layout: Left = Chart, Right = Stats/Buttons -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <!-- LEFT: Line Chart -->
+        <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border">
+            <h2 class="text-lg font-bold mb-4">Trend of Average Hygiene Grade</h2>
+            <canvas id="hygieneTrendChart" class="w-full h-64"></canvas>
+        </div>
+
+        <!-- RIGHT: Stats + Actions -->
+        <div class="flex flex-col gap-6">
+
+            <!-- Stats Cards -->
+            <div class="bg-white p-4 rounded-xl shadow border flex justify-between items-center">
+                <div>
+                    <p class="text-xs text-slate-500 uppercase font-bold">Total Stalls Monitored</p>
+                    <p class="text-lg font-bold text-slate-800">124</p>
+                </div>
+                <div class="bg-[#009481] h-10 w-10 flex items-center justify-center text-white rounded-full font-bold">S</div>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl shadow border flex justify-between items-center">
+                <div>
+                    <p class="text-xs text-slate-500 uppercase font-bold">Flagged Stalls</p>
+                    <p class="text-lg font-bold text-red-600">12</p>
+                </div>
+                <div class="bg-red-500 h-10 w-10 flex items-center justify-center text-white rounded-full font-bold">F</div>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl shadow border flex justify-between items-center">
+                <div>
+                    <p class="text-xs text-slate-500 uppercase font-bold">Ongoing Investigations</p>
+                    <p class="text-lg font-bold text-orange-500">3</p>
+                </div>
+                <div class="bg-orange-500 h-10 w-10 flex items-center justify-center text-white rounded-full font-bold">I</div>
+            </div>
+
+            <!-- Action Buttons -->
+            <a href="cust_exp2.html" class="block bg-[#009481] text-white text-center py-5 rounded-xl font-bold shadow hover:bg-[#007964] transition">
+                View Flagged Stalls
+            </a>
+
+            <a href="#" class="block bg-[#0ea5e9] text-white text-center py-4 rounded-xl font-bold shadow hover:bg-[#0284c7] transition">
+                Ongoing Investigations
+            </a>
+
+        </div>
+
+    </div>
+
+</main>
+<!-- ================= END MAIN ================= -->
+
+
+<!-- ================= FOOTER ================= -->
+<footer class="mt-auto py-8 bg-slate-900 text-slate-500 text-xs">
+    <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+        <p>© 2026 National Environment Agency, Singapore. <span class="text-slate-700 mx-2">|</span> Internal Use Only.</p>
+        <div class="flex gap-6">
+            <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+            <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+            <a href="#" class="hover:text-white transition-colors">Support</a>
+        </div>
+    </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="home.js"></script>
+
+</body>
+</html>
