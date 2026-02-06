@@ -57,16 +57,18 @@ function handleFilters() {
 
 function renderStalls(stalls) {
     const grid = document.getElementById('stallGrid');
-    grid.innerHTML = stalls.length ? '' : '<p class="col-span-full text-center text-slate-400 py-10">No stalls found matching your criteria.</p>';
+    grid.innerHTML = stalls.length ? '' : '<p class="col-span-full text-center text-slate-400 py-10">No stalls found.</p>';
 
     stalls.forEach(stall => {
+        // Correcting the path to descend into the subpage folder
+        const detailPath = `Dashboard-subpages/Stall-Details.html?id=${stall.id}`;
+        
         const card = `
-            <div onclick="window.location.href='stall_detail.html?id=${stall.id}'" 
+            <div onclick="window.location.href='${detailPath}'" 
                 class="group bg-white rounded-xl overflow-hidden shadow-sm border border-slate-200 hover:border-[#009481] cursor-pointer transition-all transform hover:-translate-y-1">
                 
                 <div class="h-40 bg-slate-100 overflow-hidden">
                     <img src="${stall.image || '/static/placeholder.png'}" 
-                        alt="${stall.name}" 
                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                 </div>
 
@@ -76,10 +78,8 @@ function renderStalls(stalls) {
                             UNIT ${stall.address}
                         </span>
                     </div>
-                    <h3 class="font-bold text-slate-800 leading-tight h-10 overflow-hidden line-clamp-2">${stall.name}</h3>
-                    <p class="text-xs text-slate-400 mt-2 flex items-center">
-                        <span class="mr-1">📍</span> ${stall.hawkerCentre}
-                    </p>
+                    <h3 class="font-bold text-slate-800 leading-tight">${stall.name}</h3>
+                    <p class="text-xs text-slate-400 mt-2">📍 ${stall.hawkerCentre}</p>
                 </div>
             </div>
         `;
