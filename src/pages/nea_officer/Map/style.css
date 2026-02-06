@@ -1,0 +1,405 @@
+/* Imports Poppings font from google*/
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+/* Navbar css is below here, hopefully */
+/* Also listen to "Tiny Giant", abosolute banger. Like Mihoyo's songs are just incredible */
+
+.content-box {
+    flex: 1;
+    border: 2px solid #00a0a0;
+    /* Border for content box */
+    padding: 10px;
+}
+
+.top-section {
+    display: flex;
+    padding: 10px;
+    margin-bottom: 15px;
+    gap: 15px;
+    /* Space between image and content */
+}
+
+.navbar {
+    font-family: "Poppins", sans-serif;
+    font-size: 400;
+    text-align: center;
+    clear: both;
+    height: 2%;
+}
+
+.navbar li {
+    display: inline-block;
+    padding: 10px;
+}
+
+.navbar li a {
+    color: black;
+    padding: 2px;
+}
+
+.Logo{
+    max-height: 200;
+    width: auto;
+}
+
+/* Map Styles */
+/* COLOR VARIABLES - Edit these to change colors easily */
+:root {
+    /* Primary Colors */
+    --primary-white: #ffffff;
+    --primary-black: #000000;
+    --accent-green: #10b981;
+
+    /* Neutral Shades */
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+
+    /* Accent Variations */
+    --accent-green-light: #d1fae5;
+    --accent-green-dark: #059669;
+
+    /* Status Colors */
+    --status-existing: #10b981;
+    --status-interim: #f59e0b;
+
+    /* UI Element Colors */
+    --border-color: var(--gray-300);
+    --hover-bg: var(--gray-50);
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --overlay-bg: rgba(255, 255, 255, 0.95);
+}
+
+/* MAP SECTION STYLES */
+#hawker-map-section {
+    width: 100%;
+    padding: 2rem 1rem;
+    background-color: var(--primary-white);
+}
+
+.map-container {
+    max-width: 80%; /* CHANGED: Set to 80% of screen width */
+    margin: 0 auto;
+    position: relative;
+}
+
+/* MAP STYLES */
+#map {
+    width: 100%;
+    height: 600px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    z-index: 1;
+}
+
+/* SEARCH BAR STYLES */
+.search-wrapper {
+    position: relative;
+    margin-bottom: 1.5rem;
+    z-index: 1000;
+}
+
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.875rem 3rem 0.875rem 1rem;
+    font-size: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--primary-white);
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.search-input:focus {
+    border-color: var(--accent-green);
+    box-shadow: 0 0 0 3px var(--accent-green-light);
+}
+
+.clear-button {
+    position: absolute;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    color: var(--gray-500);
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.clear-button:hover {
+    background-color: var(--gray-100);
+    color: var(--gray-700);
+}
+
+/* SEARCH SUGGESTIONS DROPDOWN */
+.suggestions-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 0.5rem;
+    background-color: var(--primary-white);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -1px var(--shadow-color);
+    display: none;
+}
+
+.suggestions-dropdown.active {
+    display: block;
+}
+
+.suggestion-item {
+    padding: 0.875rem 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid var(--gray-100);
+    transition: background-color 0.15s ease;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-item:hover,
+.suggestion-item.highlighted {
+    background-color: var(--hover-bg);
+}
+
+.suggestion-name {
+    font-weight: 500;
+    color: var(--gray-800);
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.suggestion-address {
+    font-size: 0.875rem;
+    color: var(--gray-500);
+    display: block;
+}
+
+.suggestion-status {
+    display: inline-block;
+    font-size: 0.75rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 12px;
+    margin-top: 0.25rem;
+    font-weight: 500;
+}
+
+.suggestion-status.existing {
+    background-color: var(--accent-green-light);
+    color: var(--accent-green-dark);
+}
+
+.suggestion-status.interim {
+    background-color: #fef3c7;
+    color: #d97706;
+}
+
+.no-results {
+    padding: 1rem;
+    text-align: center;
+    color: var(--gray-500);
+    font-size: 0.875rem;
+}
+
+/* LOADING INDICATOR */
+.loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    background-color: var(--overlay-bg);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px var(--shadow-color);
+    z-index: 2000;
+}
+
+.loading.hidden {
+    display: none;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 1rem;
+    border: 3px solid var(--gray-200);
+    border-top-color: var(--accent-green);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loading p {
+    margin: 0;
+    color: var(--gray-600);
+    font-size: 0.875rem;
+}
+
+/* STATUS INFO BADGE */
+.status-info {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 0.875rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: 1px solid;
+}
+
+.status-badge::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+}
+
+.status-badge.existing {
+    background-color: var(--accent-green-light);
+    border-color: var(--status-existing);
+    color: var(--accent-green-dark);
+}
+
+.status-badge.existing::before {
+    background-color: var(--status-existing);
+}
+
+.status-badge.interim {
+    background-color: #fef3c7;
+    border-color: var(--status-interim);
+    color: #d97706;
+}
+
+.status-badge.interim::before {
+    background-color: var(--status-interim);
+}
+
+/* CUSTOM MARKER STYLES */
+.custom-marker {
+    background-color: var(--accent-green);
+    border: 2px solid var(--primary-white);
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+.custom-marker.interim {
+    background-color: var(--status-interim);
+}
+
+/* POPUP STYLES */
+.leaflet-popup-content-wrapper {
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.leaflet-popup-content {
+    margin: 1rem;
+    line-height: 1.6;
+}
+
+.popup-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 0.5rem;
+}
+
+.popup-address {
+    font-size: 0.875rem;
+    color: var(--gray-600);
+    margin-bottom: 0.5rem;
+}
+
+.popup-status {
+    display: inline-block;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.625rem;
+    border-radius: 12px;
+    font-weight: 500;
+    margin-top: 0.25rem;
+}
+
+.popup-status.existing {
+    background-color: var(--accent-green-light);
+    color: var(--accent-green-dark);
+}
+
+.popup-status.interim {
+    background-color: #fef3c7;
+    color: #d97706;
+}
+
+/* RESPONSIVE STYLES */
+@media (max-width: 768px) {
+    #hawker-map-section {
+        padding: 1rem 0.5rem;
+    }
+
+    .map-container {
+        max-width: 95%; /* CHANGED: On mobile, use 95% width */
+    }
+
+    #map {
+        height: 450px;
+    }
+
+    .search-input {
+        font-size: 0.875rem;
+        padding: 0.75rem 2.75rem 0.75rem 0.875rem;
+    }
+
+    .suggestions-dropdown {
+        max-height: 250px;
+    }
+}
+
+@media (max-width: 480px) {
+    .map-container {
+        max-width: 100%; /* CHANGED: On very small screens, use full width */
+    }
+
+    #map {
+        height: 400px;
+        border-radius: 4px;
+    }
+
+    .search-input {
+        border-radius: 4px;
+    }
+}
