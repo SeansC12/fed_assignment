@@ -31,9 +31,6 @@ if (!localStorage.getItem("stallStartTime")) {
     localStorage.setItem("stallStartTime", new Date().toISOString());
 }
 
-// Use the stall ID from local storage
-const stallId = localStorage.getItem("activeStallId") || "NkfmlElwOWPU0Mb5L40n";
-
 // Cache for menu data to avoid redundant fetches during sorting
 let cachedItemMap = null;
 
