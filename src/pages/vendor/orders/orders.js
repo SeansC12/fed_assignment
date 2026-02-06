@@ -197,10 +197,12 @@ async function renderOrders(orders) {
             }))
         ]);
 
-        const subtotal = itemsWithDetails.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        const orderData = await getDoc(doc(db, "orders", order.id));
+        const totalPrice = orderData.data().totalPrice;
+        console.log(orderData.data(), "order data");
 
         return `
-        <div class="bg-white border border-gray-100 rounded-[2rem] p-8 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden">
+        <div class="bg-white border border-gray-100 rounded-4xl p-8 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden">
             <div class="absolute top-0 right-0 ${isPending ? 'bg-orange-600' : 'bg-gray-400'} text-white px-4 py-1.5 rounded-bl-2xl text-[10px] font-bold">
                 ${timeAgo}
             </div>
@@ -219,7 +221,7 @@ async function renderOrders(orders) {
                         <span class="text-gray-600 font-medium">
                             <span class="text-orange-500 font-bold">${item.quantity}x</span> ${item.name}
                         </span>
-                        <span class="text-gray-900 font-black">$${(item.price * item.quantity).toFixed(2)}</span>
+                        <span class="text-gray-900 font-black">$${totalPrice.toFixed(2)}</span>
                     </div>
                 `).join('')}
             </div>
@@ -227,7 +229,7 @@ async function renderOrders(orders) {
             <div class="flex items-center justify-between pt-6 border-t border-gray-50">
                 <div>
                     <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total Price</p>
-                    <p class="text-2xl font-black text-gray-900">$${subtotal.toFixed(2)}</p>
+                    <p class="text-2xl font-black text-gray-900">$${totalPrice.toFixed(2)}</p>
                 </div>
                 ${isPending ? `
                     <button onclick="completeOrder('${order.id}')" class="bg-green-500 hover:bg-green-600 text-white p-4 rounded-2xl shadow-lg shadow-green-100 transition-all active:scale-95">

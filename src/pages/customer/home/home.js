@@ -10,6 +10,7 @@ import {
   onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { setupUserProfilePopup } from "../user-utils.js";
+import { updateCartBadge } from "../cart-utils.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
@@ -24,6 +25,10 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
+// Store all hawker stalls and selected cuisines
+let allHawkerStalls = [];
+let selectedCuisines = [];
+
 // Check authentication state
 onAuthStateChanged(auth, (user) => {
   if (!user) {
@@ -36,31 +41,54 @@ async function fetchAndDisplayHawkerStalls() {
   try {
     const hawkerStallsCol = collection(db, "hawker-stalls");
     const hawkerStallsSnapshot = await getDocs(hawkerStallsCol);
-    console.log;
-    const hawkerStalls = hawkerStallsSnapshot.docs.map((doc) => ({
+    allHawkerStalls = hawkerStallsSnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
     }));
 
-    const resultsElement = document.querySelector("#results_count");
-    if (resultsElement) {
-      resultsElement.textContent = `${hawkerStalls.length} results`;
-    }
+    displayFilteredStalls();
+  } catch (error) {
+    console.error("Error fetching hawker stalls:", error);
+  }
+}
 
-    const gridContainer = document.querySelector("#grid_container");
+function displayFilteredStalls() {
+  let filteredStalls = allHawkerStalls;
 
-    if (gridContainer) {
-      gridContainer.innerHTML = "";
+  // Filter by selected cuisines if any
+  if (selectedCuisines.length > 0) {
+    filteredStalls = allHawkerStalls.filter((stall) => {
+      // Check if stall has any of the selected cuisines
+      return selectedCuisines.some((cuisine) =>
+        stall.cuisineTypes?.includes(cuisine)
+      );
+    });
+  }
 
-      hawkerStalls.forEach((stall) => {
+  const resultsElement = document.querySelector("#results_count");
+  if (resultsElement) {
+    resultsElement.textContent = `${filteredStalls.length} result${filteredStalls.length !== 1 ? 's' : ''}`;
+  }
+
+  const gridContainer = document.querySelector("#grid_container");
+
+  if (gridContainer) {
+    gridContainer.innerHTML = "";
+
+    if (filteredStalls.length === 0) {
+      gridContainer.innerHTML = `
+        <div class="col-span-full text-center py-12 text-gray-500">
+          <p class="text-lg">No hawker stalls found matching your criteria.</p>
+        </div>
+      `;
+    } else {
+      filteredStalls.forEach((stall) => {
         const card = createHawkerCard(stall);
         gridContainer.appendChild(card);
       });
-
-      lucide.createIcons();
     }
-  } catch (error) {
-    console.error("Error fetching hawker stalls:", error);
+
+    lucide.createIcons();
   }
 }
 
@@ -191,6 +219,26 @@ function updateCapsuleText(modalId) {
 }
 
 setupUserProfilePopup(auth);
+
+// Cuisine filter functionality
+document.querySelectorAll(".cuisine-item").forEach((button) => {
+  button.addEventListener("click", () => {
+    const cuisine = button.getAttribute("data-cuisine");
+    
+    button.classList.toggle("active");
+    
+    if (selectedCuisines.includes(cuisine)) {
+      selectedCuisines = selectedCuisines.filter((c) => c !== cuisine);
+    } else {
+      selectedCuisines.push(cuisine);
+    }
+    
+    displayFilteredStalls();
+  });
+});
+
+// Initialize cart badge
+updateCartBadge();
 
 // Re-init lucide icons after modal interaction
 setTimeout(() => lucide.createIcons(), 100);
