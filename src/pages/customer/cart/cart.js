@@ -218,7 +218,7 @@ function renderCart() {
   const total = subtotal;
 
   // Update price displays
-  document.getElementById("subtotal").textContent = `$${subtotal.toFixed(2)}`;
+  // document.getElementById("subtotal").textContent = `$${subtotal.toFixed(2)}`;
   //   document.getElementById('shipping-cost').textContent = `$${shippingCost.toFixed(2)}`;
   //   document.getElementById('shipping-discount').textContent = `-$${shippingDiscount.toFixed(2)}`;
   //   document.getElementById('shipping-discount-display').textContent = `-$${shippingDiscount.toFixed(2)}`;
