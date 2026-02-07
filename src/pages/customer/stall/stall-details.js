@@ -204,6 +204,8 @@ function attachQuantityEventListeners() {
     const increaseBtn = e.target.closest(".quantity-increase");
     const decreaseBtn = e.target.closest(".quantity-decrease");
     const addBtn = e.target.closest(".food-item-card-add-button");
+    const likeBtn = e.target.closest(".food-item-card-like-button");
+    const card = e.target.closest(".food-item-card");
 
     if (increaseBtn) {
       e.stopPropagation();
@@ -217,6 +219,15 @@ function attachQuantityEventListeners() {
       e.stopPropagation();
       const itemId = addBtn.dataset.itemId;
       addToCart(itemId);
+    } else if (likeBtn) {
+      e.stopPropagation();
+      likeBtn.classList.toggle("liked");
+    } else if (card && !card.classList.contains("cursor-not-allowed")) {
+      const wrapper = card.querySelector("[id^='item-wrapper-']");
+      if (wrapper) {
+        const itemId = wrapper.id.replace("item-wrapper-", "");
+        addToCart(itemId);
+      }
     }
   });
 }
@@ -849,13 +860,6 @@ function createFoodItemCard(item) {
     </div>
   `;
 
-  card.addEventListener("click", (e) => {
-    if (e.target.closest("button") || !inStock) {
-      return;
-    }
-    addToCart(item.id);
-  });
-
   return card;
 }
 
@@ -915,16 +919,7 @@ function displayMenuItems(menuItems) {
     menuContainer.appendChild(section);
   });
 
-  // Reinitialize Lucide icons
   lucide.createIcons();
-
-  // Add event listeners for like buttons
-  document.querySelectorAll(".food-item-card-like-button").forEach((button) => {
-    button.addEventListener("click", (e) => {
-      e.stopPropagation();
-      button.classList.toggle("liked");
-    });
-  });
 
   // Update all item UIs to reflect current cart state
   menuItems.forEach((item) => {
