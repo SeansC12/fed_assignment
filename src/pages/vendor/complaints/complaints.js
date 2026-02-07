@@ -30,6 +30,7 @@ const countBadge = document.getElementById('complaint-count');
 
 onAuthStateChanged(auth, async (user) => {
     if (user) {
+        console.log("User detected:", user.uid);
         const stallsRef = collection(db, "hawker-stalls");
         const qStall = query(stallsRef, where("ownerId", "==", user.uid));
         const stallSnap = await getDocs(qStall);
@@ -37,9 +38,38 @@ onAuthStateChanged(auth, async (user) => {
         if (!stallSnap.empty) {
             const stallId = stallSnap.docs[0].id;
             listenToComplaints(stallId);
+        } else {
+            console.warn("User logged in but no stall found.");
+            showNoComplaints();
         }
+    } else {
+        console.log("No user logged in. Showing empty state.");
+        // If no user, we can't listen to a specific stall, so we show empty
+        showNoComplaints();
     }
 });
+
+// Helper function to handle the empty UI state consistently
+function showNoComplaints() {
+    if (countBadge) countBadge.innerText = `0 Pending Complaints`;
+    if (container) {
+        container.innerHTML = `
+            <div class="col-span-full text-center py-20 flex flex-col items-center justify-center gap-4">
+                <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center text-gray-300">
+                    <i data-lucide="clipboard-check" class="w-8 h-8"></i>
+                </div>
+                <p class="text-gray-400 font-medium">All caught up! No complaints found.</p>
+            </div>
+        `;
+        
+        // Use a slight timeout to ensure the HTML is "painted" before scanning
+        setTimeout(() => {
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        }, 50); 
+    }
+}
 
 window.resolveComplaint = async (id) => {
     if (!confirm("Mark this complaint as completed?")) return;
@@ -129,6 +159,34 @@ function listenToComplaints(stallId) {
 
         const finalHtml = await Promise.all(htmlPromises);
         container.innerHTML = finalHtml.join('');
-        if (window.lucide) lucide.createIcons();
+        
+        // --- FIXED ICON LOADING ---
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        } else {
+            // Fallback: if script is slow, wait and try once more
+            setTimeout(() => {
+                if (window.lucide) lucide.createIcons();
+            }, 100);
+        }
     });
+}
+
+const menuBtn = document.getElementById('mobile-menu-btn');
+const mobileMenu = document.getElementById('mobile-menu');
+const menuIcon = document.getElementById('menu-icon');
+
+if (menuBtn && mobileMenu) {
+    menuBtn.addEventListener('click', () => {
+        const isHidden = mobileMenu.classList.toggle('hidden');
+        
+        // Switch icon between 'menu' and 'x'
+        if (window.lucide) {
+            menuIcon.setAttribute('data-lucide', isHidden ? 'menu' : 'x');
+            lucide.createIcons();
+        }
+    });
+}
+if (window.lucide) {
+    lucide.createIcons();
 }

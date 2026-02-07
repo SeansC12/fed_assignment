@@ -195,3 +195,20 @@ async function loadPromotions() {
         console.error("Error loading promos:", error);
     }
 }
+
+// --- MOBILE MENU TOGGLE ---
+const menuBtn = document.getElementById('mobile-menu-btn');
+const mobileMenu = document.getElementById('mobile-menu');
+const menuIcon = document.getElementById('menu-icon');
+
+if (menuBtn && mobileMenu) {
+    menuBtn.addEventListener('click', () => {
+        const isHidden = mobileMenu.classList.toggle('hidden');
+        
+        // Update Lucide icon between 'menu' and 'x'
+        if (window.lucide) {
+            menuIcon.setAttribute('data-lucide', isHidden ? 'menu' : 'x');
+            lucide.createIcons();
+        }
+    });
+}
