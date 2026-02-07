@@ -1,7 +1,16 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, onSnapshot, doc, getDocs, getDoc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { 
+    getFirestore, 
+    collection, 
+    onSnapshot, 
+    doc, 
+    getDocs, 
+    getDoc, 
+    updateDoc, 
+    query, 
+    where 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
 
 const firebaseConfig = {
     apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
@@ -15,12 +24,12 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
-let stallId = "NkfmlElwOWPU0Mb5L40n"; // Placeholder until we get real stall ID
+
+let stallId = "NkfmlElwOWPU0Mb5L40n"; 
 let currentStatusFilter = 'pending';
 
 onAuthStateChanged(auth, async (user) => {
     if (user) {
-        // 1. Find the stall that belongs to this user's UID
         const stallsRef = collection(db, "hawker-stalls");
         const q = query(stallsRef, where("ownerId", "==", user.uid));
         const snap = await getDocs(q);
@@ -28,26 +37,73 @@ onAuthStateChanged(auth, async (user) => {
         if (!snap.empty) {
             stallId = snap.docs[0].id;
             console.log("Logged in stall:", stallId);
-            
-            // 2. Now that we have the ID, run your UI functions
             displayStallName();
             startOrderListener();
         } else {
             console.error("No stall found for this user.");
-            // Optional: redirect to a setup page
         }
     } else {
-        // No user? Send them to login
-        //window.location.href = "../login/login.html"; //edit this once login page is ready
         console.log("No user logged in. Defaulting to preview mode.");
     }
     displayStallName();
     startOrderListener();
 });
-// --- HELPERS ---
+
+// --- PROMOTION HELPERS (NEW) ---
+
+async function fetchPromotions(stallId) {
+    try {
+        const promotionsQuery = query(
+            collection(db, "promotions"),
+            where("stallid", "==", stallId) 
+        );
+        const promotionsSnapshot = await getDocs(promotionsQuery);
+        return promotionsSnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+    } catch (error) {
+        console.error("Error fetching promotions:", error);
+        return [];
+    }
+}
+
+function isPromotionActive(promotion) {
+    if (!promotion.dateStart || !promotion.dateEnd) return false;
+
+    const now = new Date();
+    // Handle both Firestore Timestamp and standard Date strings
+    const startDate = promotion.dateStart.toDate ? promotion.dateStart.toDate() : new Date(promotion.dateStart);
+    const endDate = promotion.dateEnd.toDate ? promotion.dateEnd.toDate() : new Date(promotion.dateEnd);
+
+    return now >= startDate && now <= endDate;
+}
+
+function getActivePromotions(promotions) {
+    return promotions.filter(isPromotionActive);
+}
+
+// Modified to accept activePromos list as an argument
+function getItemDiscount(itemId, activePromos) {
+    for (const promotion of activePromos) {
+        // Ensure affectedId exists and includes the current item
+        if (promotion.affectedId && promotion.affectedId.includes(itemId)) {
+            return parseFloat(promotion.discount) || 0;
+        }
+    }
+    return 0;
+}
+
+function calculateDiscountedPrice(originalPrice, discountPercent) {
+    if (!discountPercent || discountPercent <= 0) return originalPrice;
+    return originalPrice * (1 - discountPercent / 100);
+}
+
+
+// --- EXISTING HELPERS ---
 
 const menuCache = {}; 
-const customerCache = {}; // NEW: Cache to store customer names
+const customerCache = {}; 
 
 async function fetchItemDetails(itemId) {
     if (!itemId) return { name: "Missing ID", price: 0 };
@@ -64,7 +120,6 @@ async function fetchItemDetails(itemId) {
     return { name: "Unknown Item", price: 0 };
 }
 
-// Helper to fetch Customer Name from customer_list
 async function fetchCustomerName(customerId) {
     if (!customerId) return "Guest User";
     if (customerCache[customerId]) return customerCache[customerId];
@@ -75,23 +130,17 @@ async function fetchCustomerName(customerId) {
         
         if (custSnap.exists()) {
             const data = custSnap.data();
-            
-            // 1. Check for customer_name
             if (data.customerName) {
                 customerCache[customerId] = data.customerName;
                 return data.customerName;
             }
-            
-            // 2. Fallback to Email Prefix (e.g., "john.doe" from "john.doe@gmail.com")
             if (data.email) {
                 const emailPrefix = data.email.split('@')[0];
                 customerCache[customerId] = emailPrefix;
                 return emailPrefix;
             }
         }
-    } catch (e) { 
-        console.error("Error fetching customer data:", e); 
-    }
+    } catch (e) { console.error("Error fetching customer data:", e); }
     
     return "Guest Customer"; 
 }
@@ -170,6 +219,10 @@ const startOrderListener = () => {
 async function renderOrders(orders) {
     const grid = document.getElementById("orders-grid");
     const isPending = currentStatusFilter === 'pending';
+
+    // 1. Fetch Promotions BEFORE processing items
+    const allPromotions = await fetchPromotions(stallId);
+    const activePromos = getActivePromotions(allPromotions);
     
     // UI Button state logic...
     const activeClass = 'bg-orange-500 text-white px-6 py-2.5 rounded-xl font-bold shadow-md shadow-orange-100';
@@ -190,16 +243,29 @@ async function renderOrders(orders) {
 
         // Fetch Customer Name and Item Details in parallel
         const [customerName, itemsWithDetails] = await Promise.all([
-            fetchCustomerName(order.customerId), // FETCHING NAME VIA ID
+            fetchCustomerName(order.customerId),
             Promise.all(myItems.map(async (item) => {
+                // Get basic details (name, original price)
                 const details = await fetchItemDetails(item.itemId);
-                return { ...item, name: details.name, price: details.price };
+                
+                // 2. Calculate Discount for this specific item
+                const discountPercent = getItemDiscount(item.itemId, activePromos);
+                const finalPrice = calculateDiscountedPrice(details.price, discountPercent);
+
+                return { 
+                    ...item, 
+                    name: details.name, 
+                    originalPrice: details.price,
+                    discountPercent: discountPercent,
+                    finalPrice: finalPrice
+                };
             }))
         ]);
 
+        // Get total order price from DB (usually reliable for the grand total)
+        // Note: You could also recalculate this locally by summing (item.finalPrice * item.quantity)
         const orderData = await getDoc(doc(db, "orders", order.id));
-        const totalPrice = orderData.data().totalPrice;
-        console.log(orderData.data(), "order data");
+        const totalPrice = orderData.exists() ? orderData.data().totalPrice : 0;
 
         return `
         <div class="bg-white border border-gray-100 rounded-4xl p-8 shadow-sm hover:shadow-xl transition-all duration-300 relative overflow-hidden">
@@ -216,20 +282,36 @@ async function renderOrders(orders) {
             <h3 class="text-2xl font-black text-gray-900 mb-4">${customerName}</h3>
             
             <div class="space-y-3 mb-8">
-                ${itemsWithDetails.map(item => `
+                ${itemsWithDetails.map(item => {
+                    // Logic to display price with or without discount
+                    let priceDisplay = '';
+                    if (item.discountPercent > 0) {
+                        priceDisplay = `
+                            <div class="text-right">
+                                <span class="block text-xs text-gray-400 line-through">$${Number(item.originalPrice).toFixed(2)}</span>
+                                <span class="text-red-500 font-black">$${Number(item.finalPrice).toFixed(2)}</span>
+                            </div>
+                        `;
+                    } else {
+                        priceDisplay = `<span class="text-gray-900 font-black">$${Number(item.originalPrice).toFixed(2)}</span>`;
+                    }
+
+                    return `
                     <div class="flex justify-between items-center">
                         <span class="text-gray-600 font-medium">
                             <span class="text-orange-500 font-bold">${item.quantity}x</span> ${item.name}
+                            ${item.discountPercent > 0 ? `<span class="ml-2 text-[10px] bg-red-100 text-red-600 px-1.5 py-0.5 rounded font-bold">-${item.discountPercent}% OFF</span>` : ''}
                         </span>
-                        <span class="text-gray-900 font-black">$${totalPrice.toFixed(2)}</span>
+                        ${priceDisplay}
                     </div>
-                `).join('')}
+                    `;
+                }).join('')}
             </div>
 
             <div class="flex items-center justify-between pt-6 border-t border-gray-50">
                 <div>
                     <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total Price</p>
-                    <p class="text-2xl font-black text-gray-900">$${totalPrice.toFixed(2)}</p>
+                    <p class="text-2xl font-black text-gray-900">$${Number(totalPrice).toFixed(2)}</p>
                 </div>
                 ${isPending ? `
                     <button onclick="completeOrder('${order.id}')" class="bg-green-500 hover:bg-green-600 text-white p-4 rounded-2xl shadow-lg shadow-green-100 transition-all active:scale-95">
@@ -246,7 +328,5 @@ async function renderOrders(orders) {
 
     const allCards = await Promise.all(orderHTMLPromises);
     grid.innerHTML = allCards.join('');
-    lucide.createIcons();
+    if (window.lucide) lucide.createIcons();
 }
-lucide.createIcons();
-
