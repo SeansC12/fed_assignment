@@ -13,6 +13,7 @@ import {
   onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { setupUserProfilePopup } from "../user-utils.js";
+import { updateCartBadge } from "../cart-utils.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
@@ -259,3 +260,58 @@ function getStatusConfig(status) {
 }
 
 setupUserProfilePopup(auth);
+updateCartBadge();
+setupMobileMenu();
+
+// Mobile menu toggle
+function setupMobileMenu() {
+  const mobileMenuButton = document.getElementById("mobile-menu-button");
+  const mobileMenu = document.getElementById("mobile-menu");
+
+  if (mobileMenuButton && mobileMenu) {
+    mobileMenuButton.addEventListener("click", () => {
+      mobileMenu.classList.toggle("hidden");
+      const icon = mobileMenuButton.querySelector("i");
+      if (icon) {
+        if (mobileMenu.classList.contains("hidden")) {
+          icon.setAttribute("data-lucide", "menu");
+        } else {
+          icon.setAttribute("data-lucide", "x");
+        }
+        lucide.createIcons();
+      }
+    });
+  }
+
+  // Setup mobile user profile popup
+  const userProfileButtonMobile = document.getElementById(
+    "user-profile-button-mobile",
+  );
+  const userProfilePopupMobile = document.getElementById(
+    "user-profile-popup-mobile",
+  );
+
+  if (userProfileButtonMobile && userProfilePopupMobile) {
+    userProfileButtonMobile.addEventListener("click", () => {
+      userProfilePopupMobile.classList.toggle("hidden");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (
+        !userProfileButtonMobile.contains(e.target) &&
+        !userProfilePopupMobile.contains(e.target)
+      ) {
+        userProfilePopupMobile.classList.add("hidden");
+      }
+    });
+
+    const logoutButtonMobile = document.getElementById("logout-button-mobile");
+    if (logoutButtonMobile) {
+      logoutButtonMobile.addEventListener("click", () => {
+        auth.signOut().then(() => {
+          window.location.href = "../customer-login/customer-login.html";
+        });
+      });
+    }
+  }
+}

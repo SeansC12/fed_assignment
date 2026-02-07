@@ -24,7 +24,6 @@ export function updateCartBadge() {
   const totalItems = getTotalCartItems();
   const displayText = totalItems > 99 ? "99+" : totalItems;
 
-  // Update desktop badge
   if (badge) {
     if (totalItems > 0) {
       badge.textContent = displayText;
@@ -34,7 +33,6 @@ export function updateCartBadge() {
     }
   }
 
-  // Update mobile badge
   if (badgeMobile) {
     if (totalItems > 0) {
       badgeMobile.textContent = displayText;
@@ -44,7 +42,6 @@ export function updateCartBadge() {
     }
   }
 
-  // Update hamburger menu badge
   if (hamburgerBadge) {
     if (totalItems > 0) {
       hamburgerBadge.textContent = displayText;

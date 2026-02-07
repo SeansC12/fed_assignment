@@ -245,12 +245,14 @@ if (mobileMenuButton && mobileMenu) {
     mobileMenu.classList.toggle("hidden");
     // Update icon
     const icon = mobileMenuButton.querySelector("i");
-    if (mobileMenu.classList.contains("hidden")) {
-      icon.setAttribute("data-lucide", "menu");
-    } else {
-      icon.setAttribute("data-lucide", "x");
+    if (icon) {
+      if (mobileMenu.classList.contains("hidden")) {
+        icon.setAttribute("data-lucide", "menu");
+      } else {
+        icon.setAttribute("data-lucide", "x");
+      }
+      lucide.createIcons();
     }
-    lucide.createIcons();
   });
 }
 

@@ -52,15 +52,37 @@ function getTotalCartItems() {
 
 function updateCartBadge() {
   const badge = document.getElementById("cart-badge");
-  if (!badge) return;
+  const badgeMobile = document.getElementById("cart-badge-mobile");
+  const hamburgerBadge = document.getElementById("hamburger-cart-badge");
 
   const totalItems = getTotalCartItems();
+  const displayText = totalItems > 99 ? "99+" : totalItems;
 
-  if (totalItems > 0) {
-    badge.textContent = totalItems > 99 ? "99+" : totalItems;
-    badge.classList.remove("hidden");
-  } else {
-    badge.classList.add("hidden");
+  if (badge) {
+    if (totalItems > 0) {
+      badge.textContent = displayText;
+      badge.classList.remove("hidden");
+    } else {
+      badge.classList.add("hidden");
+    }
+  }
+
+  if (badgeMobile) {
+    if (totalItems > 0) {
+      badgeMobile.textContent = displayText;
+      badgeMobile.classList.remove("hidden");
+    } else {
+      badgeMobile.classList.add("hidden");
+    }
+  }
+
+  if (hamburgerBadge) {
+    if (totalItems > 0) {
+      hamburgerBadge.textContent = displayText;
+      hamburgerBadge.classList.remove("hidden");
+    } else {
+      hamburgerBadge.classList.add("hidden");
+    }
   }
 }
 
@@ -323,8 +345,64 @@ if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", () => {
     renderCart();
     setupUserProfilePopup(auth);
+    setupMobileMenu();
   });
 } else {
   renderCart();
   setupUserProfilePopup(auth);
+  setupMobileMenu();
+  updateCartBadge();
+}
+
+// Mobile menu toggle
+function setupMobileMenu() {
+  const mobileMenuButton = document.getElementById("mobile-menu-button");
+  const mobileMenu = document.getElementById("mobile-menu");
+
+  if (mobileMenuButton && mobileMenu) {
+    mobileMenuButton.addEventListener("click", () => {
+      mobileMenu.classList.toggle("hidden");
+      const icon = mobileMenuButton.querySelector("i");
+      if (icon) {
+        if (mobileMenu.classList.contains("hidden")) {
+          icon.setAttribute("data-lucide", "menu");
+        } else {
+          icon.setAttribute("data-lucide", "x");
+        }
+        lucide.createIcons();
+      }
+    });
+  }
+
+  // Setup mobile user profile popup
+  const userProfileButtonMobile = document.getElementById(
+    "user-profile-button-mobile",
+  );
+  const userProfilePopupMobile = document.getElementById(
+    "user-profile-popup-mobile",
+  );
+
+  if (userProfileButtonMobile && userProfilePopupMobile) {
+    userProfileButtonMobile.addEventListener("click", () => {
+      userProfilePopupMobile.classList.toggle("hidden");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (
+        !userProfileButtonMobile.contains(e.target) &&
+        !userProfilePopupMobile.contains(e.target)
+      ) {
+        userProfilePopupMobile.classList.add("hidden");
+      }
+    });
+
+    const logoutButtonMobile = document.getElementById("logout-button-mobile");
+    if (logoutButtonMobile) {
+      logoutButtonMobile.addEventListener("click", () => {
+        auth.signOut().then(() => {
+          window.location.href = "../customer-login/customer-login.html";
+        });
+      });
+    }
+  }
 }
