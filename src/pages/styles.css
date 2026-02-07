@@ -47,7 +47,6 @@ body::before {
     justify-content: center;
 }
 
-/* BRANDING BOX */
 .branding-box {
     background-color: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(15px);
@@ -82,24 +81,19 @@ body::before {
     color: #333;
 }
 
-/* --- LOGIN OPTIONS (DESKTOP) --- */
 .login-options {
     display: flex;
     flex-direction: row;
     gap: 30px;
     justify-content: center;
     width: 100%;
-    /* KEY CHANGE: No wrapping allowed. Forces 3 across always. */
     flex-wrap: nowrap;
 }
 
 .login-option {
     flex: 1;
-    /* Grow evenly */
     width: 100%;
-    /* Take available space */
     min-width: 0;
-    /* Allow shrinking if screen gets tight before breakpoint */
     max-width: 350px;
     min-height: 320px;
     padding: 40px 20px;
@@ -144,10 +138,8 @@ body::before {
     color: #333;
     font-weight: bold;
     white-space: nowrap;
-    /* Prevent text wrapping */
 }
 
-/* CREDITS BUTTON */
 .credits-section {
     margin-top: 40px;
     flex-shrink: 0;
@@ -171,7 +163,6 @@ body::before {
     border-color: #ff6700;
 }
 
-/* --- MOBILE FIXES (Strict 3 Down) --- */
 @media (max-width: 900px) {
     .main-wrapper {
         align-items: center;
@@ -200,7 +191,6 @@ body::before {
         width: 30px;
     }
 
-    /* SWITCH TO COLUMN INSTANTLY */
     .login-options {
         flex-direction: column;
         align-items: center;
@@ -212,7 +202,6 @@ body::before {
     .login-option {
         width: 100%;
         max-width: 320px;
-        /* Forced Height for compact mobile view */
         min-height: 80px;
         height: 80px;
         flex-direction: row;

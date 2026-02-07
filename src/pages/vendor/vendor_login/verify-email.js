@@ -20,7 +20,6 @@ if (verifyForm) {
         const email = document.getElementById("verifyEmail").value.trim();
 
         try {
-            // TARGET VENDOR_LIST
             const q = query(collection(db, "vendor_list"), where("email", "==", email));
             const querySnapshot = await getDocs(q);
 

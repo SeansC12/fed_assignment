@@ -25,16 +25,12 @@ if (verifyForm) {
         submitBtn.innerText = "Verifying...";
 
         try {
-            // Check if this email exists in your Custom Database
             const q = query(collection(db, "customer_list"), where("email", "==", email));
             const querySnapshot = await getDocs(q);
 
             if (!querySnapshot.empty) {
-                // SUCCESS: User found. 
-                // Save their ID so 'change-password.js' knows which document to update.
                 localStorage.setItem("resetUserId", querySnapshot.docs[0].id);
-                
-                // Redirect to the manual password change page
+
                 window.location.href = "change-password.html"; 
             } else {
                 alert("Account not found. Please check your email.");

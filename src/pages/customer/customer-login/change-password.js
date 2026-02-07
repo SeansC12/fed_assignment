@@ -13,7 +13,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// --- HELPER: HASHING FUNCTION ---
 async function hashPassword(string) {
     const encoder = new TextEncoder();
     const data = encoder.encode(string);
@@ -43,12 +42,10 @@ if (changeForm) {
         }
 
         try {
-            // 1. Hash the NEW password before saving
             const hashedPassword = await hashPassword(newPass);
 
             const userRef = doc(db, "customer_list", userId);
             
-            // 2. Save the HASH to Firestore
             await updateDoc(userRef, { password: hashedPassword });
             
             localStorage.removeItem("resetUserId");

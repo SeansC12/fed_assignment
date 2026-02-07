@@ -36,7 +36,6 @@ if (document.readyState === "loading") {
   setupMobileMenu();
 }
 
-// Mobile menu toggle
 function setupMobileMenu() {
   const mobileMenuButton = document.getElementById("mobile-menu-button");
   const mobileMenu = document.getElementById("mobile-menu");
@@ -56,7 +55,6 @@ function setupMobileMenu() {
     });
   }
 
-  // Setup mobile user profile popup
   const userProfileButtonMobile = document.getElementById(
     "user-profile-button-mobile",
   );
@@ -89,11 +87,9 @@ function setupMobileMenu() {
   }
 }
 
-// 1. Get Stall ID from URL parameters
 const urlParams = new URLSearchParams(window.location.search);
 const stallId = urlParams.get("stallId");
 
-// 2. DOM Elements
 const form = document.getElementById("complaintForm");
 const stallNameDisplay = document.getElementById("stall-name-display");
 const backBtn = document.getElementById("back-btn");
@@ -103,7 +99,6 @@ const submitBtn = document.getElementById("submit-btn");
 let currentUser = null;
 let currentStallData = null;
 
-// 3. Initialize Page
 async function init() {
   if (!stallId) {
     alert("No stall selected. Redirecting to home.");
@@ -111,7 +106,6 @@ async function init() {
     return;
   }
 
-  // Check Auth
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       currentUser = user;
@@ -122,7 +116,6 @@ async function init() {
   });
 }
 
-// 4. Fetch Stall Name for Display
 async function fetchStallInfo() {
   try {
     const stallDoc = await getDoc(doc(db, "hawker-stalls", stallId));
@@ -138,7 +131,6 @@ async function fetchStallInfo() {
   }
 }
 
-// 5. Helper: Convert Image to Base64
 const toBase64 = (file) =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -147,11 +139,9 @@ const toBase64 = (file) =>
     reader.onerror = (error) => reject(error);
   });
 
-// 6. Handle Form Submission
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  // Disable button to prevent double submit
   submitBtn.disabled = true;
   submitBtn.textContent = "Submitting...";
   submitBtn.classList.add("opacity-50", "cursor-not-allowed");
@@ -163,7 +153,6 @@ form.addEventListener("submit", async (e) => {
   try {
     let imageBase64 = null;
     if (imageFile) {
-      // Basic size check (5MB)
       if (imageFile.size > 5 * 1024 * 1024) {
         throw new Error("Image file is too large. Max 5MB.");
       }
@@ -182,7 +171,6 @@ form.addEventListener("submit", async (e) => {
       createdAt: new Date().toISOString(),
     };
 
-    // Add to 'complaint_list' collection
     await addDoc(collection(db, "complaint_list"), complaintData);
 
     alert("Complaint filed successfully. Thank you for your feedback.");
@@ -196,7 +184,6 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
-// 7. Navigation Helpers
 function goBackToStall() {
   window.location.href = `/src/pages/customer/stall/stall-details.html?id=${stallId}`;
 }
@@ -204,5 +191,4 @@ function goBackToStall() {
 backBtn.addEventListener("click", goBackToStall);
 cancelBtn.addEventListener("click", goBackToStall);
 
-// Run Init
 init();

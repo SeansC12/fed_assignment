@@ -18,11 +18,8 @@ const provider = new GoogleAuthProvider();
 
 let isSigningIn = false;
 
-
-// Check if user is already logged in
 onAuthStateChanged(auth, (user) => {
     if (user && !isSigningIn) {
-        // User is already logged in, redirect to home
         window.location.href = "../home/home.html";
     }
 });
@@ -47,7 +44,6 @@ if (googleBtn) {
             if (userDoc.exists()) {
                 window.location.href = "../home/home.html";
             } else {
-                // New Google user - create Firestore document
                 await setDoc(doc(db, "customer_list", user.uid), {
                     email: user.email,
                     wallet: 0, 
@@ -89,7 +85,6 @@ if (loginForm) {
             const userDoc = await getDoc(doc(db, "customer_list", user.uid));
             
             if (!userDoc.exists()) {
-                // Safety fallback: create Firestore document if it doesn't exist
                 console.warn("User exists in Auth but not in Firestore. Creating document...");
                 await setDoc(doc(db, "customer_list", user.uid), {
                     email: user.email,
@@ -110,7 +105,6 @@ if (loginForm) {
             
             console.error("Login Error:", error);
             
-            // Provide user-friendly error messages
             if (error.code === 'auth/user-not-found') {
                 alert("No account found with this email. Please sign up!");
                 window.location.href = "../../customer-sign-up/customer-sign-up.html";

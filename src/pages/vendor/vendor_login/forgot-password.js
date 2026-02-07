@@ -24,7 +24,6 @@ if (resetForm) {
             await sendPasswordResetEmail(auth, email);
             alert("Verification successful! An email has been sent to " + email);
             
-            // Redirect back to VENDOR login
             window.location.href = "vendor-login.html";
         } catch (error) {
             if (error.code === 'auth/user-not-found') {
