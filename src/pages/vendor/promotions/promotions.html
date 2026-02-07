@@ -9,7 +9,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="text-gray-900 font-sans">
-    <header class="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-100">
+    <header class="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-100 flex-none">
         <nav class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
             <div class="flex-1 flex gap-3 items-center">
                 <img src="/static/myhawker-logo-orange.svg" alt="Logo" class="h-10 w-auto" onerror="this.src='https://placehold.co/40x40?text=MH'"/>
@@ -20,20 +20,35 @@
                 <li><a href="../dashboard/dashboard.html" class="hover:text-orange-600 transition-colors">Dashboard</a></li>
                 <li><a href="../menu_arrange/menu_arrange.html" class="hover:text-orange-600 transition-colors">Menu</a></li>
                 <li><a href="../orders/orders.html" class="hover:text-orange-600 transition-colors">Orders</a></li>
-                <li>
-                    <a href="../promotions/promotions.html" class="text-orange-600 border-b-2 border-orange-500 pb-1">
-                        Promotions
-                    </a>
-                </li>
+                <li><a href="../promotions/promotions.html" class="text-orange-600 border-b-2 border-orange-500 pb-1">Promotions</a></li>
                 <li><a href="../complaints/complaints.html" class="hover:text-orange-600 transition-colors">Complaints</a></li>
             </ul>
 
-            <div class="flex-1 text-right">
-                <a href="../account/account.html" class="inline-block p-2 rounded-full bg-gray-50 hover:bg-orange-50 text-gray-700 hover:text-orange-600 transition-all border border-gray-200">
+            <div class="flex-1 flex justify-end items-center gap-4">
+                <a href="../account/account.html" class="hidden sm:inline-block p-2 rounded-full bg-gray-50 hover:bg-orange-50 text-gray-700 hover:text-orange-600 transition-all border border-gray-200">
                     <i data-lucide="circle-user-round" class="w-6 h-6"></i>
                 </a>
+                
+                <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg bg-gray-50 text-orange-600 hover:bg-orange-100 transition-colors">
+                    <i data-lucide="menu" id="menu-icon" class="w-6 h-6"></i>
+                </button>
             </div>
         </nav>
+
+        <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-gray-100 absolute w-full shadow-lg z-50">
+            <ul class="flex flex-col p-4 space-y-4 font-semibold text-orange-600">
+                <li><a href="../dashboard/dashboard.html" class="block py-2 px-4 hover:bg-orange-50 rounded-lg">Dashboard</a></li>
+                <li><a href="../menu_arrange/menu_arrange.html" class="block py-2 px-4 hover:bg-orange-50 rounded-lg">Menu</a></li>
+                <li><a href="../orders/orders.html" class="block py-2 px-4 hover:bg-orange-50 rounded-lg">Orders</a></li>
+                <li><a href="../promotions/promotions.html" class="block py-2 px-4 bg-orange-50 rounded-lg text-orange-700">Promotions</a></li>
+                <li><a href="../complaints/complaints.html" class="block py-2 px-4 hover:bg-orange-50 rounded-lg">Complaints</a></li>
+                <li class="border-t border-gray-100 pt-4">
+                    <a href="../account/account.html" class="flex items-center gap-2 py-2 px-4 hover:bg-orange-50 rounded-lg">
+                        <i data-lucide="circle-user-round" class="w-5 h-5"></i> Profile
+                    </a>
+                </li>
+            </ul>
+        </div>
     </header>
 
     <main class="max-w-5xl mx-auto px-6 py-10">

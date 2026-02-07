@@ -273,10 +273,35 @@ async function fetchAndRenderStats() {
     });
 
     // --- EFFICIENCY CALC ---
-    const startTimeStr = localStorage.getItem("stallStartTime");
-    const startTime = startTimeStr ? new Date(startTimeStr) : new Date(now.getTime() - 3600000);
-    const hoursElapsed = (now - startTime) / (1000 * 60 * 60);
-    const efficiency = (orderCountToday / Math.max(hoursElapsed, 0.1)).toFixed(1);
+    let efficiency = "0.0";
+    if (orderCountToday > 0) {
+        // 1. Collect all order timestamps from TODAY
+        const orderTimes = [];
+        snap.forEach(doc => {
+            const order = doc.data();
+            const orderDate = parseDate(order.orderedAt);
+            if (orderDate >= todayStart && order.status === "completed") {
+                const myItems = (order.items || []).filter(item => item.stallId === activeStallId);
+                if (myItems.length > 0) {
+                    orderTimes.push(orderDate.getTime());
+                }
+            }
+        });
+
+        if (orderTimes.length > 0) {
+            const earliestOrder = Math.min(...orderTimes);
+            const nowTime = new Date().getTime();
+            
+            // Calculate hours between first order and now
+            // We cap the minimum time at 1 minute (0.016 hours) to avoid "Infinity" 
+            const hoursSinceFirstOrder = Math.max((nowTime - earliestOrder) / (1000 * 60 * 60), 0.016);
+            
+            efficiency = (orderCountToday / hoursSinceFirstOrder).toFixed(1);
+            
+            // Logic: If you did 6 orders in 1 minute, this will now show ~360.0
+            // If you prefer it not to be that extreme, we can cap it or use a 1-hour window.
+        }
+    }
 
     // --- UPDATE UI ---
     document.getElementById("total-revenue").innerText = `$${totalRevenueToday.toFixed(2)}`;
@@ -389,3 +414,19 @@ document.getElementById("review-sort").addEventListener("change", () => {
 
 // Initialize on load
 initDashboard();
+
+const menuBtn = document.getElementById('mobile-menu-btn');
+const mobileMenu = document.getElementById('mobile-menu');
+const menuIcon = document.getElementById('menu-icon');
+
+if (menuBtn && mobileMenu) {
+    menuBtn.addEventListener('click', () => {
+        const isHidden = mobileMenu.classList.toggle('hidden');
+        
+        // Update Lucide icon
+        if (window.lucide) {
+            menuIcon.setAttribute('data-lucide', isHidden ? 'menu' : 'x');
+            lucide.createIcons();
+        }
+    });
+}
