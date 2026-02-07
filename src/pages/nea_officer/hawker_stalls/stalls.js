@@ -1,41 +1,23 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { db, collection, onSnapshot } from "./firebase.js";
 
-// ===== FIREBASE CONFIG =====
-const firebaseConfig = {
-  apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
-  authDomain: "fed-assignment-f1456.firebaseapp.com",
-  projectId: "fed-assignment-f1456",
-  storageBucket: "fed-assignment-f1456.firebasestorage.app",
-  messagingSenderId: "646434763443",
-  appId: "1:646434763443:web:40ca6ecd4edd45e2edf6c6"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-// ===== DOM ELEMENTS =====
+// Elements
 const stallsGrid = document.getElementById("stallsGrid");
 const hawkerFilter = document.getElementById("hawkerFilter");
 
 let allStalls = [];
 
-// ===== REAL-TIME LISTENER =====
+// Real-time listener
 const stallsRef = collection(db, "hawker-stalls");
 
 onSnapshot(stallsRef, (snapshot) => {
-  // Map each doc into an object with its ID
   allStalls = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-  
-  populateFilter(); // Populate dropdown dynamically
-  renderStalls();   // Render stalls
+  populateFilter();
+  renderStalls();
 });
 
-// ===== POPULATE DROPDOWN =====
+// Populate hawker centre dropdown
 function populateFilter() {
-  // Collect unique hawker centres
-  const centres = [...new Set(allStalls.map(s => s.hawkerCentre || "Unknown"))].sort();
-
+  const centres = [...new Set(allStalls.map(s => s.hawkerCentre))].sort();
   hawkerFilter.innerHTML = `<option value="all">All Hawker Centres</option>`;
   centres.forEach(c => {
     const option = document.createElement("option");
@@ -45,11 +27,11 @@ function populateFilter() {
   });
 }
 
-// ===== RENDER STALLS =====
+// Render stalls
 function renderStalls() {
   const selectedCentre = hawkerFilter.value;
-  const stallsToShow = selectedCentre === "all"
-    ? allStalls
+  const stallsToShow = selectedCentre === "all" 
+    ? allStalls 
     : allStalls.filter(s => s.hawkerCentre === selectedCentre);
 
   stallsGrid.innerHTML = "";
@@ -60,30 +42,28 @@ function renderStalls() {
 
     div.innerHTML = `
       <div class="bg-slate-200 w-full h-80 rounded-t-xl flex items-center justify-center text-slate-400 font-medium">
-        ${stall.image ? `<img src="${stall.image}" alt="${stall.name}" class="object-cover w-full h-full rounded-t-xl">` : "No Image"}
+        ${stall.image || "No Image"}
       </div>
       <div class="p-5 flex flex-col justify-between grow">
         <div>
-          <p class="text-xl font-semibold text-slate-800">${stall.name || "Unnamed Stall"}</p>
-          <p class="text-sm text-slate-500 mt-1">${stall.address || "No Address"}</p>
+          <p class="text-xl font-semibold text-slate-800">${stall.name}</p>
+          <p class="text-sm text-slate-500 mt-1">${stall.address}</p>
         </div>
-        <div class="mt-3 flex flex-col text-xs text-slate-400 gap-1">
-          <span>Hawker Centre: ${stall.hawkerCentre || "Unknown"}</span>
-          <span>Cuisine: ${Array.isArray(stall.cuisineTypes) ? stall.cuisineTypes.join(", ") : "N/A"}</span>
-          <span>Created: ${stall.createdAt ? new Date(stall.createdAt.seconds * 1000).toLocaleDateString() : "N/A"}</span>
-          <span>Last Updated: ${stall.lastUpdated ? new Date(stall.lastUpdated.seconds * 1000).toLocaleDateString() : "N/A"}</span>
+        <div class="mt-3 flex justify-between text-xs text-slate-400">
+          <span>Status: Active</span>
+          <span>Revenue: $${stall.revenue || 0}</span>
         </div>
       </div>
     `;
 
     div.addEventListener("click", () => {
       localStorage.setItem("selectedStallId", stall.id);
-      window.location.href = "stall_details.html"; // Navigate to stall details page
+      window.location.href = "stall_details.html";
     });
 
     stallsGrid.appendChild(div);
   });
 }
 
-// ===== Re-render stalls when dropdown changes =====
+// Re-render when filter changes
 hawkerFilter.addEventListener("change", renderStalls);
