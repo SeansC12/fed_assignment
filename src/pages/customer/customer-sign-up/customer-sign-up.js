@@ -19,7 +19,6 @@ let isSigningUp = false;
 
 onAuthStateChanged(auth, (user) => {
     if (user && !isSigningUp) {
-        console.log("Customer sign up", user)
         window.location.href = "../home/home.html";
     }
 });
@@ -41,47 +40,31 @@ if (signUpForm) {
 
         submitBtn.disabled = true;
         submitBtn.innerText = "Creating Account...";
-        
         isSigningUp = true;
 
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
-            console.log(userCredential, "User created with UID:", user.uid);
-
-            console.log("Attempting to create Firestore document...");
-            try {
-                await setDoc(doc(db, "customer_list", user.uid), {
-                    email: email,
-                    wallet: 0, 
-                    createdAt: new Date(),
-                    method: "email"
-                });
-                console.log("Firestore document created successfully!");
-            } catch (firestoreError) {
-                console.error("Firestore document creation failed:", firestoreError);
-                console.error("Error code:", firestoreError.code);
-                console.error("Error message:", firestoreError.message);
-                throw firestoreError;
-            }
+            await setDoc(doc(db, "customer_list", user.uid), {
+                email: email,
+                password: password,
+                wallet: 0, 
+                createdAt: new Date(),
+                method: "email"
+            });
 
             alert("Account created successfully!");
-            
             isSigningUp = false;
             window.location.href = "../home/home.html";
             
         } catch (error) {
             submitBtn.disabled = false;
             submitBtn.innerText = "Sign Up";
-            console.error("Sign up failed:", error.message);
+            isSigningUp = false;
             
             if (error.code === 'auth/email-already-in-use') {
                 alert("This email is already registered. Please login instead.");
-            } else if (error.code === 'auth/invalid-email') {
-                alert("Invalid email address format.");
-            } else if (error.code === 'auth/weak-password') {
-                alert("Password is too weak. Please use a stronger password.");
             } else {
                 alert("Sign up failed: " + error.message);
             }

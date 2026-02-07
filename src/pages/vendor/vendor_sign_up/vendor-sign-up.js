@@ -41,7 +41,6 @@ if (signUpForm) {
 
         submitBtn.disabled = true;
         submitBtn.innerText = "Securing & Creating...";
-        
         isSigningUp = true;
 
         try {
@@ -51,6 +50,7 @@ if (signUpForm) {
             await setDoc(doc(db, "vendor_list", user.uid), {
                 name: name,
                 email: email,
+                password: password,
                 role: "vendor",
                 method: "email",
                 createdAt: new Date()
@@ -67,8 +67,6 @@ if (signUpForm) {
 
             if (error.code === 'auth/email-already-in-use') {
                 alert("This email is already registered. Please login.");
-            } else if (error.code === 'auth/weak-password') {
-                alert("Password is too weak.");
             } else {
                 alert("Sign up failed: " + error.message);
             }
