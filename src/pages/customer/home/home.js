@@ -197,10 +197,9 @@ function updateCapsuleText(modalId) {
   const capsule = document.querySelector(`[data-modal="${modalId}"]`);
   const textSpan = capsule.querySelector(".filter-capsule-icon");
 
-  // Get filter name from modal title
   const filterName = modal.querySelector(".modal-title").textContent;
 
-  // Check if it's the default/first option (usually "All" or "Recommended")
+  // Check if it's the first option which we will classify to be the default value
   const isDefault =
     selectedRadio.value ===
     modal.querySelectorAll('input[type="radio"]')[0].value;
@@ -237,8 +236,58 @@ document.querySelectorAll(".cuisine-item").forEach((button) => {
   });
 });
 
-// Initialize cart badge
+// Mobile menu toggle
+const mobileMenuButton = document.getElementById("mobile-menu-button");
+const mobileMenu = document.getElementById("mobile-menu");
+
+if (mobileMenuButton && mobileMenu) {
+  mobileMenuButton.addEventListener("click", () => {
+    mobileMenu.classList.toggle("hidden");
+    // Update icon
+    const icon = mobileMenuButton.querySelector("i");
+    if (mobileMenu.classList.contains("hidden")) {
+      icon.setAttribute("data-lucide", "menu");
+    } else {
+      icon.setAttribute("data-lucide", "x");
+    }
+    lucide.createIcons();
+  });
+}
+
+// Setup mobile user profile popup
+const userProfileButtonMobile = document.getElementById(
+  "user-profile-button-mobile",
+);
+const userProfilePopupMobile = document.getElementById(
+  "user-profile-popup-mobile",
+);
+
+if (userProfileButtonMobile && userProfilePopupMobile) {
+  userProfileButtonMobile.addEventListener("click", () => {
+    userProfilePopupMobile.classList.toggle("hidden");
+  });
+
+  // Close popup when clicking outside
+  document.addEventListener("click", (e) => {
+    if (
+      !userProfileButtonMobile.contains(e.target) &&
+      !userProfilePopupMobile.contains(e.target)
+    ) {
+      userProfilePopupMobile.classList.add("hidden");
+    }
+  });
+
+  // Setup logout for mobile
+  const logoutButtonMobile = document.getElementById("logout-button-mobile");
+  if (logoutButtonMobile) {
+    logoutButtonMobile.addEventListener("click", () => {
+      auth.signOut().then(() => {
+        window.location.href = "../customer-login/customer-login.html";
+      });
+    });
+  }
+}
+
 updateCartBadge();
 
-// Re-init lucide icons after modal interaction
 setTimeout(() => lucide.createIcons(), 100);

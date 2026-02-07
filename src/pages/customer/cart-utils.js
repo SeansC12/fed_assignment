@@ -18,15 +18,40 @@ export function getTotalCartItems() {
 // Update cart badge in navbar
 export function updateCartBadge() {
   const badge = document.getElementById("cart-badge");
-  if (!badge) return;
+  const badgeMobile = document.getElementById("cart-badge-mobile");
+  const hamburgerBadge = document.getElementById("hamburger-cart-badge");
 
   const totalItems = getTotalCartItems();
+  const displayText = totalItems > 99 ? "99+" : totalItems;
 
-  if (totalItems > 0) {
-    badge.textContent = totalItems > 99 ? "99+" : totalItems;
-    badge.classList.remove("hidden");
-  } else {
-    badge.classList.add("hidden");
+  // Update desktop badge
+  if (badge) {
+    if (totalItems > 0) {
+      badge.textContent = displayText;
+      badge.classList.remove("hidden");
+    } else {
+      badge.classList.add("hidden");
+    }
+  }
+
+  // Update mobile badge
+  if (badgeMobile) {
+    if (totalItems > 0) {
+      badgeMobile.textContent = displayText;
+      badgeMobile.classList.remove("hidden");
+    } else {
+      badgeMobile.classList.add("hidden");
+    }
+  }
+
+  // Update hamburger menu badge
+  if (hamburgerBadge) {
+    if (totalItems > 0) {
+      hamburgerBadge.textContent = displayText;
+      hamburgerBadge.classList.remove("hidden");
+    } else {
+      hamburgerBadge.classList.add("hidden");
+    }
   }
 }
 
