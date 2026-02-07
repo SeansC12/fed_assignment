@@ -2,6 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
 import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // Your Firebase Config
+
 const firebaseConfig = {
   apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
   authDomain: "fed-assignment-f1456.firebaseapp.com",
@@ -49,7 +50,7 @@ if (loginForm) {
                 alert(`Welcome back, ${officerData.Name}!`);
                 
                 // Redirect to Home Page (Up one level to 'home' folder)
-                window.location.href = "../../homepage/home.html";
+                window.location.href = "../homepage/home.html";
             } else {
                 // FAILURE: No match found
                 alert("Invalid NEA ID or Password. Please try again.");

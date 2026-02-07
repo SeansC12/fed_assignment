@@ -32,7 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     options: {
       responsive: true,
-      parsing: false, // Important for raw numbers
 
       plugins: {
         legend: { display: false },
@@ -45,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       scales: {
         y: {
-          reverse: true, // Optional: puts A on top
+           // Optional: puts A on top
           min: 1,
           max: 4,
           ticks: {
