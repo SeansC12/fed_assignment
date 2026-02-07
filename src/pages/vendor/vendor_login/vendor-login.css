@@ -2,7 +2,6 @@
 body {
     margin: 0;
     font-family: "Poppins", ui-sans-serif, system-ui, sans-serif;
-    /* PATH FIX: Step back 2 levels to reach images */
     background-image: url('../../../../static/backgroundtest.jpeg');
     background-size: cover;
     background-position: center;
@@ -100,11 +99,9 @@ body::before {
     gap: 15px;
 }
 
-/* --- NEW STYLES FOR BOOKING.COM LOOK --- */
 
 .form-group {
     text-align: left;
-    /* Aligns labels to the left */
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -117,7 +114,6 @@ body::before {
     display: block;
 }
 
-/* --------------------------------------- */
 
 .login-form input {
     padding: 12px;
@@ -125,9 +121,7 @@ body::before {
     border: 1px solid #ccc;
     border-radius: 8px;
     width: 100%;
-    /* Ensures input fills the group */
     box-sizing: border-box;
-    /* Ensures padding doesn't break width */
 }
 
 .forgot-password {
@@ -136,12 +130,10 @@ body::before {
     text-decoration: none;
     text-align: right;
     margin-top: 5px;
-    /* Adjusted spacing */
     position: relative;
     z-index: 5;
     cursor: pointer;
     display: block;
-    /* Ensures it sits on its own line */
 }
 
 .forgot-password:hover {
@@ -181,7 +173,6 @@ body::before {
     margin-top: 15px;
 }
 
-/* --- MOBILE OPTIMIZATION --- */
 @media (max-width: 900px) {
     .branding-icon {
         width: 45px;

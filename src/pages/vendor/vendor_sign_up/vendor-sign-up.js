@@ -17,7 +17,6 @@ const db = getFirestore(app);
 
 let isSigningUp = false;
 
-// Check if user is already logged in
 onAuthStateChanged(auth, (user) => {
     if (user && !isSigningUp) {
         window.location.href = "../create_stall/create-stall.html";
@@ -46,11 +45,9 @@ if (signUpForm) {
         isSigningUp = true;
 
         try {
-            // 1. Create User in Firebase Auth (Handles security automatically)
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
-            // 2. Save Vendor Details to Firestore (NO PASSWORD stored here)
             await setDoc(doc(db, "vendor_list", user.uid), {
                 name: name,
                 email: email,

@@ -15,18 +15,13 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Flag to prevent redirect during login process
 let isSigningIn = false;
 
-// Check if user is already logged in
 onAuthStateChanged(auth, async (user) => {
     if (user && !isSigningIn) {
-        // You can uncomment this to auto-redirect if session exists
-        // window.location.href = "../menu_arrange/menu_arrange.html";
     }
 });
 
-// 1. FORGOT PASSWORD
 const forgotPasswordLink = document.getElementById("forgotPassword");
 if (forgotPasswordLink) {
     forgotPasswordLink.addEventListener('click', (e) => {
@@ -35,7 +30,6 @@ if (forgotPasswordLink) {
     });
 }
 
-// 2. MANUAL LOGIN (Using Firebase Auth)
 const loginForm = document.getElementById("vendorLoginForm");
 if (loginForm) {
     loginForm.addEventListener("submit", async (e) => {
@@ -50,43 +44,36 @@ if (loginForm) {
             submitBtn.innerText = "Logging in...";
         }
         
-        // Prevent onAuthStateChanged from redirecting during login
         isSigningIn = true;
 
         try {
-            // 1. Authenticate with Firebase Auth
             const userCredential = await signInWithEmailAndPassword(auth, emailInput, passwordInput);
             const user = userCredential.user;
 
-            // 2. Check Vendor Record in Firestore
             const userDocRef = doc(db, "vendor_list", user.uid);
             const userDoc = await getDoc(userDocRef);
 
             if (userDoc.exists()) {
                 const userData = userDoc.data();
                 
-                // Store active stall ID if available
                 if(userData.stallId) {
                     localStorage.setItem("activeStallId", userData.stallId);
                 }
 
-                // Redirect to Menu Arrange
                 window.location.href = "../menu_arrange/menu_arrange.html";
             } else {
-                // User authenticated but no record in vendor_list (rare, but good safety)
                 alert("Vendor profile not found. Please sign up.");
                 window.location.href = "../vendor_sign_up/vendor-sign-up.html";
             }
 
         } catch (error) {
-            isSigningIn = false; // Reset flag on error
+            isSigningIn = false;
             if (submitBtn) {
                 submitBtn.disabled = false;
                 submitBtn.innerText = "Login";
             }
             console.error("Login Error:", error);
-
-            // User-friendly error messages
+            
             if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
                 alert("Invalid email or password.");
             } else if (error.code === 'auth/wrong-password') {

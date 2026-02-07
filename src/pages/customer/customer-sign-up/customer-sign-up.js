@@ -17,7 +17,6 @@ const db = getFirestore(app);
 
 let isSigningUp = false;
 
-// Check if user is already logged in
 onAuthStateChanged(auth, (user) => {
     if (user && !isSigningUp) {
         console.log("Customer sign up", user)
@@ -46,13 +45,11 @@ if (signUpForm) {
         isSigningUp = true;
 
         try {
-            // 1. Create user in Firebase Auth
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
             console.log(userCredential, "User created with UID:", user.uid);
 
-            // 2. Create record in Firestore customer_list
             console.log("Attempting to create Firestore document...");
             try {
                 await setDoc(doc(db, "customer_list", user.uid), {
@@ -71,7 +68,6 @@ if (signUpForm) {
 
             alert("Account created successfully!");
             
-            // 3. Redirect to home page
             isSigningUp = false;
             window.location.href = "../home/home.html";
             
@@ -80,7 +76,6 @@ if (signUpForm) {
             submitBtn.innerText = "Sign Up";
             console.error("Sign up failed:", error.message);
             
-            // Provide user-friendly error messages
             if (error.code === 'auth/email-already-in-use') {
                 alert("This email is already registered. Please login instead.");
             } else if (error.code === 'auth/invalid-email') {
