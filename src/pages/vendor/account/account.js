@@ -35,7 +35,7 @@ let currentAgreementId = null;
 
 if (window.lucide) lucide.createIcons();
 
-// --- 1. AUTH & DATA LOADING ---
+//AUTH & DATA LOADING
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         try {
@@ -74,7 +74,7 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
-// --- 2. STALL DETAILS (REAL-TIME) ---
+//STALL DETAILS (REAL-TIME)
 function loadStallDetails(id) {
     const stallRef = doc(db, "hawker-stalls", id);
     onSnapshot(stallRef, (docSnap) => {
@@ -92,7 +92,7 @@ function loadStallDetails(id) {
     });
 }
 
-// --- 3. RENTAL AGREEMENT (REAL-TIME & CLICKABLE) ---
+// RENTAL AGREEMENT HANDLING
 function fetchRentalAgreement(stallId) {
     if (!stallId) return;
 
@@ -181,7 +181,7 @@ function renderNoAgreementState() {
     document.getElementById("actionArea").innerHTML = `<div class="bg-yellow-50 text-yellow-800 p-4 rounded-xl text-sm font-medium text-center border border-yellow-100">Contact management to link an agreement.</div>`;
 }
 
-// --- 4. ACTIONS ---
+//ACTION HANDLERS
 window.handleRenew = async () => {
     if (!confirm("Renew agreement for another month?")) return;
     const btn = document.querySelector("#actionArea button");

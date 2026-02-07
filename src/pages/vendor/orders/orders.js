@@ -49,7 +49,7 @@ onAuthStateChanged(auth, async (user) => {
     startOrderListener();
 });
 
-// --- PROMOTION HELPERS (NEW) ---
+// --- PROMOTION HELPERS ---
 
 async function fetchPromotions(stallId) {
     try {
@@ -72,7 +72,6 @@ function isPromotionActive(promotion) {
     if (!promotion.dateStart || !promotion.dateEnd) return false;
 
     const now = new Date();
-    // Handle both Firestore Timestamp and standard Date strings
     const startDate = promotion.dateStart.toDate ? promotion.dateStart.toDate() : new Date(promotion.dateStart);
     const endDate = promotion.dateEnd.toDate ? promotion.dateEnd.toDate() : new Date(promotion.dateEnd);
 
@@ -83,10 +82,8 @@ function getActivePromotions(promotions) {
     return promotions.filter(isPromotionActive);
 }
 
-// Modified to accept activePromos list as an argument
 function getItemDiscount(itemId, activePromos) {
     for (const promotion of activePromos) {
-        // Ensure affectedId exists and includes the current item
         if (promotion.affectedId && promotion.affectedId.includes(itemId)) {
             return parseFloat(promotion.discount) || 0;
         }
@@ -180,6 +177,21 @@ window.completeOrder = async (id) => {
     } catch (e) { console.error("Error completing order:", e); }
 };
 
+// --- NEW: REJECT ACTION ---
+window.rejectOrder = async (id) => {
+    const confirmed = confirm("Are you sure you want to reject this order? This cannot be undone.");
+    if (!confirmed) return;
+
+    try {
+        const orderRef = doc(db, "orders", id);
+        await updateDoc(orderRef, { status: 'rejected' });
+        console.log(`Order ${id} rejected.`);
+    } catch (e) { 
+        console.error("Error rejecting order:", e); 
+        alert("Failed to reject order. Please try again.");
+    }
+};
+
 async function displayStallName() {
     const stallRef = doc(db, "hawker-stalls", stallId);
     const stallSnap = await getDoc(stallRef);
@@ -224,7 +236,7 @@ async function renderOrders(orders) {
     const allPromotions = await fetchPromotions(stallId);
     const activePromos = getActivePromotions(allPromotions);
     
-    // UI Button state logic...
+    // UI Button state logic
     const activeClass = 'bg-orange-500 text-white px-6 py-2.5 rounded-xl font-bold shadow-md shadow-orange-100';
     const inactiveClass = 'text-gray-500 hover:bg-gray-50 px-6 py-2.5 rounded-xl font-bold';
     const btnP = document.getElementById('btn-pending');
@@ -262,8 +274,6 @@ async function renderOrders(orders) {
             }))
         ]);
 
-        // Get total order price from DB (usually reliable for the grand total)
-        // Note: You could also recalculate this locally by summing (item.finalPrice * item.quantity)
         const orderData = await getDoc(doc(db, "orders", order.id));
         const totalPrice = orderData.exists() ? orderData.data().totalPrice : 0;
 
@@ -283,7 +293,6 @@ async function renderOrders(orders) {
             
             <div class="space-y-3 mb-8">
                 ${itemsWithDetails.map(item => {
-                    // Logic to display price with or without discount
                     let priceDisplay = '';
                     if (item.discountPercent > 0) {
                         priceDisplay = `
@@ -313,15 +322,26 @@ async function renderOrders(orders) {
                     <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total Price</p>
                     <p class="text-2xl font-black text-gray-900">$${Number(totalPrice).toFixed(2)}</p>
                 </div>
-                ${isPending ? `
-                    <button onclick="completeOrder('${order.id}')" class="bg-green-500 hover:bg-green-600 text-white p-4 rounded-2xl shadow-lg shadow-green-100 transition-all active:scale-95">
-                        <i data-lucide="check" class="w-6 h-6"></i>
-                    </button>
-                ` : `
-                    <span class="text-green-500 font-bold flex items-center gap-1">
-                        <i data-lucide="check-circle" class="w-5 h-5"></i> Done
-                    </span>
-                `}
+                
+                <div class="flex gap-2">
+                    ${isPending ? `
+                        <button onclick="rejectOrder('${order.id}')" 
+                                class="bg-red-50 hover:bg-red-100 text-red-500 p-4 rounded-2xl transition-all active:scale-95 group"
+                                title="Reject Order">
+                            <i data-lucide="x" class="w-6 h-6"></i>
+                        </button>
+
+                        <button onclick="completeOrder('${order.id}')" 
+                                class="bg-green-500 hover:bg-green-600 text-white p-4 rounded-2xl shadow-lg shadow-green-100 transition-all active:scale-95"
+                                title="Complete Order">
+                            <i data-lucide="check" class="w-6 h-6"></i>
+                        </button>
+                    ` : `
+                        <span class="text-green-500 font-bold flex items-center gap-1">
+                            <i data-lucide="check-circle" class="w-5 h-5"></i> Done
+                        </span>
+                    `}
+                </div>
             </div>
         </div>`;
     });
@@ -336,14 +356,13 @@ function refreshIcons() {
     if (typeof lucide !== 'undefined') {
         lucide.createIcons();
     } else {
-        // If lucide isn't loaded yet, wait 100ms and try again
         setTimeout(refreshIcons, 100);
     }
 }
 
-// Initial call
 refreshIcons();
 
+// --- MOBILE MENU HANDLER ---
 const menuBtn = document.getElementById('mobile-menu-btn');
 const mobileMenu = document.getElementById('mobile-menu');
 const menuIcon = document.getElementById('menu-icon');
