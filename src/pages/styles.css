@@ -7,11 +7,11 @@ body {
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
-    min-height: 100vh;
+    height: 100vh;
+    width: 100vw;
     display: flex;
     position: relative;
     overflow: hidden;
-    /* Strict no-scroll */
 }
 
 body::before {
@@ -23,6 +23,7 @@ body::before {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.4);
     z-index: 0;
+    pointer-events: none;
 }
 
 .main-wrapper {
@@ -30,7 +31,6 @@ body::before {
     z-index: 1;
     width: 100%;
     height: 100vh;
-    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -40,29 +40,35 @@ body::before {
     width: 95%;
     max-width: 1200px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-height: 95vh;
+    justify-content: center;
 }
 
 /* BRANDING BOX */
 .branding-box {
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     display: inline-flex;
     align-items: center;
-    padding: 10px 30px;
+    padding: 12px 35px;
     border-radius: 50px;
     gap: 12px;
     margin-bottom: 40px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
 }
 
 .main-logo {
-    width: 40px;
+    width: 45px;
     height: auto;
 }
 
 .main-title {
-    font-size: 24px;
+    font-size: 28px;
     margin: 0;
     color: #333;
     font-weight: bold;
@@ -72,16 +78,28 @@ body::before {
     color: #ff6700;
 }
 
+.text-hawker {
+    color: #333;
+}
+
+/* --- LOGIN OPTIONS (DESKTOP) --- */
 .login-options {
     display: flex;
     flex-direction: row;
     gap: 30px;
     justify-content: center;
+    width: 100%;
+    /* KEY CHANGE: No wrapping allowed. Forces 3 across always. */
+    flex-wrap: nowrap;
 }
 
-/* LAPTOP/DESKTOP CARD STYLES */
 .login-option {
     flex: 1;
+    /* Grow evenly */
+    width: 100%;
+    /* Take available space */
+    min-width: 0;
+    /* Allow shrinking if screen gets tight before breakpoint */
     max-width: 350px;
     min-height: 320px;
     padding: 40px 20px;
@@ -91,23 +109,24 @@ body::before {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: rgba(255, 255, 255, 0.75);
+    background-color: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 3px solid transparent;
     transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
 .login-option:hover {
-    transform: translateY(-10px);
+    transform: translateY(-8px);
     border-color: #ff6700;
-    background-color: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    background-color: rgba(255, 255, 255, 1);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
 }
 
 .icon-wrapper {
-    width: 140px;
-    height: 140px;
+    width: 120px;
+    height: 120px;
     margin-bottom: 25px;
     display: flex;
     align-items: center;
@@ -124,46 +143,105 @@ body::before {
     font-size: 24px;
     color: #333;
     font-weight: bold;
+    white-space: nowrap;
+    /* Prevent text wrapping */
 }
 
-/* --- MOBILE FIXES --- */
+/* CREDITS BUTTON */
+.credits-section {
+    margin-top: 40px;
+    flex-shrink: 0;
+}
+
+.credits-btn {
+    display: inline-block;
+    padding: 10px 25px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    text-decoration: none;
+    border-radius: 30px;
+    font-size: 14px;
+    backdrop-filter: blur(5px);
+    transition: background-color 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.credits-btn:hover {
+    background-color: #ff6700;
+    border-color: #ff6700;
+}
+
+/* --- MOBILE FIXES (Strict 3 Down) --- */
 @media (max-width: 900px) {
     .main-wrapper {
         align-items: center;
+        height: 100vh;
+        overflow: hidden;
+        padding: 0;
+    }
+
+    .login-container {
+        height: 100%;
+        justify-content: center;
+        gap: 10px;
     }
 
     .branding-box {
-        margin-bottom: 20px;
-        /* Reduced margin to save top space */
-        padding: 8px 25px;
+        margin-bottom: 15px;
+        padding: 6px 20px;
+        transform: scale(0.9);
     }
 
+    .main-title {
+        font-size: 20px;
+    }
+
+    .main-logo {
+        width: 30px;
+    }
+
+    /* SWITCH TO COLUMN INSTANTLY */
     .login-options {
         flex-direction: column;
         align-items: center;
-        gap: 10px;
-        /* Tighter gap between boxes */
+        gap: 12px;
+        flex-grow: 0;
+        width: 100%;
     }
 
     .login-option {
         width: 100%;
-        max-width: 280px;
-        /* REDUCED HEIGHT: From 170px to 135px to reduce clutter */
-        min-height: 135px;
-        padding: 10px;
-        /* Less padding */
+        max-width: 320px;
+        /* Forced Height for compact mobile view */
+        min-height: 80px;
+        height: 80px;
+        flex-direction: row;
+        padding: 0 20px;
+        gap: 15px;
+        justify-content: flex-start;
+        border-radius: 15px;
     }
 
     .icon-wrapper {
-        /* KEPT SAME: Maintained 90px size as requested */
-        width: 90px;
-        height: 90px;
-        margin-bottom: 5px;
-        /* Reduced gap between icon and text */
+        width: 45px;
+        height: 45px;
+        margin-bottom: 0;
+        flex-shrink: 0;
     }
 
     .login-label {
         font-size: 18px;
-        /* Slightly smaller text for better proportion */
+        text-align: left;
+        flex-grow: 1;
+    }
+
+    .credits-section {
+        margin-top: 20px;
+        margin-bottom: 10px;
+    }
+
+    .credits-btn {
+        font-size: 12px;
+        padding: 8px 20px;
     }
 }
