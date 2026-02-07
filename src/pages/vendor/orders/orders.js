@@ -330,3 +330,16 @@ async function renderOrders(orders) {
     grid.innerHTML = allCards.join('');
     if (window.lucide) lucide.createIcons();
 }
+
+// Function to safely refresh icons
+function refreshIcons() {
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    } else {
+        // If lucide isn't loaded yet, wait 100ms and try again
+        setTimeout(refreshIcons, 100);
+    }
+}
+
+// Initial call
+refreshIcons();
