@@ -147,7 +147,6 @@ function createCartItemCard(item) {
         />
       </div>
       
-      <!-- Product Details -->
       <div class="flex-1">
         <div class="flex justify-between items-start mb-2">
           <div>
@@ -164,15 +163,14 @@ function createCartItemCard(item) {
           </button>
         </div>
         
-        <!-- Price and Quantity Row -->
         <div class="flex items-center justify-between mt-4">
-          <div class="flex items-center gap-8">
-            <div>
+          <div class="flex items-center gap-8 flex-col sm:flex-row">
+            <div class="w-full text-left">
               <p class="text-xs text-gray-500 mb-1">Each</p>
               ${priceHTML}
             </div>
             
-            <div>
+            <div class="w-full text-left">
               <p class="text-xs text-gray-500 mb-1">Quantity</p>
               <div class="flex items-center gap-2 border border-gray-300 rounded-md">
                 <button 
@@ -191,7 +189,7 @@ function createCartItemCard(item) {
               </div>
             </div>
             
-            <div>
+            <div class="w-full text-left">
               <p class="text-xs text-gray-500 mb-1">Total</p>
               <p class="font-bold text-lg">$${totalPrice.toFixed(2)}</p>
             </div>
