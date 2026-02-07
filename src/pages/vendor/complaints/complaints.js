@@ -93,16 +93,16 @@ function listenToComplaints(stallId) {
     const q = query(collection(db, "complaint_list"), where("stallId", "==", stallId));
 
     onSnapshot(q, async (snapshot) => {
-        // STEP 1: Turn snapshots into plain objects immediately
+        // Turn snapshots into plain objects immediately
         const allItems = snapshot.docs.map(d => ({
             id: d.id,
             ...d.data()
         }));
 
-        // STEP 2: Filter for 'pending' items
+        // Filter for 'pending' items
         const pendingItems = allItems.filter(item => item.status === 'pending');
 
-        // STEP 3: Sort by date (latest first)
+        // Sort by date (latest first)
         pendingItems.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
 
         if (countBadge) countBadge.innerText = `${pendingItems.length} Pending Complaints`;
@@ -112,15 +112,14 @@ function listenToComplaints(stallId) {
             return;
         }
 
-        // STEP 4: Render
+        //Render
         const htmlPromises = pendingItems.map(async (complaint) => {
             const name = await getCustomerName(complaint.userId);
 
-            // 1. Convert the String to a JS Date Object
-            // JavaScript's new Date() handles "2026-02-07T13:48..." perfectly
+            //Convert the String to a JS Date Object
             const dateObj = complaint.createdAt ? new Date(complaint.createdAt) : null;
 
-            // 2. Format for Singapore/Display
+            //Format for Singapore/Display
             let dateDisplay = "Just now";
             
             if (dateObj && !isNaN(dateObj.getTime())) {
@@ -159,12 +158,10 @@ function listenToComplaints(stallId) {
 
         const finalHtml = await Promise.all(htmlPromises);
         container.innerHTML = finalHtml.join('');
-        
-        // --- FIXED ICON LOADING ---
         if (typeof lucide !== 'undefined') {
             lucide.createIcons();
         } else {
-            // Fallback: if script is slow, wait and try once more
+            //Fallback: if script is slow, wait and try once more
             setTimeout(() => {
                 if (window.lucide) lucide.createIcons();
             }, 100);
@@ -180,7 +177,6 @@ if (menuBtn && mobileMenu) {
     menuBtn.addEventListener('click', () => {
         const isHidden = mobileMenu.classList.toggle('hidden');
         
-        // Switch icon between 'menu' and 'x'
         if (window.lucide) {
             menuIcon.setAttribute('data-lucide', isHidden ? 'menu' : 'x');
             lucide.createIcons();

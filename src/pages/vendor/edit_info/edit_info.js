@@ -29,10 +29,8 @@ const targetStallId = urlParams.get('stallId');
 // Initialize Icons
 if (window.lucide) lucide.createIcons();
 
-// --- 1. LOAD DATA ---
+// --- LOAD DATA ---
 onAuthStateChanged(auth, async (user) => {
-    // ... (previous auth and targetStallId checks)
-
     try {
         const stallRef = doc(db, "hawker-stalls", targetStallId);
         const stallSnap = await getDoc(stallRef);
@@ -50,7 +48,7 @@ onAuthStateChanged(auth, async (user) => {
             document.getElementById("stallName").value = data.name || "";
             document.getElementById("stallLocation").value = data.address || "";
 
-            // FIX: Handle the image display
+            // Handle the image display
             if (data.image) {
                 const preview = document.getElementById("imagePreview");
                 const previewContainer = document.getElementById("imagePreviewContainer");
@@ -74,8 +72,6 @@ const previewContainer = document.getElementById("imagePreviewContainer");
 
 fileInput.addEventListener("change", (e) => {
     const file = e.target.files[0];
-    
-    // Safety check: Limit file size (500KB is safe for Firestore)
     if (file.size > 512000) { 
         alert("File is too large! Please choose an image under 500KB.");
         fileInput.value = "";
@@ -84,7 +80,7 @@ fileInput.addEventListener("change", (e) => {
 
     const reader = new FileReader();
     reader.onload = () => {
-        base64String = reader.result; // This is the Base64 string
+        base64String = reader.result;
         preview.src = base64String;
         previewContainer.classList.remove("hidden");
     };
@@ -110,7 +106,6 @@ document.getElementById("editForm").addEventListener("submit", async (e) => {
         lastUpdated: Timestamp.now()
     };
 
-    // Only update the image field if a new file was actually picked
     if (base64String) {
         updatedData.image = base64String;
     }

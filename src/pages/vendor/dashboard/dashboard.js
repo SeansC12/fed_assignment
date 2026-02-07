@@ -11,7 +11,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-// --- CONFIGURATION ---
+//CONFIG & INIT
 const firebaseConfig = {
     apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
     authDomain: "fed-assignment-f1456.firebaseapp.com",
@@ -40,7 +40,7 @@ const parseDate = (fbDate) => {
     return fbDate.toDate ? fbDate.toDate() : new Date(fbDate);
 };
 
-// --- MAIN INIT ---
+// --- INITIALIZATION ---
 async function initDashboard() {
     onAuthStateChanged(auth, async (user) => {
         if (user) {
@@ -72,7 +72,7 @@ async function getStallIdByOwner(uid) {
         return null;
     }
 }
-
+// --- DATA LOADING SEQUENCE ---
 async function startDataLoad() {
     try {
         if (!localStorage.getItem("stallStartTime")) {
@@ -121,7 +121,7 @@ async function fetchAndRenderReviews(itemMap) {
     let filteredReviews = [];
     let customerIds = new Set();
 
-    // 1. Filter reviews and track yesterday's count
+    // Filter reviews and track yesterday's count
     snap.forEach(docSnap => {
         const data = docSnap.data();
         
@@ -132,7 +132,7 @@ async function fetchAndRenderReviews(itemMap) {
         if (isStallItem || isGeneralReview) {
             filteredReviews.push({ id: docSnap.id, ...data });
             
-            // --- ADD THIS LINE TO FIX THE RATING ---
+            // Accumulate for average rating
             totalStars += parseFloat(data.rating || 0); 
 
             if (data.customerID) customerIds.add(data.customerID);
@@ -147,7 +147,7 @@ async function fetchAndRenderReviews(itemMap) {
     const avgRating = filteredReviews.length > 0 ? (totalStars / filteredReviews.length).toFixed(1) : "0.0";
     document.getElementById("avg-rating-value").innerText = avgRating;
 
-    // 2. Fetch all emails from 'customer_list' in parallel
+    // Fetch all emails from 'customer_list' in parallel
     const emailMap = {};
     const customerFetches = Array.from(customerIds).map(async (id) => {
         try {
@@ -162,7 +162,7 @@ async function fetchAndRenderReviews(itemMap) {
     });
     await Promise.all(customerFetches);
 
-    // 3. Apply Sorting logic
+    // Apply Sorting logic
     filteredReviews.sort((a, b) => {
         if (sortBy === "latest") {
             return parseDate(b.date) - parseDate(a.date);
@@ -174,7 +174,7 @@ async function fetchAndRenderReviews(itemMap) {
         return 0;
     });
 
-    // 4. Render the cards
+    // Render the cards
     if (filteredReviews.length === 0) {
         container.innerHTML = `<div class="text-center py-20 text-gray-400">No reviews found.</div>`;
     } else {
@@ -183,7 +183,7 @@ async function fetchAndRenderReviews(itemMap) {
             const itemName = data.itemID ? (itemMap[data.itemID] || "Item Review") : "General Feedback";
             const rating = parseInt(data.rating) || 5;
             const customerEmail = emailMap[data.customerID] || "anonymous@user.com";
-            
+        
             let starsHtml = "";
             for(let i=0; i<5; i++) {
                 starsHtml += `<i data-lucide="star" class="w-3 h-3 ${i < rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}"></i>`;
@@ -223,7 +223,7 @@ async function fetchAndRenderReviews(itemMap) {
     if (window.lucide) lucide.createIcons();
 }
 
-// --- 3. CHARTS & KPIS ---
+//CHARTS & KPIS
 async function fetchAndRenderStats() {
     const ordersRef = collection(db, "orders");
     const snap = await getDocs(ordersRef);
@@ -275,7 +275,7 @@ async function fetchAndRenderStats() {
     // --- EFFICIENCY CALC ---
     let efficiency = "0.0";
     if (orderCountToday > 0) {
-        // 1. Collect all order timestamps from TODAY
+        // Collect all order timestamps from TODAY
         const orderTimes = [];
         snap.forEach(doc => {
             const order = doc.data();
@@ -293,13 +293,9 @@ async function fetchAndRenderStats() {
             const nowTime = new Date().getTime();
             
             // Calculate hours between first order and now
-            // We cap the minimum time at 1 minute (0.016 hours) to avoid "Infinity" 
             const hoursSinceFirstOrder = Math.max((nowTime - earliestOrder) / (1000 * 60 * 60), 0.016);
             
             efficiency = (orderCountToday / hoursSinceFirstOrder).toFixed(1);
-            
-            // Logic: If you did 6 orders in 1 minute, this will now show ~360.0
-            // If you prefer it not to be that extreme, we can cap it or use a 1-hour window.
         }
     }
 
@@ -314,7 +310,7 @@ async function fetchAndRenderStats() {
     renderBarChart(hoursFreq);
 }
 
-// --- 4. RENDERERS ---
+// --- RENDERERS ---
 function renderPieChart(dataObj) {
     const canvas = document.getElementById('pieChart');
     if (!canvas) return;
@@ -353,7 +349,6 @@ function renderBarChart(hoursArray) {
     const existingChart = Chart.getChart(canvas);
     if (existingChart) existingChart.destroy();
 
-    // Create labels for all 24 hours: ["12am", "1am", ... "11pm"]
     const labels = Array.from({ length: 24 }, (_, i) => {
         const hour = i % 12 || 12;
         const ampm = i < 12 ? 'am' : 'pm';
@@ -366,9 +361,9 @@ function renderBarChart(hoursArray) {
             labels: labels,
             datasets: [{
                 label: 'Orders',
-                data: hoursArray, // Use the full 24-hour array
+                data: hoursArray,
                 backgroundColor: '#1f2937',
-                hoverBackgroundColor: '#f97316', // Turns orange on hover
+                hoverBackgroundColor: '#f97316',
                 borderRadius: 4,
                 barPercentage: 0.8
             }]
@@ -379,12 +374,11 @@ function renderBarChart(hoursArray) {
             scales: {
                 y: { 
                     beginAtZero: true,
-                    ticks: { precision: 0 }, // Only show whole numbers
+                    ticks: { precision: 0 },
                     grid: { color: '#f3f4f6' }
                 },
                 x: { 
                     grid: { display: false },
-                    // Only show every 3rd label to keep it clean on mobile
                     ticks: {
                         callback: function(value, index) {
                             return index % 4 === 0 ? this.getLabelForValue(index) : '';
@@ -404,9 +398,8 @@ function renderBarChart(hoursArray) {
     });
 }
 
-// --- 5. EVENT LISTENERS ---
+// --- EVENT LISTENERS ---
 document.getElementById("review-sort").addEventListener("change", () => {
-    // Uses the cached map so sorting is near-instant
     if (cachedItemMap) {
         fetchAndRenderReviews(cachedItemMap);
     }
@@ -422,8 +415,6 @@ const menuIcon = document.getElementById('menu-icon');
 if (menuBtn && mobileMenu) {
     menuBtn.addEventListener('click', () => {
         const isHidden = mobileMenu.classList.toggle('hidden');
-        
-        // Update Lucide icon
         if (window.lucide) {
             menuIcon.setAttribute('data-lucide', isHidden ? 'menu' : 'x');
             lucide.createIcons();

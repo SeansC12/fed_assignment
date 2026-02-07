@@ -65,7 +65,7 @@ if (form) {
         }
 
         try {
-            // TASK 2: Create Stall Document
+            // Create Stall Document
             const stallRef = await addDoc(collection(db, "hawker-stalls"), {
                 name: stallName,
                 hawkerCentre: hawkerCentre,
@@ -77,21 +77,20 @@ if (form) {
                 createdAt: serverTimestamp()
             });
 
-            // TASK 3: Link Stall ID to Vendor
+            // Link Stall ID to Vendor
             const vendorRef = doc(db, "vendor_list", currentUser.uid);
             await updateDoc(vendorRef, {
                 stallId: stallRef.id
             });
 
-            // TASK 4: Create Rental Agreement with your specific fields
+            // Create Rental Agreement with your specific fields
             await addDoc(collection(db, "rental_agreements"), {
                 stallId: stallRef.id,
-                status: "renewed", // Based on your example
-                fee: 1500,        // Based on your example
+                status: "renewed",
+                fee: 1500,        
                 image: "https://placehold.co/600x800?text=Rental+Agreement",
                 dateCreated: serverTimestamp(),
                 dateRenewed: serverTimestamp(),
-                // Setting dateEnd to Feb 28, 2027 as per your example
                 dateEnd: new Date("2027-02-28T22:21:07") 
             });
 
@@ -99,7 +98,6 @@ if (form) {
             
             alert("Stall and Rental Agreement created successfully!");
 
-            // Redirect to menu setup
             window.location.href = "../menu_arrange/menu_arrange.html";
 
         } catch (error) {

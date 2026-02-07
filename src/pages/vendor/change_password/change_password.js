@@ -62,8 +62,6 @@ form.addEventListener("submit", async (e) => {
         const user = auth.currentUser;
 
         // 3. Re-authenticate User
-        // This is critical. updatePassword() fails if the login session is too old.
-        // We use the "Current Password" field to refresh the session instantly.
         const credential = EmailAuthProvider.credential(user.email, currentPass);
         await reauthenticateWithCredential(user, credential);
 
@@ -104,7 +102,7 @@ function hideError() {
     errorBox.classList.add("hidden");
 }
 
-// --- PASSWORD VISIBILITY TOGGLE LOGIC ---
+//PASSWORD VISIBILITY TOGGLE LOGIC
 const toggleButtons = document.querySelectorAll(".toggle-password");
 
 toggleButtons.forEach(button => {
@@ -116,11 +114,9 @@ toggleButtons.forEach(button => {
 
         if (input.type === "password") {
             input.type = "text";
-            // Update the icon to 'eye-off'
             icon.setAttribute("data-lucide", "eye-off");
         } else {
             input.type = "password";
-            // Update the icon back to 'eye'
             icon.setAttribute("data-lucide", "eye");
         }
 

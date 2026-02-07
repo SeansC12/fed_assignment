@@ -99,7 +99,7 @@ function fetchRentalAgreement(stallId) {
     const rentalRef = collection(db, "rental_agreements");
     const q = query(rentalRef, where("stallId", "==", stallId));
 
-    // Using onSnapshot for real-time updates to the agreement
+    // Using onSnapshot for real-time updates
     onSnapshot(q, (snapshot) => {
         if (snapshot.empty) {
             renderNoAgreementState();
