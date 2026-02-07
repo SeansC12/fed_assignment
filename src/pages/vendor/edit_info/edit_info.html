@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Stall Info | MyHawker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-6">
+
+    <div class="bg-white w-full max-w-lg rounded-3xl shadow-xl overflow-hidden border border-gray-100 relative">
+        
+        <div id="loadingOverlay" class="absolute inset-0 bg-white z-20 flex items-center justify-center">
+            <div class="flex flex-col items-center gap-2">
+                <i data-lucide="loader-2" class="w-8 h-8 animate-spin text-orange-600"></i>
+                <p class="text-gray-400 text-sm font-medium">Fetching stall details...</p>
+            </div>
+        </div>
+
+        <div class="bg-orange-600 px-8 py-6 flex justify-between items-center">
+            <div>
+                <h1 class="text-white text-2xl font-bold flex items-center gap-2">
+                    <i data-lucide="store" class="w-6 h-6"></i> Edit Stall
+                </h1>
+                <p class="text-orange-100 text-sm mt-1">Update your business profile</p>
+            </div>
+        </div>
+
+        <div class="p-8">
+            <form id="editForm" class="space-y-5">
+                
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Stall Name</label>
+                    <input type="text" id="stallName" required 
+                        class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all font-medium text-gray-800"
+                        placeholder="e.g. Tian Tian Chicken Rice">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Cuisine Specialisation</label>
+                    <div class="relative">
+                        <select id="cuisineType" required 
+                            class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all appearance-none">
+                            <option value="" disabled selected>Select Cuisine Type</option>
+                            <option value="Chinese">Chinese</option>
+                            <option value="Malay">Malay</option>
+                            <option value="Indian">Indian</option>
+                            <option value="Western">Western</option>
+                            <option value="Japanese">Japanese</option>
+                            <option value="Halal">Halal</option>
+                            <option value="Dessert">Dessert</option>
+                            <option value="Drinks">Drinks</option>
+                        </select>
+                        <i data-lucide="utensils" class="w-5 h-5 text-gray-400 absolute left-3 top-3.5"></i>
+                        <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400 absolute right-3 top-3.5 pointer-events-none"></i>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Location / Unit No.</label>
+                    <div class="relative">
+                        <input type="text" id="stallLocation" required 
+                            class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all"
+                            placeholder="#01-05 Maxwell Food Centre">
+                        <i data-lucide="map-pin" class="w-5 h-5 text-gray-400 absolute left-3 top-3.5"></i>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Stall Image</label>
+                    <div class="relative">
+                        <input type="file" id="stallImageInput" accept="image/*"
+                            class="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all text-sm file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100">
+                        <i data-lucide="image" class="w-5 h-5 text-gray-400 absolute left-3 top-3.5"></i>
+                    </div>
+                    <p class="text-[10px] text-gray-400 mt-1 uppercase tracking-tight">Max size: 500KB (to stay within database limits)</p>
+                    
+                    <div id="imagePreviewContainer" class="hidden mt-3">
+                        <img id="imagePreview" src="" class="w-full h-32 object-cover rounded-lg border border-gray-200">
+                    </div>
+                </div>
+
+                <div class="pt-4 flex flex-col gap-3">
+                    <button type="submit" id="saveBtn"
+                        class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-orange-200 transition-all active:scale-95 flex justify-center items-center gap-2">
+                        <i data-lucide="save" class="w-5 h-5"></i> Save Changes
+                    </button>
+                    
+                    <button type="button" id="cancelBtn" class="w-full text-center text-gray-500 hover:text-gray-800 font-medium py-2 transition-colors">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="edit_info.js"></script>
+</body>
+</html>

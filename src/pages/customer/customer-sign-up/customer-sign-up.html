@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customer Sign Up</title>
+    <link rel="stylesheet" href="customer-sign-up.css" />
+</head>
+
+<body>
+    <div class="login-container">
+        <a href="../customer-login/customer-login.html" class="back-button">← Back to Login</a>
+
+        <div class="branding">
+            <img src="../../../../static/myhawker-logo-orange.svg" alt="Logo" class="branding-icon" />
+            <h1 class="branding-text">
+                <span class="text-my">my</span><span class="text-hawker">hawker</span>
+            </h1>
+        </div>
+
+        <h2 class="login-title">Create an account</h2>
+        <p class="login-instruction">Enter your details below to get started</p>
+
+        <form class="login-form" id="customerSignUpForm">
+
+            <div class="form-group">
+                <label for="email" class="input-label">Email address</label>
+                <input type="email" id="email" placeholder="Enter your email" required />
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="input-label">Create Password</label>
+                <input type="password" id="password" placeholder="At least 6 characters" required />
+            </div>
+
+            <button type="submit" id="signUpBtn" class="login-button">Sign Up</button>
+
+            <p class="signup-link">Already have an account? <a href="../customer-login/customer-login.html">Login</a>
+            </p>
+        </form>
+    </div>
+
+    <script type="module" src="customer-sign-up.js"></script>
+</body>
+
+</html>

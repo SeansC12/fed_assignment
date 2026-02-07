@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <!-- Tailwind -->
+    <link rel="stylesheet" href="/static/output.css" />
+</head>
+
+<body>
+    <!-- ================= HEADER ================= -->
+    <header class="bg-[#009481] text-white shadow-md">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+
+            <!-- LOGO -->
+            <img src="/static/NEA_pictures/NEA_Logo.png" alt="NEA Logo" class="h-20 w-40 brightness-0 invert" />
+
+            <!-- NAV LINKS CENTERED -->
+            <nav class="flex gap-20 items-center mx-auto">
+                <a href="../homepage/home.html"
+                    class="text-xl font-semibold hover:text-[#18e667] transition-colors">Home</a>
+                <a href="../Report/cust_exp2.html"
+                    class="text-xl font-semibold hover:text-[#18e667] transition-colors border-b-2 border-white pb-1">Dashboard</a>
+                <a href="../Map/HawkerMap.html"
+                    class="text-xl font-semibold hover:text-[#18e667] transition-colors">Hawker
+                    Centre</a>
+                <a href="#" class="text-xl font-semibold hover:text-[#18e667] transition-colors">Policy</a>
+            </nav>
+
+            <!-- USER INFO -->
+            <div class="flex items-center gap-3">
+                <div class="text-right hidden sm:block">
+                    <p class="text-[10px] uppercase tracking-widest text-slate-200 font-bold">Authenticated Personnel
+                    </p>
+                    <p class="text-sm font-medium">Officer Chan</p>
+                </div>
+                <div
+                    class="h-10 w-10 rounded-full bg-white flex items-center justify-center text-[#009481] font-bold shadow-inner">
+                    OC
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- ================= Main ================= -->
+    <main class="grow max-w-7xl mx-auto p-6 space-y-6">
+    
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row gap-4 items-end">
+    
+            <div class="w-full md:grow">
+                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1 ml-1">Search Stall Name</label>
+                <input type="text" id="searchInput" placeholder="e.g. Golden Wok..."
+                    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-slate-700 focus:ring-2 focus:ring-[#009481] outline-none bg-slate-50">
+            </div>
+    
+            <div class="w-full md:w-72">
+                <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1 ml-1">Location Filter</label>
+                <select id="hawkerFilter"
+                    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-slate-700 font-medium focus:ring-2 focus:ring-[#009481] outline-none bg-slate-50">
+                    <option value="all">All Hawker Centres</option>
+                </select>
+            </div>
+        </div>
+    
+        <div id="stallGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        </div>
+    
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="mt-auto py-8 bg-slate-900 text-slate-500 text-xs">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p>© 2026 National Environment Agency, Singapore. <span class="text-slate-700 mx-2">|</span> Internal Use Only.
+            </p>
+            <div class="flex gap-6">
+                <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+                <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+                <a href="#" class="hover:text-white transition-colors">Support</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Main JS -->
+    <script type="module" src="Dashboard.js"></script>
+    </body>
+
+</html>

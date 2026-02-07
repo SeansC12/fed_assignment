@@ -1,0 +1,56 @@
+mutation CreateDemoData @transaction @auth(level: PUBLIC, insecureReason: "This operation is used to seed the database with demo data and is safe to expose to the public") {
+  user_insertMany(data: [
+    {
+      id: "550e8400-e29b-41d4-a716-446655440000",
+      email: "demouser1@example.com",
+      passwordHash: "hashed_password_1",
+      createdAt: "2024-01-01T00:00:00Z",
+      updatedAt: "2024-01-01T00:00:00Z",
+      displayName: "Demo User 1",
+      profilePictureUrl: "https://example.com/avatar1.jpg"
+    },
+    {
+      id: "550e8400-e29b-41d4-a716-446655440001",
+      email: "demouser2@example.com",
+      passwordHash: "hashed_password_2",
+      createdAt: "2024-01-02T00:00:00Z",
+      updatedAt: "2024-01-02T00:00:00Z",
+      displayName: "Demo User 2",
+      profilePictureUrl: "https://example.com/avatar2.jpg"
+    }
+  ])
+  session_insertMany(data: [
+    {
+      id: "650e8400-e29b-41d4-a716-446655440002",
+      userId: "550e8400-e29b-41d4-a716-446655440000",
+      createdAt: "2024-01-01T00:00:00Z",
+      expiresAt: "2024-02-01T00:00:00Z",
+      ipAddress: "127.0.0.1",
+      sessionToken: "session_token_1"
+    },
+    {
+      id: "650e8400-e29b-41d4-a716-446655440003",
+      userId: "550e8400-e29b-41d4-a716-446655440001",
+      createdAt: "2024-01-02T00:00:00Z",
+      expiresAt: "2024-02-02T00:00:00Z",
+      ipAddress: "127.0.0.1",
+      sessionToken: "session_token_2"
+    }
+  ])
+  passwordResetToken_insertMany(data: [
+    {
+      id: "750e8400-e29b-41d4-a716-446655440004",
+      userId: "550e8400-e29b-41d4-a716-446655440000",
+      createdAt: "2024-01-05T00:00:00Z",
+      expiresAt: "2024-01-06T00:00:00Z",
+      token: "reset_token_1"
+    },
+    {
+      id: "750e8400-e29b-41d4-a716-446655440005",
+      userId: "550e8400-e29b-41d4-a716-446655440001",
+      createdAt: "2024-01-06T00:00:00Z",
+      expiresAt: "2024-01-07T00:00:00Z",
+      token: "reset_token_2"
+    }
+  ])
+}
