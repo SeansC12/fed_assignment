@@ -30,10 +30,12 @@ const auth = getAuth(app);
 let allHawkerStalls = [];
 let selectedCuisines = [];
 let stallReviews = {};
+let showOffersOnly = false;
+let stallsWithPromotions = new Set();
+let selectedRatingThreshold = "all";
 
 onAuthStateChanged(auth, (user) => {
   if (!user) {
-    // User is not logged in, redirect to login page
     window.location.href = "../customer-login/customer-login.html";
   }
 });
@@ -75,6 +77,30 @@ async function getStallReviewStats(stallId) {
   }
 }
 
+async function fetchPromotions() {
+  try {
+    const promotionsCol = collection(db, "promotions");
+    const promotionsSnapshot = await getDocs(promotionsCol);
+    const now = new Date();
+
+    stallsWithPromotions.clear();
+
+    promotionsSnapshot.docs.forEach((doc) => {
+      const promotion = doc.data();
+      const startDate = promotion.dateStart?.toDate();
+      const endDate = promotion.dateEnd?.toDate();
+
+      if (startDate && endDate && now >= startDate && now <= endDate) {
+        if (promotion.stallid) {
+          stallsWithPromotions.add(promotion.stallid);
+        }
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching promotions:", error);
+  }
+}
+
 async function fetchAndDisplayHawkerStalls() {
   try {
     const hawkerStallsCol = collection(db, "hawker-stalls");
@@ -83,6 +109,12 @@ async function fetchAndDisplayHawkerStalls() {
       id: doc.id,
       ...doc.data(),
     }));
+
+    await fetchPromotions();
+
+    await Promise.all(
+      allHawkerStalls.map((stall) => getStallReviewStats(stall.id)),
+    );
 
     displayFilteredStalls();
   } catch (error) {
@@ -95,11 +127,25 @@ async function displayFilteredStalls() {
 
   // Filter by selected cuisines if any
   if (selectedCuisines.length > 0) {
-    filteredStalls = allHawkerStalls.filter((stall) => {
+    filteredStalls = filteredStalls.filter((stall) => {
       // Check if stall has any of the selected cuisines
       return selectedCuisines.some((cuisine) =>
         stall.cuisineTypes?.includes(cuisine),
       );
+    });
+  }
+
+  if (showOffersOnly) {
+    filteredStalls = filteredStalls.filter((stall) =>
+      stallsWithPromotions.has(stall.id),
+    );
+  }
+
+  if (selectedRatingThreshold !== "all") {
+    const threshold = parseFloat(selectedRatingThreshold);
+    filteredStalls = filteredStalls.filter((stall) => {
+      const reviewStats = stallReviews[stall.id];
+      return reviewStats && reviewStats.averageRating >= threshold;
     });
   }
 
@@ -235,6 +281,13 @@ document
   .forEach((button) => {
     button.addEventListener("click", () => {
       button.classList.toggle("active");
+
+      // Check if this is the Offers button
+      const buttonText = button.textContent.trim();
+      if (buttonText.includes("Offers")) {
+        showOffersOnly = button.classList.contains("active");
+        displayFilteredStalls();
+      }
     });
   });
 
@@ -267,6 +320,11 @@ function updateCapsuleText(modalId) {
   }
 
   lucide.createIcons();
+
+  if (modalId === "ratingModal") {
+    selectedRatingThreshold = selectedRadio.value;
+    displayFilteredStalls();
+  }
 }
 
 setupUserProfilePopup(auth);

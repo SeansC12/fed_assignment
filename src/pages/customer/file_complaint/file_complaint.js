@@ -178,7 +178,7 @@ form.addEventListener("submit", async (e) => {
       category: category,
       message: message,
       image: imageBase64,
-      status: "Pending",
+      status: "pending",
       createdAt: new Date().toISOString(),
     };
 
