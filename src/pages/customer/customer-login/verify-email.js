@@ -30,7 +30,6 @@ if (verifyForm) {
 
             if (!querySnapshot.empty) {
                 localStorage.setItem("resetUserId", querySnapshot.docs[0].id);
-
                 window.location.href = "change-password.html"; 
             } else {
                 alert("Account not found. Please check your email.");

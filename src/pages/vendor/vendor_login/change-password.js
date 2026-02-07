@@ -13,14 +13,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-async function hashPassword(string) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(string);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
 const changeForm = document.getElementById("changePasswordForm");
 
 if (changeForm) {
@@ -42,10 +34,8 @@ if (changeForm) {
         }
 
         try {
-            const hashedPassword = await hashPassword(newPass);
-
             const userRef = doc(db, "vendor_list", userId);
-            await updateDoc(userRef, { password: hashedPassword });
+            await updateDoc(userRef, { password: newPass });
             
             localStorage.removeItem("resetUserId");
             
