@@ -4,6 +4,8 @@ import {
   getFirestore,
   collection,
   getDocs,
+  query,
+  where,
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 import {
   getAuth,
@@ -25,17 +27,53 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// Store all hawker stalls and selected cuisines
 let allHawkerStalls = [];
 let selectedCuisines = [];
+let stallReviews = {};
 
-// Check authentication state
 onAuthStateChanged(auth, (user) => {
   if (!user) {
     // User is not logged in, redirect to login page
     window.location.href = "../customer-login/customer-login.html";
   }
 });
+
+async function getStallReviewStats(stallId) {
+  try {
+    if (stallReviews[stallId]) {
+      return stallReviews[stallId];
+    }
+
+    const reviewsRef = collection(db, "reviews");
+    const q = query(
+      reviewsRef,
+      where("stallId", "==", stallId),
+      where("itemID", "==", ""),
+    );
+    const reviewsSnapshot = await getDocs(q);
+
+    if (reviewsSnapshot.empty) {
+      const stats = { averageRating: 0, reviewCount: 0 };
+      stallReviews[stallId] = stats;
+      return stats;
+    }
+
+    const reviews = reviewsSnapshot.docs.map((doc) => doc.data());
+    const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+    const averageRating = totalRating / reviews.length;
+
+    const stats = {
+      averageRating: Math.round(averageRating * 10) / 10,
+      reviewCount: reviews.length,
+    };
+
+    stallReviews[stallId] = stats;
+    return stats;
+  } catch (error) {
+    console.error("Error fetching review stats:", error);
+    return { averageRating: 0, reviewCount: 0 };
+  }
+}
 
 async function fetchAndDisplayHawkerStalls() {
   try {
@@ -52,7 +90,7 @@ async function fetchAndDisplayHawkerStalls() {
   }
 }
 
-function displayFilteredStalls() {
+async function displayFilteredStalls() {
   let filteredStalls = allHawkerStalls;
 
   // Filter by selected cuisines if any
@@ -82,17 +120,21 @@ function displayFilteredStalls() {
         </div>
       `;
     } else {
-      filteredStalls.forEach((stall) => {
-        const card = createHawkerCard(stall);
-        gridContainer.appendChild(card);
+      // Fetch review stats for all stalls in parallel - Create a Promise for each stall
+      const cardPromises = filteredStalls.map(async (stall) => {
+        const reviewStats = await getStallReviewStats(stall.id);
+        return createHawkerCard(stall, reviewStats);
       });
+
+      const cards = await Promise.all(cardPromises);
+      cards.forEach((card) => gridContainer.appendChild(card));
     }
 
     lucide.createIcons();
   }
 }
 
-function createHawkerCard(stall) {
+function createHawkerCard(stall, reviewStats) {
   const card = document.createElement("div");
   card.className =
     "bg-transparent rounded-2xl overflow-hidden transition-shadow cursor-pointer";
@@ -100,11 +142,26 @@ function createHawkerCard(stall) {
   const imageBase64 = stall.image || "";
   console.log(imageBase64.slice(0, 30));
   const name = stall.name || "Unknown Hawker";
-  const rating = stall.rating || "N/A";
-  const reviewCount = stall.reviewCount || stall.reviews || 0;
+  const rating = reviewStats.averageRating || 0;
+  const reviewCount = reviewStats.reviewCount || 0;
   const deliveryTime = stall.deliveryTime || stall.delivery_time || "N/A";
 
   console.log(stall.id);
+
+  const ratingDisplay =
+    reviewCount > 0
+      ? `
+    <div class="flex items-center gap-1 font-medium">
+      <span>${rating.toFixed(1)}</span>
+      <i data-lucide="star" class="w-4 h-4 fill-current text-yellow-500"></i>
+    </div>
+    <span>(${reviewCount.toLocaleString()}+)</span>
+    <span>•</span>
+  `
+      : `
+    <span class="font-medium text-orange-500">New</span>
+    <span>•</span>
+  `;
 
   card.innerHTML = `
     <a href="/src/pages/customer/stall/stall-details.html?id=${stall.id}">
@@ -116,12 +173,7 @@ function createHawkerCard(stall) {
           <h3 class="text-base font-semibold">${name}</h3>
         </div>
         <div class="flex items-center gap-2 text-sm text-gray-600">
-          <div class="flex items-center gap-1 font-medium">
-            <span>${rating}</span>
-            <i data-lucide="star" class="w-4 h-4 fill-current text-yellow-500"></i>
-          </div>
-          <span>(${reviewCount.toLocaleString()}+)</span>
-          <span>•</span>
+          ${ratingDisplay}
           <span>${deliveryTime} min</span>
         </div>
       </div>
