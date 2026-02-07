@@ -930,7 +930,6 @@ function displayMenuItems(menuItems) {
   attachQuantityEventListeners();
 }
 
-// Update category tabs
 function updateCategoryTabs(categories) {
   const tabsContainer = document.querySelector("#category-tabs");
   if (!tabsContainer) return;
@@ -945,7 +944,6 @@ function updateCategoryTabs(categories) {
     tabsContainer.appendChild(button);
   });
 
-  // Add scroll buttons
   const scrollButtonsDiv = document.createElement("div");
   scrollButtonsDiv.className = "grow flex items-center justify-end";
   scrollButtonsDiv.innerHTML = `
