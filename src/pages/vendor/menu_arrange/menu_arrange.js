@@ -121,6 +121,7 @@ function startMenuListener() {
     });
 }
 
+
 // Render items with Promotion Calculation (No animation)
 async function renderItems() {
   const grid = document.getElementById("menu-grid");

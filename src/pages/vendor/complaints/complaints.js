@@ -3,13 +3,14 @@ import {
     getFirestore, 
     collection, 
     query, 
-    where, // Added for filtering
-    orderBy, 
+    where, 
     onSnapshot, 
     doc, 
-    getDoc, 
-    updateDoc // Changed from deleteDoc
+    getDoc,
+    getDocs, 
+    updateDoc 
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
@@ -22,117 +23,112 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
 const container = document.getElementById('complaints-container');
 const countBadge = document.getElementById('complaint-count');
 
-/**
- * RESOLVE FUNCTION
- * Updates status to 'completed'
- */
+onAuthStateChanged(auth, async (user) => {
+    if (user) {
+        const stallsRef = collection(db, "hawker-stalls");
+        const qStall = query(stallsRef, where("ownerId", "==", user.uid));
+        const stallSnap = await getDocs(qStall);
+
+        if (!stallSnap.empty) {
+            const stallId = stallSnap.docs[0].id;
+            listenToComplaints(stallId);
+        }
+    }
+});
+
 window.resolveComplaint = async (id) => {
     if (!confirm("Mark this complaint as completed?")) return;
-    
     try {
-        const docRef = doc(db, "complaint_list", id);
-        // Updates the status field to 'completed'
-        await updateDoc(docRef, {
-            status: "completed"
-        });
+        await updateDoc(doc(db, "complaint_list", id), { status: "completed" });
     } catch (error) {
-        console.error("Error updating status:", error);
-        alert("Failed to update status. Make sure the document exists.");
+        console.error("Resolve failed:", error);
     }
 };
 
 async function getCustomerName(userId) {
     if (!userId) return "Unknown User";
     try {
-        const customerDoc = await getDoc(doc(db, "customer_list", userId));
-        return customerDoc.exists() ? (customerDoc.data().email || "Unnamed Customer") : "Unknown Customer";
-    } catch (e) {
-        return "Error loading name";
-    }
+        const snap = await getDoc(doc(db, "customer_list", userId));
+        return snap.exists() ? (snap.data().email || snap.data().customerName || "Customer") : "Guest";
+    } catch { return "Customer"; }
 }
 
-// FETCH AND RENDER
-function listenToComplaints() {
-    // 1. SIMPLIFIED QUERY: Remove the 'where' filter. 
-    // This removes the need for a composite index.
-    const q = query(
-        collection(db, "complaint_list"), 
-        orderBy("createdAt", "desc")
-    );
+function listenToComplaints(stallId) {
+    // Only filter by stallId to avoid index requirement
+    const q = query(collection(db, "complaint_list"), where("stallId", "==", stallId));
 
     onSnapshot(q, async (snapshot) => {
-        // 2. JS FILTERING: Filter for 'pending' items here in code instead
-        const pendingDocs = snapshot.docs.filter(docSnap => docSnap.data().status === 'pending');
+        // STEP 1: Turn snapshots into plain objects immediately
+        const allItems = snapshot.docs.map(d => ({
+            id: d.id,
+            ...d.data()
+        }));
 
-        if (pendingDocs.length === 0) {
-            container.innerHTML = `
-                <div class="col-span-full text-center py-20 bg-white rounded-2xl border-2 border-dashed border-gray-200">
-                    <p class="text-gray-400 font-medium">No pending complaints. All caught up!</p>
-                </div>`;
-            countBadge.innerText = "0 Pending";
+        // STEP 2: Filter for 'pending' items
+        const pendingItems = allItems.filter(item => item.status === 'pending');
+
+        // STEP 3: Sort by date (latest first)
+        pendingItems.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+
+        if (countBadge) countBadge.innerText = `${pendingItems.length} Pending Complaints`;
+
+        if (pendingItems.length === 0) {
+            container.innerHTML = `<div class="col-span-full text-center py-20 text-gray-400">All caught up!</div>`;
             return;
         }
 
-        countBadge.innerText = `${pendingDocs.length} Pending Complaints`;
+        // STEP 4: Render
+        const htmlPromises = pendingItems.map(async (complaint) => {
+            const name = await getCustomerName(complaint.userId);
 
-        // Use pendingDocs instead of snapshot.docs
-        const complaintPromises = pendingDocs.map(async (docSnap) => {
-            const data = docSnap.data();
-            const customerName = await getCustomerName(data.userId);
+            // 1. Convert the String to a JS Date Object
+            // JavaScript's new Date() handles "2026-02-07T13:48..." perfectly
+            const dateObj = complaint.createdAt ? new Date(complaint.createdAt) : null;
+
+            // 2. Format for Singapore/Display
+            let dateDisplay = "Just now";
             
-            const date = data.createdAt ? new Date(data.createdAt).toLocaleDateString('en-SG', {
-                day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
-            }) : "Recently";
+            if (dateObj && !isNaN(dateObj.getTime())) {
+                dateDisplay = dateObj.toLocaleDateString('en-SG', { 
+                    day: 'numeric', 
+                    month: 'short', 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+            }
 
             return `
-                <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col">
-                    <div class="h-48 bg-gray-100 relative">
-                        <img src="${data.image}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x300?text=No+Photo'">
-                        <div class="absolute top-3 left-3">
-                            <span class="bg-orange-600 text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase shadow-sm">
-                                ${data.category || 'General'}
-                            </span>
+                <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm p-5 flex flex-col">
+                    <div class="h-48 bg-gray-100 rounded-xl mb-4 overflow-hidden">
+                        <img src="${complaint.image}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x300?text=No+Photo'">
+                    </div>
+                    <div class="flex justify-between mb-4">
+                        <div>
+                            <p class="text-[10px] uppercase font-bold text-gray-400">Customer</p>
+                            <h4 class="font-bold">${name}</h4>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[10px] uppercase font-bold text-gray-400">Time</p>
+                            <span class="text-xs text-gray-600">${dateDisplay}</span>
                         </div>
                     </div>
-                    
-                    <div class="p-5 flex-1 flex flex-col">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <p class="text-[10px] uppercase font-bold text-gray-400 tracking-widest">Customer</p>
-                                <h4 class="font-bold text-gray-900">${customerName}</h4>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-[10px] uppercase font-bold text-gray-400 tracking-widest">Time</p>
-                                <span class="text-xs font-medium text-gray-600">${date}</span>
-                            </div>
-                        </div>
-
-                        <div class="bg-orange-50/50 rounded-xl p-4 mb-6 border border-orange-100 flex-1">
-                            <p class="text-sm text-gray-700 leading-relaxed italic">
-                                "${data.message || 'No specific details provided.'}"
-                            </p>
-                        </div>
-                        
-                        <div class="flex gap-2">
-                            <button onclick="resolveComplaint('${docSnap.id}')" 
-                                    class="flex-1 bg-green-600 text-white py-3 rounded-xl text-sm font-bold hover:bg-green-700 transition-colors">
-                                Mark as Completed
-                            </button>
-                        </div>
+                    <div class="bg-orange-50 rounded-xl p-4 mb-4 flex-1">
+                        <p class="text-sm italic">"${complaint.message || 'No details.'}"</p>
                     </div>
+                    <button onclick="resolveComplaint('${complaint.id}')" 
+                            class="w-full bg-green-600 text-white py-3 rounded-xl font-bold hover:bg-green-700">
+                        Mark as Completed
+                    </button>
                 </div>`;
         });
 
-        const complaintHtmlArray = await Promise.all(complaintPromises);
-        container.innerHTML = complaintHtmlArray.join('');
+        const finalHtml = await Promise.all(htmlPromises);
+        container.innerHTML = finalHtml.join('');
         if (window.lucide) lucide.createIcons();
     });
 }
-if (window.lucide) lucide.createIcons();
-
-
-listenToComplaints();
