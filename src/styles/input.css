@@ -62,15 +62,23 @@
   }
 
   .cuisine-item {
-    @apply flex flex-col items-center gap-2 shrink-0 cursor-pointer;
+    @apply flex flex-col items-center gap-2 shrink-0 cursor-pointer transition-all duration-300 p-1 md:p-2;
+  }
+  
+  .cuisine-item.active .cuisine-image {
+    @apply ring-4 ring-orange-primary ring-offset-2 scale-105;
+  }
+  
+  .cuisine-item.active .cuisine-label {
+    @apply text-orange-primary font-semibold;
   }
 
   .cuisine-image {
-    @apply w-24 h-24 bg-light-gray rounded-2xl;
+    @apply w-10 h-10 md:w-20 md:h-20 bg-light-gray transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg rounded-full;
   }
 
   .cuisine-label {
-    @apply text-sm font-medium group-hover:underline;
+    @apply text-xs md:text-sm font-medium group-hover:text-orange-primary transition-colors duration-300;
   }
 
   .capsule {

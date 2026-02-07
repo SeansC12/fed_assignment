@@ -13,6 +13,7 @@ import {
   onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { setupUserProfilePopup } from "../user-utils.js";
+import { updateCartBadge } from "../cart-utils.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
@@ -180,6 +181,40 @@ async function createOrderCard(order) {
   return card;
 }
 
+async function getItemDiscount(itemId, stallId) {
+  try {
+    const promotionsRef = collection(db, "promotions");
+    const q = query(promotionsRef, where("stallid", "==", stallId));
+    const querySnapshot = await getDocs(q);
+
+    const now = new Date();
+
+    for (const doc of querySnapshot.docs) {
+      const promotion = doc.data();
+
+      // Check if promotion is active
+      const startDate = promotion.dateStart?.toDate();
+      const endDate = promotion.dateEnd?.toDate();
+
+      if (startDate && endDate && now >= startDate && now <= endDate) {
+        // Check if this item is affected
+        if (promotion.affectedId && promotion.affectedId.includes(itemId)) {
+          return parseInt(promotion.discount) || 0;
+        }
+      }
+    }
+
+    return 0;
+  } catch (error) {
+    console.error("Error fetching discount:", error);
+    return 0;
+  }
+}
+
+function calculateDiscountedPrice(originalPrice, discountPercent) {
+  return originalPrice * (1 - discountPercent / 100);
+}
+
 async function loadOrderItems(items) {
   const itemPromises = items.map(async (item) => {
     try {
@@ -198,7 +233,28 @@ async function loadOrderItems(items) {
       }
 
       const itemData = itemDoc.data();
-      const subtotal = itemData.price * item.quantity;
+      const originalPrice = itemData.price;
+
+      const discount = await getItemDiscount(item.itemId, item.stallId);
+      const hasDiscount = discount > 0;
+      const displayPrice = hasDiscount
+        ? calculateDiscountedPrice(originalPrice, discount)
+        : originalPrice;
+
+      const subtotal = displayPrice * item.quantity;
+
+      // Build price HTML
+      const priceHTML = hasDiscount
+        ? `
+          <div class="flex flex-col gap-0.5">
+            <span class="text-xs text-gray-400 line-through">$${originalPrice.toFixed(2)}</span>
+            <div class="flex items-center gap-1">
+              <span class="text-sm font-semibold text-orange-500">$${displayPrice.toFixed(2)}</span>
+              <span class="bg-orange-500 text-white text-xs px-1 py-0.5 rounded">${discount}% OFF</span>
+            </div>
+          </div>
+        `
+        : `<span class="text-sm font-semibold">$${displayPrice.toFixed(2)}</span>`;
 
       return `
         <div class="flex gap-3 p-3 bg-white rounded-lg">
@@ -209,7 +265,11 @@ async function loadOrderItems(items) {
             <h4 class="font-medium text-sm truncate">${itemData.name}</h4>
             <p class="text-xs text-gray-500 mt-0.5">${itemData.category}</p>
             <div class="flex items-center justify-between mt-2">
-              <span class="text-xs text-gray-600">Qty: ${item.quantity}</span>
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-gray-600">Qty: ${item.quantity}</span>
+                <span class="text-xs text-gray-400">×</span>
+                ${priceHTML}
+              </div>
               <span class="font-semibold text-sm">$${subtotal.toFixed(2)}</span>
             </div>
           </div>
@@ -259,3 +319,58 @@ function getStatusConfig(status) {
 }
 
 setupUserProfilePopup(auth);
+updateCartBadge();
+setupMobileMenu();
+
+// Mobile menu toggle
+function setupMobileMenu() {
+  const mobileMenuButton = document.getElementById("mobile-menu-button");
+  const mobileMenu = document.getElementById("mobile-menu");
+
+  if (mobileMenuButton && mobileMenu) {
+    mobileMenuButton.addEventListener("click", () => {
+      mobileMenu.classList.toggle("hidden");
+      const icon = mobileMenuButton.querySelector("i");
+      if (icon) {
+        if (mobileMenu.classList.contains("hidden")) {
+          icon.setAttribute("data-lucide", "menu");
+        } else {
+          icon.setAttribute("data-lucide", "x");
+        }
+        lucide.createIcons();
+      }
+    });
+  }
+
+  // Setup mobile user profile popup
+  const userProfileButtonMobile = document.getElementById(
+    "user-profile-button-mobile",
+  );
+  const userProfilePopupMobile = document.getElementById(
+    "user-profile-popup-mobile",
+  );
+
+  if (userProfileButtonMobile && userProfilePopupMobile) {
+    userProfileButtonMobile.addEventListener("click", () => {
+      userProfilePopupMobile.classList.toggle("hidden");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (
+        !userProfileButtonMobile.contains(e.target) &&
+        !userProfilePopupMobile.contains(e.target)
+      ) {
+        userProfilePopupMobile.classList.add("hidden");
+      }
+    });
+
+    const logoutButtonMobile = document.getElementById("logout-button-mobile");
+    if (logoutButtonMobile) {
+      logoutButtonMobile.addEventListener("click", () => {
+        auth.signOut().then(() => {
+          window.location.href = "../customer-login/customer-login.html";
+        });
+      });
+    }
+  }
+}

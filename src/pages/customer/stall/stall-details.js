@@ -204,6 +204,8 @@ function attachQuantityEventListeners() {
     const increaseBtn = e.target.closest(".quantity-increase");
     const decreaseBtn = e.target.closest(".quantity-decrease");
     const addBtn = e.target.closest(".food-item-card-add-button");
+    const likeBtn = e.target.closest(".food-item-card-like-button");
+    const card = e.target.closest(".food-item-card");
 
     if (increaseBtn) {
       e.stopPropagation();
@@ -217,6 +219,15 @@ function attachQuantityEventListeners() {
       e.stopPropagation();
       const itemId = addBtn.dataset.itemId;
       addToCart(itemId);
+    } else if (likeBtn) {
+      e.stopPropagation();
+      likeBtn.classList.toggle("liked");
+    } else if (card && !card.classList.contains("cursor-not-allowed")) {
+      const wrapper = card.querySelector("[id^='item-wrapper-']");
+      if (wrapper) {
+        const itemId = wrapper.id.replace("item-wrapper-", "");
+        addToCart(itemId);
+      }
     }
   });
 }
@@ -319,6 +330,7 @@ async function fetchReviews(stallId) {
     const reviewsQuery = query(
       collection(db, "reviews"),
       where("stallId", "==", stallId),
+      where("itemID", "==", ""),
     );
     const reviewsSnapshot = await getDocs(reviewsQuery);
     const reviews = reviewsSnapshot.docs.map((doc) => ({
@@ -743,7 +755,7 @@ function setupReviewModal() {
   }
 }
 
-function updateStallInfo(stall) {
+function updateStallInfo(stall, reviewStats) {
   const stallNameElement = document.querySelector("#stall-name");
   if (stallNameElement) {
     stallNameElement.textContent = stall.name || "Unknown Stall";
@@ -771,15 +783,29 @@ function updateStallInfo(stall) {
       .map((cuisine) => `<span>• ${cuisine}</span>`)
       .join("\n        ");
 
-    const ratingHtml =
-      categoriesElement.querySelector(".flex.items-center.gap-0\\.5")
-        ?.outerHTML || "";
-    categoriesElement.innerHTML = ratingHtml + "\n        " + cuisinesHtml;
-  }
+    const rating = reviewStats.averageRating || 0;
+    const reviewCount = reviewStats.reviewCount || 0;
 
-  const heartsElement = document.querySelector("#stall-hearts");
-  if (heartsElement) {
-    heartsElement.textContent = `(${stall.hearts || 0})`;
+    const ratingHtml =
+      reviewCount > 0
+        ? `
+      <div class="flex items-center gap-0.5">
+        <span class="font-semibold text-black">${rating.toFixed(1)}</span>
+        <i
+          data-lucide="star"
+          class="w-4 h-4 fill-yellow-400 text-yellow-400"
+        ></i>
+        <span id="stall-hearts" class="text-gray-500">(${reviewCount})</span>
+      </div>
+    `
+        : `
+      <div class="flex items-center gap-0.5">
+        <span class="font-semibold text-orange-500">New</span>
+      </div>
+    `;
+
+    categoriesElement.innerHTML = ratingHtml + "\n        " + cuisinesHtml;
+    lucide.createIcons();
   }
 }
 
@@ -849,13 +875,6 @@ function createFoodItemCard(item) {
     </div>
   `;
 
-  card.addEventListener("click", (e) => {
-    if (e.target.closest("button") || !inStock) {
-      return;
-    }
-    addToCart(item.id);
-  });
-
   return card;
 }
 
@@ -915,16 +934,7 @@ function displayMenuItems(menuItems) {
     menuContainer.appendChild(section);
   });
 
-  // Reinitialize Lucide icons
   lucide.createIcons();
-
-  // Add event listeners for like buttons
-  document.querySelectorAll(".food-item-card-like-button").forEach((button) => {
-    button.addEventListener("click", (e) => {
-      e.stopPropagation();
-      button.classList.toggle("liked");
-    });
-  });
 
   // Update all item UIs to reflect current cart state
   menuItems.forEach((item) => {
@@ -935,7 +945,6 @@ function displayMenuItems(menuItems) {
   attachQuantityEventListeners();
 }
 
-// Update category tabs
 function updateCategoryTabs(categories) {
   const tabsContainer = document.querySelector("#category-tabs");
   if (!tabsContainer) return;
@@ -950,7 +959,6 @@ function updateCategoryTabs(categories) {
     tabsContainer.appendChild(button);
   });
 
-  // Add scroll buttons
   const scrollButtonsDiv = document.createElement("div");
   scrollButtonsDiv.className = "grow flex items-center justify-end";
   scrollButtonsDiv.innerHTML = `
@@ -1008,10 +1016,11 @@ async function initializePage() {
   }
 
   // Fetch ALL stall details in parallel
-  const [stall, menuItems, promotions] = await Promise.all([
+  const [stall, menuItems, promotions, reviews] = await Promise.all([
     fetchStallDetails(stallId),
     fetchMenuItems(stallId),
     fetchPromotions(stallId),
+    fetchReviews(stallId),
   ]);
 
   if (!stall) {
@@ -1028,8 +1037,13 @@ async function initializePage() {
     return;
   }
 
-  // Update page with stall information
-  updateStallInfo(stall);
+  const averageRating = calculateAverageRating(reviews);
+  const reviewStats = {
+    averageRating: parseFloat(averageRating),
+    reviewCount: reviews.length,
+  };
+
+  updateStallInfo(stall, reviewStats);
 
   // Store stall and menu data globally for cart functionality
   currentStall = stall;
@@ -1064,17 +1078,69 @@ async function initializePage() {
   // Setup review modal
   setupReviewModal();
 
-  // Hide loading overlay and show content
   hideLoadingOverlay();
 }
 
-// Run initialization when DOM is loaded
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", () => {
     initializePage();
     setupUserProfilePopup(auth);
+    setupMobileMenu();
   });
 } else {
   initializePage();
   setupUserProfilePopup(auth);
+  setupMobileMenu();
+}
+
+function setupMobileMenu() {
+  const mobileMenuButton = document.getElementById("mobile-menu-button");
+  const mobileMenu = document.getElementById("mobile-menu");
+
+  if (mobileMenuButton && mobileMenu) {
+    mobileMenuButton.addEventListener("click", () => {
+      mobileMenu.classList.toggle("hidden");
+      const icon = mobileMenuButton.querySelector("i");
+      if (icon) {
+        if (mobileMenu.classList.contains("hidden")) {
+          icon.setAttribute("data-lucide", "menu");
+        } else {
+          icon.setAttribute("data-lucide", "x");
+        }
+        lucide.createIcons();
+      }
+    });
+  }
+
+  // Setup mobile user profile popup
+  const userProfileButtonMobile = document.getElementById(
+    "user-profile-button-mobile",
+  );
+  const userProfilePopupMobile = document.getElementById(
+    "user-profile-popup-mobile",
+  );
+
+  if (userProfileButtonMobile && userProfilePopupMobile) {
+    userProfileButtonMobile.addEventListener("click", () => {
+      userProfilePopupMobile.classList.toggle("hidden");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (
+        !userProfileButtonMobile.contains(e.target) &&
+        !userProfilePopupMobile.contains(e.target)
+      ) {
+        userProfilePopupMobile.classList.add("hidden");
+      }
+    });
+
+    const logoutButtonMobile = document.getElementById("logout-button-mobile");
+    if (logoutButtonMobile) {
+      logoutButtonMobile.addEventListener("click", () => {
+        auth.signOut().then(() => {
+          window.location.href = "../customer-login/customer-login.html";
+        });
+      });
+    }
+  }
 }

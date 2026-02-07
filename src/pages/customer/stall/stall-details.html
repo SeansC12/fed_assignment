@@ -12,78 +12,188 @@
     <header
       class="sticky top-0 z-50 w-full bg-off-white border-b border-light-gray"
     >
-      <nav
-        class="w-full bg-off-white grid grid-cols-[1fr_2fr_1fr] items-center gap-4 px-8 py-4 max-w-375 mx-auto"
-      >
-        <a href="/src/pages/customer/home/home.html">
-          <div class="flex gap-3 items-center">
-            <img
-              src="/static/myhawker-logo-orange.svg"
-              alt="Logo"
-              class="h-10"
-            />
-            <img
-              src="/static/myhawker-name-orange.svg"
-              alt="Logo"
-              class="h-5"
+      <nav class="w-full bg-off-white px-8 py-4 max-w-375 mx-auto">
+        <!-- Desktop Navigation -->
+        <div
+          class="hidden md:grid md:grid-cols-[1fr_2fr_1fr] items-center gap-4"
+        >
+          <a href="/src/pages/customer/home/home.html">
+            <div class="flex gap-3 items-center">
+              <img
+                src="/static/myhawker-logo-orange.svg"
+                alt="Logo"
+                class="h-10"
+              />
+              <img
+                src="/static/myhawker-name-orange.svg"
+                alt="Logo"
+                class="h-5"
+              />
+            </div>
+          </a>
+
+          <div class="relative max-w-xl mx-auto w-full">
+            <i
+              data-lucide="map-pin"
+              class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-900"
+            ></i>
+            <input
+              class="w-full text-sm px-3.5 py-2 pl-11 bg-linear-to-r font-semibold from-light-gray to-extra-light-gray rounded-full text-neutral-900"
+              placeholder="Search location..."
             />
           </div>
-        </a>
 
-        <div class="relative max-w-xl mx-auto w-full">
-          <i
-            data-lucide="map-pin"
-            class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-900"
-          ></i>
-          <input
-            class="w-full text-sm px-3.5 py-2 pl-11 bg-linear-to-r font-semibold from-light-gray to-extra-light-gray rounded-full text-neutral-900"
-            placeholder="Search location..."
-          />
+          <div class="flex items-center justify-end gap-3">
+            <a
+              href="../my-orders/my-orders.html"
+              class="button"
+              data-variant="small-solid"
+              >My Orders</a
+            >
+            <a
+              href="/src/pages/customer/cart/cart.html"
+              class="button relative"
+              data-variant="solid-gray-small"
+              id="cart-button"
+            >
+              <i data-lucide="shopping-cart" class="w-5 h-5 text-black"></i>
+              <span
+                id="cart-badge"
+                class="hidden absolute -top-2 -right-2 bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
+                >0</span
+              >
+            </a>
+            <div class="relative">
+              <button
+                id="user-profile-button"
+                class="button"
+                data-variant="solid-gray-small"
+              >
+                <i data-lucide="user" class="w-5 h-5 text-black"></i>
+              </button>
+              <div
+                id="user-profile-popup"
+                class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
+              >
+                <div class="py-2">
+                  <button
+                    id="logout-button"
+                    class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                  >
+                    <i
+                      data-lucide="log-out"
+                      class="w-4 h-4 inline-block mr-2"
+                    ></i>
+                    Log Out
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="flex items-center justify-end gap-3">
-          <a
-            href="../my-orders/my-orders.html"
-            class="button"
-            data-variant="small-solid"
-            >My Orders</a
-          >
-          <a
-            href="/src/pages/customer/cart/cart.html"
+        <!-- Mobile Navigation -->
+        <div class="md:hidden flex items-center justify-between">
+          <a href="/src/pages/customer/home/home.html">
+            <div class="flex gap-3 items-center">
+              <img
+                src="/static/myhawker-logo-orange.svg"
+                alt="Logo"
+                class="h-8"
+              />
+              <img
+                src="/static/myhawker-name-orange.svg"
+                alt="Logo"
+                class="h-4"
+              />
+            </div>
+          </a>
+
+          <!-- Mobile Menu Hamburger -->
+          <button
+            id="mobile-menu-button"
             class="button relative"
             data-variant="solid-gray-small"
-            id="cart-button"
+            aria-label="Toggle menu"
           >
-            <i data-lucide="shopping-cart" class="w-5 h-5 text-black"></i>
+            <i data-lucide="menu" class="w-6 h-6 text-black"></i>
             <span
-              id="cart-badge"
+              id="hamburger-cart-badge"
               class="hidden absolute -top-2 -right-2 bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
               >0</span
             >
-          </a>
-          <div class="relative">
-            <button
-              id="user-profile-button"
-              class="button"
+          </button>
+        </div>
+
+        <!-- Mobile Dropdown Menu -->
+        <div
+          id="mobile-menu"
+          class="hidden md:hidden mt-4 pb-4 border-t border-light-gray pt-4"
+        >
+          <!-- Search Input -->
+          <div class="relative w-full mb-4">
+            <i
+              data-lucide="map-pin"
+              class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-900"
+            ></i>
+            <input
+              class="w-full text-sm px-3.5 py-2 pl-11 bg-linear-to-r font-semibold from-light-gray to-extra-light-gray rounded-full text-neutral-900"
+              placeholder="Search location..."
+            />
+          </div>
+
+          <!-- Navigation Items -->
+          <div class="flex flex-col gap-3">
+            <a
+              href="../my-orders/my-orders.html"
+              class="button w-full"
+              data-variant="small-solid"
+            >
+              <i data-lucide="package" class="w-5 h-5 mr-2"></i>
+              My Orders
+            </a>
+            <a
+              href="/src/pages/customer/cart/cart.html"
+              class="button w-full relative"
               data-variant="solid-gray-small"
+              id="cart-button-mobile"
             >
-              <i data-lucide="user" class="w-5 h-5 text-black"></i>
-            </button>
-            <div
-              id="user-profile-popup"
-              class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
-            >
-              <div class="py-2">
-                <button
-                  id="logout-button"
-                  class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-                >
-                  <i
-                    data-lucide="log-out"
-                    class="w-4 h-4 inline-block mr-2"
-                  ></i>
-                  Log Out
-                </button>
+              <i
+                data-lucide="shopping-cart"
+                class="w-5 h-5 mr-2 text-black"
+              ></i>
+              My Cart
+              <span
+                id="cart-badge-mobile"
+                class="hidden absolute top-1/2 -translate-y-1/2 right-4 bg-orange-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
+                >0</span
+              >
+            </a>
+            <div class="relative">
+              <button
+                id="user-profile-button-mobile"
+                class="button w-full"
+                data-variant="solid-gray-small"
+              >
+                <i data-lucide="user" class="w-5 h-5 mr-2 text-black"></i>
+                My Account
+              </button>
+              <div
+                id="user-profile-popup-mobile"
+                class="hidden mt-2 w-full bg-white rounded-lg shadow-lg border border-gray-200"
+              >
+                <div class="py-2">
+                  <button
+                    id="logout-button-mobile"
+                    class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                  >
+                    <i
+                      data-lucide="log-out"
+                      class="w-4 h-4 inline-block mr-2"
+                    ></i>
+                    Log Out
+                  </button>
+                </div>
               </div>
             </div>
           </div>
