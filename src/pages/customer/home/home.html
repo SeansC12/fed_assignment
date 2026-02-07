@@ -106,20 +106,26 @@
             <h1 class="text-3xl font-semibold mb-6 leading-tight text-center">
               Enjoy the latest discounts on your favourite hawkers
             </h1>
-            <button class="button px-5 mx-auto" data-variant="solid">
+            <a class="button w-max mx-auto" data-variant="solid">
               View
               <i data-lucide="arrow-right" class="w-5 h-5 -mt-1 ml-3"></i>
-            </button>
+            </a>
           </div>
         </div>
       </section>
 
-      <section class="section-container">
-        <div class="mb-6">
-          <h2 class="section-heading mb-2">Filter by cuisine</h2>
-          <p class="text-sm text-gray-600">Select one or more cuisines to filter hawker stalls</p>
+      <section class="section-container pb-0 border-b-0">
+        <div class="mb-2 md:mb-4">
+          <h2 id="search_for_anything" class="section-heading mb-2">
+            Search for Anything
+          </h2>
+          <p class="text-sm text-gray-600">
+            Select one or more cuisines to filter hawker stalls
+          </p>
         </div>
-        <div class="flex gap-5 overflow-x-auto pb-4 pt-2 w-full">
+        <div
+          class="flex gap-1 md:gap-5 overflow-x-auto pb-4 pt-1 md:pt-2 w-full"
+        >
           <button class="cuisine-item group" data-cuisine="Halal">
             <img
               src="/static/cuisines/halal.svg"
@@ -196,9 +202,9 @@
       </section>
 
       <!-- Filters Section -->
-      <section class="section-container">
-        <h2 class="section-heading">Search for anything</h2>
-        <div class="flex gap-3 overflow-x-auto pb-2">
+      <section class="section-container pt-0 border-b-0">
+        <!-- <h2 class="section-heading">Search for anything</h2> -->
+        <div class="flex gap-3 overflow-x-auto">
           <button class="filter-capsule active">
             <span class="filter-capsule-icon">
               <i data-lucide="tag" class="w-4 h-4"></i>

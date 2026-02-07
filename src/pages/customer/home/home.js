@@ -60,14 +60,14 @@ function displayFilteredStalls() {
     filteredStalls = allHawkerStalls.filter((stall) => {
       // Check if stall has any of the selected cuisines
       return selectedCuisines.some((cuisine) =>
-        stall.cuisineTypes?.includes(cuisine)
+        stall.cuisineTypes?.includes(cuisine),
       );
     });
   }
 
   const resultsElement = document.querySelector("#results_count");
   if (resultsElement) {
-    resultsElement.textContent = `${filteredStalls.length} result${filteredStalls.length !== 1 ? 's' : ''}`;
+    resultsElement.textContent = `${filteredStalls.length} result${filteredStalls.length !== 1 ? "s" : ""}`;
   }
 
   const gridContainer = document.querySelector("#grid_container");
@@ -224,15 +224,15 @@ setupUserProfilePopup(auth);
 document.querySelectorAll(".cuisine-item").forEach((button) => {
   button.addEventListener("click", () => {
     const cuisine = button.getAttribute("data-cuisine");
-    
+
     button.classList.toggle("active");
-    
+
     if (selectedCuisines.includes(cuisine)) {
       selectedCuisines = selectedCuisines.filter((c) => c !== cuisine);
     } else {
       selectedCuisines.push(cuisine);
     }
-    
+
     displayFilteredStalls();
   });
 });
