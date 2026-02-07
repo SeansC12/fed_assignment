@@ -25,6 +25,15 @@ const db = getFirestore(app);
 const form = document.getElementById("createStallForm");
 let currentUser = null;
 
+function convertImageToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+        reader.readAsDataURL(file);
+    });
+}
+
 onAuthStateChanged(auth, (user) => {
     if (user) {
         currentUser = user;
@@ -48,7 +57,12 @@ if (form) {
         const hawkerCentre = document.getElementById("hawkerCentre").value.trim();
         const address = document.getElementById("stallAddress").value.trim();
         const cuisine = document.getElementById("cuisineType").value;
-        const image = document.getElementById("stallImage").value.trim();
+        const imageFile = document.getElementById("stallImage").files[0];
+        
+        let imageBase64 = "";
+        if (imageFile) {
+            imageBase64 = await convertImageToBase64(imageFile);
+        }
 
         try {
             // TASK 2: Create Stall Document
@@ -57,7 +71,7 @@ if (form) {
                 hawkerCentre: hawkerCentre,
                 address: address,
                 cuisineTypes: [cuisine], 
-                image: image,
+                image: imageBase64,
                 hearts: 0,
                 ownerId: currentUser.uid,
                 createdAt: serverTimestamp()
