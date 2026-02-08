@@ -2,6 +2,8 @@
 
 Sean Ulric Buguina Chua, Cedrik Hwang, Isaac Luke Ng, Samuel Fhu, Jaron Lee.
 
+The site is deployed at this link [https://seansc12.github.io/fed_assignment/src/pages/index.html](https://seansc12.github.io/fed_assignment/src/pages/index.html)
+
 ## Project Overview
 
 MyHawker is a multi-user platform that delivers value for three stakeholders:

@@ -102,7 +102,7 @@ let currentStallData = null;
 async function init() {
   if (!stallId) {
     alert("No stall selected. Redirecting to home.");
-    window.location.href = "/src/pages/customer/home/home.html";
+    window.location.href = "../home/home.html";
     return;
   }
 
@@ -111,7 +111,7 @@ async function init() {
       currentUser = user;
       await fetchStallInfo();
     } else {
-      window.location.href = "/src/pages/customer-login/customer-login.html";
+      window.location.href = "../customer-login/customer-login.html";
     }
   });
 }
@@ -185,7 +185,7 @@ form.addEventListener("submit", async (e) => {
 });
 
 function goBackToStall() {
-  window.location.href = `/src/pages/customer/stall/stall-details.html?id=${stallId}`;
+  window.location.href = `../stall/stall-details.html?id=${stallId}`;
 }
 
 backBtn.addEventListener("click", goBackToStall);

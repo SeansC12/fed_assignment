@@ -210,7 +210,7 @@ function createHawkerCard(stall, reviewStats) {
   `;
 
   card.innerHTML = `
-    <a href="/src/pages/customer/stall/stall-details.html?id=${stall.id}">
+    <a href="../stall/stall-details.html?id=${stall.id}">
       <div class="relative">
         <img class="w-full h-36 bg-light-gray object-cover rounded-lg" src="${imageBase64}" alt="${name}" />
       </div>

@@ -33,7 +33,7 @@ onAuthStateChanged(auth, async (user) => {
     await loadOrders(user.uid);
   } else {
     window.location.href =
-      "/src/pages/customer/customer-login/customer-login.html";
+      "../customer-login/customer-login.html";
   }
 });
 

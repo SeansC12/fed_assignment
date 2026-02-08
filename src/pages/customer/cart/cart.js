@@ -290,7 +290,7 @@ async function submitOrder() {
 
     alert("Order placed successfully! Order ID: " + docRef.id);
 
-    window.location.href = "/src/pages/customer/home/home.html";
+    window.location.href = "../home/home.html";
   } catch (error) {
     console.error("Error creating order: ", error);
     alert("Failed to place order. Please try again.");

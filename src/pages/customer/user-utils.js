@@ -35,7 +35,7 @@ export function setupUserProfilePopup(auth) {
           return;
         }
         await signOut(auth);
-        window.location.href = "/src/pages/index.html";
+        window.location.href = "../../index.html";
       } catch (error) {
         console.error("Error signing out:", error);
         alert("Failed to log out. Please try again.");
