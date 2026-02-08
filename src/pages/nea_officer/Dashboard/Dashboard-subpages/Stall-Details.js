@@ -174,4 +174,6 @@ function renderTableRow(id, insp, officerName) {
     `;
 }
 
+lucide.createIcons();
+
 loadStallDetails();

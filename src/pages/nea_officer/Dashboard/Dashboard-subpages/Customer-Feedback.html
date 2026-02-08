@@ -3,134 +3,152 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Feedback | NEA Hawker Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Customer Feedback</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- For Rating section stars b/c Lucide don't togglable stars -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
         }
-
         .custom-scrollbar::-webkit-scrollbar-track {
             background: #f1f5f9;
         }
-
         .custom-scrollbar::-webkit-scrollbar-thumb {
             background: #009481;
             border-radius: 10px;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        /* Custom max-height utilities */
+        .max-h-150 {
+            max-height: 600px;
+        }
+        @media (max-width: 640px) {
+            .max-h-150 {
+                max-height: 400px;
+            }
         }
     </style>
 </head>
 
 <body class="bg-slate-50 min-h-screen flex flex-col font-sans">
 
-    <header class="bg-[#009481] text-white shadow-md">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-
-            <img src="/static/NEA_pictures/NEA_Logo.png" alt="NEA Logo" class="h-20 w-40 brightness-0 invert" />
-
-            <!-- NAV LINKS CENTERED -->
-            <nav class="flex gap-20 items-center mx-auto">
-                <a href="../../homepage/home.html" class="text-xl font-semibold hover:text-[#18e667] transition-colors">Home</a>
-                <a href="../Dashboard.html" class="text-xl font-semibold hover:text-[#18e667] transition-colors border-b-2 border-white pb-1">Dashboard</a>
-                <a href="../../Map/HawkerMap.html" class="text-xl font-semibold hover:text-[#18e667] transition-colors">Hawker Centre</a>
-                <a href="#" class="text-xl font-semibold hover:text-[#18e667] transition-colors">Policy</a>
-            </nav>
-
-            <div class="flex items-center gap-3">
+    <!-- ================= HEADER ================= -->
+<header class="bg-[#009481] text-white shadow-md">
+    <div class="container mx-auto px-4 py-3">
+        <!-- Top Row: Logo + User -->
+        <div class="flex justify-between items-center mb-3">
+            <img src="/static/NEA_pictures/NEA_Logo.png" alt="NEA Logo" class="h-12 w-auto brightness-0 invert" />
+            
+            <div class="flex items-center gap-2">
                 <div class="text-right hidden sm:block">
-                    <p class="text-[10px] uppercase tracking-widest text-slate-200 font-bold">Authenticated Personnel
-                    </p>
+                    <p class="text-[10px] uppercase tracking-widest text-slate-200 font-bold">Authenticated Personnel</p>
                     <p class="text-sm font-medium">Officer Chan</p>
                 </div>
-                <div
-                    class="h-10 w-10 rounded-full bg-white flex items-center justify-center text-[#009481] font-bold shadow-inner">
+                <div class="h-10 w-10 rounded-full bg-white flex items-center justify-center text-[#009481] font-bold shadow-inner text-sm">
                     OC
                 </div>
             </div>
         </div>
-    </header>
+        
+        <!-- Navigation: Scrollable on mobile, centered on desktop -->
+        <nav class="flex gap-1 overflow-x-auto pb-2 scrollbar-hide sm:justify-center sm:gap-8 sm:pb-0">
+            <a href="../../homepage/home.html" class="text-sm font-semibold hover:text-[#18e667] transition-colors whitespace-nowrap px-3 py-2 rounded-lg hover:bg-white/10">Home</a>
+            <a href="../Dashboard.html" class="text-sm font-semibold hover:text-[#18e667] transition-colors whitespace-nowrap px-3 py-2 rounded-lg bg-white/20 border-b-2 border-white">Dashboard</a>
+            <a href="../../Map/HawkerMap.html" class="text-sm font-semibold hover:text-[#18e667] transition-colors whitespace-nowrap px-3 py-2 rounded-lg hover:bg-white/10">Hawker Centre</a>
+            <a href="#" class="text-sm font-semibold hover:text-[#18e667] transition-colors whitespace-nowrap px-3 py-2 rounded-lg hover:bg-white/10">Policy</a>
+        </nav>
+    </div>
+</header>
 
     <!-- Secondary Navbar for Dashboard-Subpages-->
-    <div style="background-color: #004d43 !important;" class="text-white shadow-lg border-t border-white/10 sticky top-0 z-40">
-        <div class="container mx-auto px-6">
-            <div class="flex items-center gap-4 py-3">
-                <span class="text-[10px] uppercase font-black text-[#18e667] border-r border-white/20 pr-4 mr-2 hidden md:block tracking-widest">
-                    Stall Management
-                </span>
+    <!-- Secondary Navbar for Dashboard-Subpages-->
+<div style="background-color: #004d43 !important;" class="text-white shadow-lg border-t border-white/10 sticky top-0 z-40">
+    <div class="container mx-auto px-4 py-2">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+            <span class="text-[10px] uppercase font-black text-[#18e667] border-b sm:border-b-0 sm:border-r border-white/20 pb-2 sm:pb-0 sm:pr-4 tracking-widest text-center sm:text-left">
+                Stall Management
+            </span>
 
+            <div class="flex gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-hide">
                 <a href="#" id="nav-details"
-                    class="flex items-center gap-2 px-4 py-2 rounded-lg transition-all whitespace-nowrap bg-white/10 hover:bg-white/30">
+                    class="flex items-center gap-2 px-3 py-2 rounded-lg transition-all whitespace-nowrap bg-white/10 hover:bg-white/30 text-sm">
                     <i data-lucide="info" class="w-4 h-4 text-[#18e667]"></i>
-                    <span class="font-bold text-sm tracking-wide">Stall Details</span>
+                    <span class="font-bold tracking-wide">Stall Details</span>
                 </a>
 
                 <a href="#" id="nav-feedback"
-                    class="flex items-center gap-2 px-4 py-2 rounded-lg transition-all whitespace-nowrap bg-white/10 hover:bg-white/30">
+                    class="flex items-center gap-2 px-3 py-2 rounded-lg transition-all whitespace-nowrap bg-white/10 hover:bg-white/30 text-sm">
                     <i data-lucide="message-square" class="w-4 h-4 text-[#18e667]"></i>
-                    <span class="font-bold text-sm tracking-wide">Customer Feedback</span>
+                    <span class="font-bold tracking-wide">Customer Feedback</span>
                 </a>
             </div>
         </div>
     </div>
+</div>  
 
-    <main class="container mx-auto p-4 md:p-8">
+    <main class="container mx-auto p-4 sm:p-8">
+    <div class="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start md:items-center mb-6 sm:mb-8">
+        <div>
+            <a href="../Dashboard/Dashboard.html"
+                class="text-[#009481] hover:text-[#007a6a] font-bold transition flex items-center gap-2 mb-2 text-sm sm:text-base">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Dashboard
+            </a>
+            <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-800">Feedback Analysis: <span id="stallNameHeader"
+                    class="text-[#009481]">Loading...</span></h1>
+        </div>
+    </div>
 
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-            <div>
-                <a href="../Dashboard/Dashboard.html"
-                    class="text-[#009481] hover:text-[#007a6a] font-bold transition flex items-center gap-2 mb-2">
-                    <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
-                </a>
-                <h1 class="text-3xl font-extrabold text-slate-800">Feedback Analysis: <span id="stallNameHeader"
-                        class="text-[#009481]">Loading...</span></h1>
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+        <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border-l-4 border-yellow-400 ring-1 ring-slate-200">
+            <p class="text-slate-500 text-xs sm:text-sm uppercase font-bold tracking-wider">Average Rating</p>
+            <div class="flex items-center gap-2 sm:gap-3 mt-2">
+                <span id="avgRating" class="text-3xl sm:text-4xl font-black text-slate-800">--</span>
+                <div id="starContainer" class="text-yellow-400 text-lg sm:text-xl"></div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-yellow-400 ring-1 ring-slate-200">
-                <p class="text-slate-500 text-sm uppercase font-bold tracking-wider">Average Rating</p>
-                <div class="flex items-center gap-3 mt-2">
-                    <span id="avgRating" class="text-4xl font-black text-slate-800">--</span>
-                    <div id="starContainer" class="text-yellow-400 text-xl"></div>
-                </div>
-            </div>
-
-            <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-[#009481] ring-1 ring-slate-200">
-                <p class="text-slate-500 text-sm uppercase font-bold tracking-wider">Total Feedback</p>
-                <p id="totalCount" class="text-4xl font-black mt-2 text-slate-800">0</p>
-            </div>
-
-            <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-red-500 ring-1 ring-slate-200">
-                <p class="text-slate-500 text-sm uppercase font-bold tracking-wider">Common Issue</p>
-                <p id="topCategory" class="text-xl font-bold mt-2 text-red-600 truncate">Calculating...</p>
-            </div>
+        <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border-l-4 border-[#009481] ring-1 ring-slate-200">
+            <p class="text-slate-500 text-xs sm:text-sm uppercase font-bold tracking-wider">Total Feedback</p>
+            <p id="totalCount" class="text-3xl sm:text-4xl font-black mt-2 text-slate-800">0</p>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
-            <section class="bg-white p-6 rounded-2xl shadow-sm ring-1 ring-slate-200">
-                <h2 class="text-xl font-bold mb-6 flex items-center gap-2 text-red-700 border-b pb-4">
-                    <i class="fa-solid fa-circle-exclamation"></i> Customer Complaints
-                </h2>
-                <div id="complaintsList" class="space-y-4 max-h-150 overflow-y-auto pr-2 custom-scrollbar">
-                    <div class="animate-pulse bg-slate-100 h-24 rounded-lg"></div>
-                </div>
-            </section>
-
-            <section class="bg-white p-6 rounded-2xl shadow-sm ring-1 ring-slate-200">
-                <h2 class="text-xl font-bold mb-6 flex items-center gap-2 text-[#009481] border-b pb-4">
-                    <i class="fa-solid fa-star"></i> Customer Reviews
-                </h2>
-                <div id="reviewsList" class="space-y-4 max-h-150 overflow-y-auto pr-2 custom-scrollbar">
-                    <div class="animate-pulse bg-slate-100 h-24 rounded-lg"></div>
-                </div>
-            </section>
-
+        <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border-l-4 border-red-500 ring-1 ring-slate-200">
+            <p class="text-slate-500 text-xs sm:text-sm uppercase font-bold tracking-wider">Common Issue</p>
+            <p id="topCategory" class="text-lg sm:text-xl font-bold mt-2 text-red-600 truncate">Calculating...</p>
         </div>
-    </main>
+    </div>
+
+    <!-- Feedback Lists -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8">
+        <section class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm ring-1 ring-slate-200">
+            <h2 class="text-lg sm:text-xl font-bold mb-4 sm:mb-6 flex items-center gap-2 text-red-700 border-b pb-3 sm:pb-4">
+                <i data-lucide="alert-circle" class="w-5 h-5"></i> Customer Complaints
+            </h2>
+            <div id="complaintsList" class="space-y-3 sm:space-y-4 max-h-150 overflow-y-auto pr-2 custom-scrollbar">
+                <div class="animate-pulse bg-slate-100 h-24 rounded-lg"></div>
+            </div>
+        </section>
+
+        <section class="bg-white p-4 sm:p-6 rounded-2xl shadow-sm ring-1 ring-slate-200">
+            <h2 class="text-lg sm:text-xl font-bold mb-4 sm:mb-6 flex items-center gap-2 text-[#009481] border-b pb-3 sm:pb-4">
+                <i data-lucide="star" class="w-5 h-5"></i> Customer Reviews
+            </h2>
+            <div id="reviewsList" class="space-y-3 sm:space-y-4 max-h-150 overflow-y-auto pr-2 custom-scrollbar">
+                <div class="animate-pulse bg-slate-100 h-24 rounded-lg"></div>
+            </div>
+        </section>
+    </div>
+</main>
 
     <!-- ================= FOOTER ================= -->
     <footer class="mt-auto py-8 bg-slate-900 text-slate-500 text-xs">

@@ -184,4 +184,6 @@ function updateGlobalTotal(n) {
   document.getElementById("totalCount").innerText = totalFeedbackCount;
 }
 
+lucide.createIcons();
+
 initFeedbackPage();

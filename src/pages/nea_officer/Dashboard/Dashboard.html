@@ -6,61 +6,67 @@
     <title>Dashboard</title>
     <!-- Tailwind -->
     <link rel="stylesheet" href="/static/output.css" />
+
+    <style>
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>
 </head>
 
 <body>
     <!-- ================= HEADER ================= -->
     <header class="bg-[#009481] text-white shadow-md">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <div class="container mx-auto px-4 py-3">
+            <!-- Top Row: Logo + User -->
+            <div class="flex justify-between items-center mb-3">
+                <img src="/static/NEA_pictures/NEA_Logo.png" alt="NEA Logo" class="h-12 w-auto brightness-0 invert" />
 
-            <!-- LOGO -->
-            <img src="/static/NEA_pictures/NEA_Logo.png" alt="NEA Logo" class="h-20 w-40 brightness-0 invert" />
-
-            <!-- NAV LINKS CENTERED -->
-            <nav class="flex gap-20 items-center mx-auto">
-                <a href="../homepage/home.html" class="text-xl font-semibold hover:text-[#18e667] transition-colors">Home</a>
-                <a href="../Dashboard/Dashboard.html" class="text-xl font-semibold hover:text-[#18e667] transition-colors border-b-2 border-white pb-1">Dashboard</a>
-                <a href="../Map/HawkerMap.html" class="text-xl font-semibold hover:text-[#18e667] transition-colors">Hawker Centre</a>
-                <a href="#" class="text-xl font-semibold hover:text-[#18e667] transition-colors">Policy</a>
-            </nav>
-
-            <!-- USER INFO -->
-            <div class="flex items-center gap-3">
-                <div class="text-right hidden sm:block">
-                    <p class="text-[10px] uppercase tracking-widest text-slate-200 font-bold">Authenticated Personnel
-                    </p>
-                    <p class="text-sm font-medium">Officer Chan</p>
-                </div>
-                <div
-                    class="h-10 w-10 rounded-full bg-white flex items-center justify-center text-[#009481] font-bold shadow-inner">
-                    OC
+                <div class="flex items-center gap-2">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-[10px] uppercase tracking-widest text-slate-200 font-bold">Authenticated Personnel</p>
+                        <p class="text-sm font-medium">Officer Chan</p>
+                    </div>
+                    <div class="h-10 w-10 rounded-full bg-white flex items-center justify-center text-[#009481] font-bold shadow-inner text-sm">
+                        OC
+                    </div>
                 </div>
             </div>
 
+            <!-- Navigation: Scrollable on mobile, centered on desktop -->
+            <nav class="flex gap-1 overflow-x-auto pb-2 scrollbar-hide sm:justify-center sm:gap-8 sm:pb-0">
+                <a href="../homepage/home.html" class="text-sm font-semibold hover:text-[#18e667] transition-colors whitespace-nowrap px-3 py-2 rounded-lg hover:bg-white/10">Home</a>
+                <a href="../Dashboard/Dashboard.html" class="text-sm font-semibold hover:text-[#18e667] transition-colors whitespace-nowrap px-3 py-2 rounded-lg bg-white/20 border-b-2 border-white">Dashboard</a>
+                <a href="../Map/HawkerMap.html" class="text-sm font-semibold hover:text-[#18e667] transition-colors whitespace-nowrap px-3 py-2 rounded-lg hover:bg-white/10">Hawker Centre</a>
+                <a href="#" class="text-sm font-semibold hover:text-[#18e667] transition-colors whitespace-nowrap px-3 py-2 rounded-lg hover:bg-white/10">Policy</a>
+            </nav>
         </div>
     </header>
 
     <!-- ================= Main ================= -->
     <main class="grow max-w-7xl mx-auto p-6 space-y-6">
     
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col md:flex-row gap-4 items-end">
-    
-            <div class="w-full md:grow">
+        <div class="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-slate-200 flex flex-col gap-4">
+            <div class="w-full">
                 <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1 ml-1">Search Stall Name</label>
                 <input type="text" id="searchInput" placeholder="e.g. Golden Wok..."
-                    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-slate-700 focus:ring-2 focus:ring-[#009481] outline-none bg-slate-50">
+                    class="w-full px-4 py-3 rounded-lg border border-slate-300 text-slate-700 focus:ring-2 focus:ring-[#009481] outline-none bg-slate-50 text-base">
             </div>
-    
-            <div class="w-full md:w-72">
+        
+            <div class="w-full">
                 <label class="block text-[10px] uppercase font-bold text-slate-400 mb-1 ml-1">Location Filter</label>
                 <select id="hawkerFilter"
-                    class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-slate-700 font-medium focus:ring-2 focus:ring-[#009481] outline-none bg-slate-50">
+                    class="w-full px-4 py-3 rounded-lg border border-slate-300 text-slate-700 font-medium focus:ring-2 focus:ring-[#009481] outline-none bg-slate-50 text-base">
                     <option value="all">All Hawker Centres</option>
                 </select>
             </div>
         </div>
     
-        <div id="stallGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div id="stallGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
         </div>
     
     </main>
