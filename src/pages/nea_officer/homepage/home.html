@@ -11,37 +11,82 @@
 </head>
 <body class="bg-[#f4f7f6] text-slate-800 min-h-screen flex flex-col font-sans">
 
-<!-- ================= HEADER ================= -->
-<header class="bg-[#009481] text-white shadow-md">
-    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+<header class="bg-[#009481] text-white shadow-md w-full">
+  <div class="container mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
 
-        <!-- LOGO -->
-        <img 
-            src="/static/NEA_pictures/NEA_Logo.png" 
-            alt="NEA Logo"
-            class="h-20 w-40 brightness-0 invert"
-        />
+    <!-- LOGO -->
+    <img
+      src="/static/NEA_pictures/NEA_Logo.png"
+      alt="NEA Logo"
+      class="h-16 sm:h-20 w-auto brightness-0 invert"
+    />
 
-        <!-- NAV LINKS CENTERED -->
-        <nav class="flex gap-20 items-center mx-auto">
-            <a href="../homepage/home.html" class="text-xl font-semibold hover:text-[#18e667] transition-colors border-b-2 border-white pb-1">Home</a>
-            <a href="../hawker_stalls/stalls.html" class="text-xl font-semibold hover:text-[#18e667] transition-colors">Hawker Centre</a>
-            <a href="../policy.html" class="text-xl font-semibold hover:text-[#18e667] transition-colors">Policy</a>
-        </nav>
+    <!-- DESKTOP NAV (UNCHANGED) -->
+    <nav class="hidden md:flex gap-20 items-center mx-auto">
+      <a href="../homepage/home.html"
+         class="text-xl font-semibold hover:text-[#18e667] transition-colors border-b-2 border-white pb-1">
+        Home
+      </a>
+      <a href="../hawker_stalls/stalls.html"
+         class="text-xl font-semibold hover:text-[#18e667] transition-colors">
+        Hawker Centre
+      </a>
+      <a href="../policy.html"
+         class="text-xl font-semibold hover:text-[#18e667] transition-colors">
+        Policy
+      </a>
+    </nav>
 
-        <!-- USER INFO -->
-        <div class="flex items-center gap-3">
-            <div class="text-right hidden sm:block">
-                <p class="text-[10px] uppercase tracking-widest text-slate-200 font-bold">Authenticated Personnel</p>
-                <p id="officer-name" class="text-sm font-medium"> 
-                    <!-- place holder -->
-                </p>
-            </div> 
-            <div id="officer-initials" class="h-10 w-10 rounded-full bg-white flex items-center justify-center text-[#009481] font-bold shadow-inner">
-             <!-- place holder -->
-            </div>
-        </div>
+    <!-- RIGHT SIDE -->
+    <div class="flex items-center gap-3">
+
+      <!-- USER INFO (DESKTOP) -->
+      <div class="text-right hidden sm:block">
+        <p class="text-[10px] uppercase tracking-widest text-slate-200 font-bold">
+          Authenticated Personnel
+        </p>
+        <p id="officer-name" class="text-sm font-medium"></p>
+      </div>
+
+      <div
+        id="officer-initials"
+        class="h-9 w-9 sm:h-10 sm:w-10 rounded-full bg-white
+               flex items-center justify-center text-[#009481] font-bold shadow-inner">
+      </div>
+
+      <!-- MOBILE MENU BUTTON -->
+      <button
+        class="md:hidden ml-2 focus:outline-none"
+        onclick="toggleMobileMenu()"
+        aria-label="Toggle navigation">
+        ☰
+      </button>
+    </div>
+
+  </div>
+
+  <!-- MOBILE DROPDOWN NAV -->
+  <div
+    id="mobile-menu"
+    class="hidden md:hidden bg-[#009481] border-t border-white/20 px-6 py-4 space-y-3">
+
+    <a href="../homepage/home.html"
+       class="block font-semibold text-white hover:text-[#18e667]">
+      Home
+    </a>
+
+    <a href="../hawker_stalls/stalls.html"
+       class="block font-semibold text-white hover:text-[#18e667]">
+      Hawker Centre
+    </a>
+
+    <a href="../policy.html"
+       class="block font-semibold text-white hover:text-[#18e667]">
+      Policy
+    </a>
+  </div>
 </header>
+
 <!-- ================= END HEADER ================= -->
 <!-- ===== WELCOME MESSAGE ===== -->
 <section class="mb-10">

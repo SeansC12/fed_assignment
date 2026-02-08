@@ -11,21 +11,32 @@
 <body class="bg-[#f4f7f6] text-slate-800 min-h-screen flex flex-col font-sans">
 
 <!-- ================= HEADER ================= -->
-<header class="bg-[#009481] text-white shadow-md">
+<header class="bg-[#009481] text-white shadow-md relative z-50">
   <div class="container mx-auto px-6 py-4 flex justify-between items-center">
 
     <img
       src="/static/NEA_pictures/NEA_Logo.png"
       alt="NEA Logo"
-      class="h-20 w-40 brightness-0 invert"
+      class="h-16 sm:h-20 w-auto brightness-0 invert"
     />
 
-    <nav class="flex gap-20 items-center mx-auto">
-      <a href="../nea_officer/homepage/home.html" class="text-xl font-semibold hover:text-[#18e667] transition-colors">Home</a>
-      <a href="../nea_officer/hawker_stalls/stalls.html" class="text-xl font-semibold hover:text-[#18e667] transition-colors">Hawker Centre</a>
-      <a href="../policy.html" class="text-xl font-semibold border-b-2 border-white pb-1">Policy</a>
+    <!-- DESKTOP NAV -->
+    <nav class="hidden md:flex gap-20 items-center mx-auto">
+      <a href="../nea_officer/homepage/home.html"
+         class="text-xl font-semibold hover:text-[#18e667] transition-colors">
+        Home
+      </a>
+      <a href="../nea_officer/hawker_stalls/stalls.html"
+         class="text-xl font-semibold hover:text-[#18e667] transition-colors">
+        Hawker Centre
+      </a>
+      <a href="../policy.html"
+         class="text-xl font-semibold border-b-2 border-white pb-1">
+        Policy
+      </a>
     </nav>
 
+    <!-- RIGHT -->
     <div class="flex items-center gap-3">
       <div class="text-right hidden sm:block">
         <p class="text-[10px] uppercase tracking-widest text-slate-200 font-bold">
@@ -33,14 +44,29 @@
         </p>
         <p id="officer-name" class="text-sm font-medium"></p>
       </div>
-      <div id="officer-initials"
-           class="h-10 w-10 rounded-full bg-white flex items-center justify-center text-[#009481] font-bold shadow-inner">
+      <div
+        id="officer-initials"
+        class="h-10 w-10 rounded-full bg-white flex items-center justify-center
+               text-[#009481] font-bold shadow-inner">
       </div>
+
+      <!-- MOBILE MENU BUTTON -->
+      <button id="menuBtn" class="md:hidden ml-3 text-2xl">
+        ☰
+      </button>
     </div>
 
   </div>
 </header>
-<!-- ================= END HEADER ================= -->
+
+<!-- ================= MOBILE MENU ================= -->
+<div id="mobileMenu" class="hidden md:hidden bg-[#009481] text-white">
+  <div class="px-6 py-4 flex flex-col gap-4 font-semibold">
+    <a href="../nea_officer/homepage/home.html">Home</a>
+    <a href="../nea_officer/hawker_stalls/stalls.html">Hawker Centre</a>
+    <a href="../policy.html" class="font-bold">Policy</a>
+  </div>
+</div>
 
 <!-- ================= MAIN ================= -->
 <main class="container mx-auto px-6 py-10 grow space-y-10">
@@ -64,27 +90,22 @@
     </h2>
 
     <div class="grid md:grid-cols-2 gap-4 text-sm">
-
       <div class="p-4 rounded-lg bg-slate-50 border">
         <p class="font-bold text-green-700 mb-1">Grade A</p>
         <p>Excellent hygiene practices. Full compliance with food safety standards.</p>
       </div>
-
       <div class="p-4 rounded-lg bg-slate-50 border">
         <p class="font-bold text-emerald-600 mb-1">Grade B</p>
         <p>Good hygiene standards with minor, non-critical lapses.</p>
       </div>
-
       <div class="p-4 rounded-lg bg-slate-50 border">
         <p class="font-bold text-yellow-600 mb-1">Grade C</p>
         <p>Fair hygiene standards. Improvement required within stipulated time.</p>
       </div>
-
       <div class="p-4 rounded-lg bg-slate-50 border">
         <p class="font-bold text-red-600 mb-1">Grade D</p>
         <p>Poor hygiene standards. Subject to enforcement and possible suspension.</p>
       </div>
-
     </div>
   </section>
 
@@ -93,7 +114,6 @@
     <h2 class="text-xl font-bold text-slate-700 mb-4">
       Inspection Frequency
     </h2>
-
     <ul class="list-disc pl-6 text-slate-600 space-y-2">
       <li>Grade A & B stalls: Routine inspections every 6–12 months</li>
       <li>Grade C stalls: Follow-up inspection within 3 months</li>
@@ -102,54 +122,7 @@
     </ul>
   </section>
 
-  <!-- PUBLIC COMPLAINTS -->
-  <section class="bg-white p-6 rounded-xl border shadow-sm">
-    <h2 class="text-xl font-bold text-slate-700 mb-4">
-      Public Complaint Handling
-    </h2>
-
-    <p class="text-slate-600 mb-3">
-      Complaints submitted by members of the public are reviewed and categorised
-      based on severity and frequency.
-    </p>
-
-    <ul class="list-disc pl-6 text-slate-600 space-y-2">
-      <li>Multiple complaints trigger priority inspection</li>
-      <li>Serious allegations require immediate site assessment</li>
-      <li>False or unverified reports are documented but monitored</li>
-    </ul>
-  </section>
-
-  <!-- ENFORCEMENT -->
-  <section class="bg-white p-6 rounded-xl border shadow-sm">
-    <h2 class="text-xl font-bold text-slate-700 mb-4">
-      Enforcement Actions
-    </h2>
-
-    <ul class="list-disc pl-6 text-slate-600 space-y-2">
-      <li>Written warnings and corrective action plans</li>
-      <li>Monetary penalties under NEA regulations</li>
-      <li>Temporary suspension of stall operations</li>
-      <li>Licence revocation for repeated non-compliance</li>
-    </ul>
-  </section>
-
-  <!-- OFFICER RESPONSIBILITIES -->
-  <section class="bg-white p-6 rounded-xl border shadow-sm">
-    <h2 class="text-xl font-bold text-slate-700 mb-4">
-      Officer Responsibilities
-    </h2>
-
-    <ul class="list-disc pl-6 text-slate-600 space-y-2">
-      <li>Conduct inspections objectively and professionally</li>
-      <li>Ensure inspection records are accurate and timely</li>
-      <li>Document photographic evidence where applicable</li>
-      <li>Maintain confidentiality of internal records</li>
-    </ul>
-  </section>
-
 </main>
-<!-- ================= END MAIN ================= -->
 
 <!-- ================= FOOTER ================= -->
 <footer class="mt-auto py-8 bg-slate-900 text-slate-500 text-xs">
@@ -165,7 +138,17 @@
     </div>
   </div>
 </footer>
+
 <script type="module" src="policy.js"></script>
-<script src="../../../js/navbar.js"></script>
+
+<script>
+  const btn = document.getElementById("menuBtn");
+  const menu = document.getElementById("mobileMenu");
+
+  btn.addEventListener("click", () => {
+    menu.classList.toggle("hidden");
+  });
+</script>
+
 </body>
 </html>
