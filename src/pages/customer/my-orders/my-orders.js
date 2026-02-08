@@ -308,8 +308,8 @@ function getStatusConfig(status) {
       className: "bg-orange-100 text-orange-800",
       icon: '<i data-lucide="clock" class="w-3 h-3 inline mr-1"></i>',
     },
-    cancelled: {
-      label: "Cancelled",
+    rejected: {
+      label: "Rejected",
       className: "bg-red-100 text-red-800",
       icon: '<i data-lucide="x-circle" class="w-3 h-3 inline mr-1"></i>',
     },
