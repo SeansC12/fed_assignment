@@ -21,7 +21,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Inside your <script type="module">
 const urlParams = new URLSearchParams(window.location.search);
 const stallId = urlParams.get("id");
 

@@ -24,6 +24,26 @@ const db = getFirestore(app);
 const urlParams = new URLSearchParams(window.location.search);
 const stallId = urlParams.get("id");
 
+// UPDATE SECONDARY NAV LINKS
+if (stallId) {
+    const navDetails = document.getElementById('nav-details');
+    const navFeedback = document.getElementById('nav-feedback');
+
+    navDetails.href = `Stall-Details.html?id=${stallId}`;
+    navFeedback.href = `Customer-Feedback.html?id=${stallId}`;
+
+    const currentPage = window.location.pathname;
+    // We use a stronger highlight (bg-white/30) since the text is now black
+    if (currentPage.includes("Stall-Details.html")) {
+        navDetails.classList.add("bg-white/40", "opacity-100", "ring-1", "ring-white/50");
+    } else if (currentPage.includes("Customer-Feedback.html")) {
+        navFeedback.classList.add("bg-white/40", "opacity-100", "ring-1", "ring-white/50");
+    }
+    
+    // INITIALIZE LUCIDE ICONS
+    lucide.createIcons();
+}
+
 // HELPER: Format date to HH:SS DD/MM/YYYY
 function formatFeedbackDate(dateField) {
   if (!dateField) return "N/A";
