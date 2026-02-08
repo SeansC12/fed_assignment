@@ -213,7 +213,6 @@ function renderCart() {
   const totalItems = cart.items.length;
   cartItemCount.textContent = `${totalItems} Item${totalItems !== 1 ? "s" : ""}`;
 
-  // Show/hide empty cart message
   if (cart.items.length === 0) {
     emptyCart.classList.remove("hidden");
     cartContent.classList.add("hidden");
@@ -231,31 +230,19 @@ function renderCart() {
     cartItemsContainer.appendChild(card);
   });
 
-  // Calculate totals
   const subtotal = calculateSubtotal(cart);
-  //   const shippingCost = calculateShipping(subtotal);
-  //   const shippingDiscount = shippingCost > 0 ? 0 : 5.00;
   const total = subtotal;
 
-  // Update price displays
-  // document.getElementById("subtotal").textContent = `$${subtotal.toFixed(2)}`;
-  //   document.getElementById('shipping-cost').textContent = `$${shippingCost.toFixed(2)}`;
-  //   document.getElementById('shipping-discount').textContent = `-$${shippingDiscount.toFixed(2)}`;
-  //   document.getElementById('shipping-discount-display').textContent = `-$${shippingDiscount.toFixed(2)}`;
   document.getElementById("total").textContent = `$${total.toFixed(2)}`;
 
-  // Update cart badge
   updateCartBadge();
 
-  // Reinitialize Lucide icons
   lucide.createIcons();
 }
 
-// Make functions globally accessible
 window.updateCartItem = updateCartItem;
 window.removeCartItem = removeCartItem;
 
-// Submit order to Firestore
 async function submitOrder() {
   const cart = getCart();
 
@@ -270,7 +257,6 @@ async function submitOrder() {
     return;
   }
 
-  // Calculate total price
   const totalPrice = calculateSubtotal(cart);
 
   // Prepare items array - only include necessary fields
@@ -296,47 +282,26 @@ async function submitOrder() {
     checkoutBtn.disabled = true;
     checkoutBtn.textContent = "Processing...";
 
-    // Add order to Firestore
     const docRef = await addDoc(collection(db, "orders"), order);
 
     console.log("Order created with ID: ", docRef.id);
 
-    // Clear cart
     localStorage.removeItem("cart");
 
-    // Show success message
     alert("Order placed successfully! Order ID: " + docRef.id);
 
-    // Redirect to home or orders page
     window.location.href = "/src/pages/customer/home/home.html";
   } catch (error) {
     console.error("Error creating order: ", error);
     alert("Failed to place order. Please try again.");
 
-    // Restore button state
     const checkoutBtn = document.getElementById("checkout-btn");
     checkoutBtn.disabled = false;
     checkoutBtn.textContent = "CHECKOUT";
   }
 }
 
-// Checkout button handler
 document.getElementById("checkout-btn")?.addEventListener("click", submitOrder);
-
-// Promo code handler
-document.getElementById("apply-promo-btn")?.addEventListener("click", () => {
-  const promoInput = document.getElementById("promo-code-input");
-  const promoCode = promoInput.value.trim();
-
-  if (!promoCode) {
-    alert("Please enter a promo code");
-    return;
-  }
-
-  // TODO: Implement promo code validation
-  alert(`Promo code "${promoCode}" applied! (Feature coming soon)`);
-  promoInput.value = "";
-});
 
 // Initialize cart on page load
 if (document.readyState === "loading") {
