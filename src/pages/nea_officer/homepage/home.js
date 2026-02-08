@@ -1,70 +1,30 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // 1. Get elements
+  const welcomeNameEl = document.getElementById("welcome-officer-name");
+  const navNameEl = document.getElementById("officer-name");
+  const navInitialsEl = document.getElementById("officer-initials");
 
-  const ctx = document.getElementById('hygieneTrendChart').getContext('2d');
+  // 2. Get data from localStorage
+  const officerName = localStorage.getItem("neaOfficerName") || "Puay Kiat Chionh"; // Fallback if empty
 
-  const gradeData = [4, 3, 3, 2, 3, 4]; // A B B C B A
+  if (officerName) {
+    // Update the Welcome Section (First name only)
+    if (welcomeNameEl) {
+      welcomeNameEl.textContent = officerName.split(" ")[0];
+    }
 
-  function convertToGrade(value) {
-    switch(value) {
-      case 4: return 'A';
-      case 3: return 'B';
-      case 2: return 'C';
-      case 1: return 'D';
-      default: return '';
+    // Update the Nav Bar (Full name)
+    if (navNameEl) {
+      navNameEl.textContent = officerName;
+    }
+
+    // Update the Initials Circle
+    if (navInitialsEl) {
+      const initials = officerName
+        .split(" ")
+        .map((n) => n[0])
+        .join("");
+      navInitialsEl.textContent = initials.toUpperCase();
     }
   }
-
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: ['Jan','Feb','Mar','Apr','May','Jun'],
-      datasets:  [{
-        label: 'Hygiene Grade',
-        data: gradeData,
-        borderColor: '#009481',
-        backgroundColor: 'rgba(0,148,129,0.15)',
-        fill: true,
-        tension: 0.3,
-        pointRadius: 5,
-        pointBackgroundColor: '#009481',
-        pointBorderColor: '#064e3b'
-      }]
-    },
-    options: {
-      responsive: true,
-      parsing: false, // Important for raw numbers
-
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: (ctx) => `Grade: ${convertToGrade(ctx.raw)}`
-          }
-        }
-      },
-
-      scales: {
-        y: {
-          reverse: true, // Optional: puts A on top
-          min: 1,
-          max: 4,
-          ticks: {
-            stepSize: 1,
-            callback: (value) => convertToGrade(value)
-          },
-          title: {
-            display: true,
-            text: 'Hygiene Grade'
-          }
-        },
-        x: {
-          title: {
-            display: true,
-            text: 'Month'
-          }
-        }
-      }
-    }
-  });
-
 });
