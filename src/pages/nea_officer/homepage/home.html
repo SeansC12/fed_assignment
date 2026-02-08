@@ -1,128 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NEA Dashboard</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEA Dashboard</title>
 
-<!-- Tailwind CSS -->
-<link rel="stylesheet" href="/static/output.css" />
-
+  <!-- Tailwind CSS -->
+  <link rel="stylesheet" href="/static/output.css" />
 </head>
+
 <body class="bg-[#f4f7f6] text-slate-800 min-h-screen flex flex-col font-sans">
 
 <!-- ================= HEADER ================= -->
 <header class="bg-[#009481] text-white shadow-md">
-    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+  <div class="container mx-auto px-6 py-4 flex justify-between items-center">
 
-        <!-- LOGO -->
-        <img 
-            src="/static/NEA_pictures/NEA_Logo.png" 
-            alt="NEA Logo"
-            class="h-20 w-40 brightness-0 invert"
-        />
+    <!-- LOGO -->
+    <img
+      src="/static/NEA_pictures/NEA_Logo.png"
+      alt="NEA Logo"
+      class="h-20 w-40 brightness-0 invert"
+    />
 
-        <!-- NAV LINKS CENTERED -->
-        <nav class="flex gap-20 items-center mx-auto">
-            <a href="../homepage/home.html" class="text-xl font-semibold hover:text-[#18e667] transition-colors border-b-2 border-white pb-1">Home</a>
-            <a href="../hawker_stalls/stalls.html" class="text-xl font-semibold hover:text-[#18e667] transition-colors">Hawker Centre</a>
-            <a href="../policy.html" class="text-xl font-semibold hover:text-[#18e667] transition-colors">Policy</a>
-        </nav>
+    <!-- NAV -->
+    <nav class="flex gap-20 items-center mx-auto">
+      <a href="../homepage/home.html"
+         class="text-xl font-semibold hover:text-[#18e667] transition-colors border-b-2 border-white pb-1">
+        Home
+      </a>
+      <a href="../hawker_stalls/stalls.html"
+         class="text-xl font-semibold hover:text-[#18e667] transition-colors">
+        Hawker Centre
+      </a>
+      <a href="../policy.html"
+         class="text-xl font-semibold hover:text-[#18e667] transition-colors">
+        Policy
+      </a>
+    </nav>
 
-        <!-- USER INFO -->
-        <div class="flex items-center gap-3">
-            <div class="text-right hidden sm:block">
-                <p class="text-[10px] uppercase tracking-widest text-slate-200 font-bold">Authenticated Personnel</p>
-                <p id="officer-name" class="text-sm font-medium"> 
-                    <!-- place holder -->
-                </p>
-            </div> 
-            <div id="officer-initials" class="h-10 w-10 rounded-full bg-white flex items-center justify-center text-[#009481] font-bold shadow-inner">
-             <!-- place holder -->
-            </div>
-        </div>
+    <!-- USER INFO -->
+    <div class="flex items-center gap-3">
+      <div class="text-right hidden sm:block">
+        <p class="text-[10px] uppercase tracking-widest text-slate-200 font-bold">
+          Authenticated Personnel
+        </p>
+        <p id="officer-name" class="text-sm font-medium"></p>
+      </div>
+      <div id="officer-initials"
+           class="h-10 w-10 rounded-full bg-white flex items-center justify-center
+                  text-[#009481] font-bold shadow-inner">
+      </div>
+    </div>
+
+  </div>
 </header>
 <!-- ================= END HEADER ================= -->
-<!-- ===== WELCOME MESSAGE ===== -->
-<section class="mb-10">
-  <div class="bg-white border border-[#009481]/30 rounded-2xl p-6 shadow-sm">
 
-    <p class="text-sm uppercase tracking-widest text-slate-400 font-bold mb-2">
-      NEA Officer Dashboard
-    </p>
+<!-- ================= MAIN ================= -->
+<main class="grow max-w-7xl mx-auto p-6 space-y-10">
 
-    <h1 class="text-3xl md:text-4xl font-extrabold text-slate-800">
-      Welcome back,
-      <span
-        id="welcome-officer-name"
-        class="text-[#009481]"
-      >
-        Officer
-      </span>
-    </h1>
-
-    <p class="text-slate-500 mt-3 max-w-2xl">
-      Below is a summary of the most recent  stall reports
-      that may require inspection or follow-up action.
-    </p>
-
-  </div>
-</section>
-
-
-
-<!-- ===== RECENT PUBLIC COMPLAINTS ===== -->
-<section class="bg-white p-6 rounded-xl border space-y-4">
-
-  <h2 class="text-lg font-bold text-slate-800">
-    Recent inspection remarks
-  </h2>
-
-  <!-- Complaint 1 -->
-  <div class="flex justify-between items-start gap-4 p-4 rounded-lg bg-slate-50 border">
-    <div>
-      <p class="font-semibold text-slate-700">
-        Jingho Shokudo
+  <!-- ===== WELCOME ===== -->
+  <section>
+    <div class="bg-white border border-[#009481]/30 rounded-2xl p-6 shadow-sm">
+      <p class="text-sm uppercase tracking-widest text-slate-400 font-bold mb-2">
+        NEA Officer Dashboard
       </p>
-      <p class="text-xs text-slate-400 mt-2">
-        Submitted: 22 Jan 2026
+
+      <h1 class="text-3xl md:text-4xl font-extrabold text-slate-800">
+        Welcome back,
+        <span id="welcome-officer-name" class="text-[#009481]">
+          Officer
+        </span>
+      </h1>
+
+      <p class="text-slate-500 mt-3 max-w-2xl">
+        Below is a summary of the most recent stall inspections
+        that may require inspection or follow-up action.
       </p>
-      very mid
     </div>
+  </section>
 
-    <div class="flex flex-col items-end gap-2">
-      <span class="px-3 py-1 text-xs rounded-full bg-orange-500 text-white font-bold">
-        Flagged
-      </span>
-      <a
-        href="../flagged-stalls/flagged_stallinfo.html"
-        class="text-sm font-semibold text-[#009481] hover:underline"
-      >
-        View →
-      </a>
+  <!-- ===== RECENT INSPECTIONS ===== -->
+  <section class="bg-white p-6 rounded-xl border space-y-4">
+    <h2 class="text-lg font-bold text-slate-800">
+      Recent inspection remarks
+    </h2>
+
+    <!-- JS injects inspection cards here -->
+    <div id="recent-inspections" class="space-y-4">
+      <p class="text-slate-400 text-sm">Loading inspections...</p>
     </div>
-  </div>
+  </section>
 
-  
-
-</section>
-
-
-
+</main>
 
 <!-- ================= FOOTER ================= -->
 <footer class="mt-auto py-8 bg-slate-900 text-slate-500 text-xs">
-    <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
-        <p>© 2026 National Environment Agency, Singapore. <span class="text-slate-700 mx-2">|</span> Internal Use Only.</p>
-        <div class="flex gap-6">
-            <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
-            <a href="#" class="hover:text-white transition-colors">Support</a>
-        </div>
+  <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+    <p>
+      © 2026 National Environment Agency, Singapore.
+      <span class="text-slate-700 mx-2">|</span>
+      Internal Use Only.
+    </p>
+    <div class="flex gap-6">
+      <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+      <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+      <a href="#" class="hover:text-white transition-colors">Support</a>
     </div>
+  </div>
 </footer>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script src="home.js"></script>
+
+<!-- ================= SCRIPTS ================= -->
+<script>
+  // Officer name logic (unchanged)
+  document.addEventListener("DOMContentLoaded", () => {
+    const welcomeNameEl = document.getElementById("welcome-officer-name");
+    const navNameEl = document.getElementById("officer-name");
+    const navInitialsEl = document.getElementById("officer-initials");
+
+    const officerName = localStorage.getItem("neaOfficerName");
+
+    if (officerName) {
+      welcomeNameEl.textContent = officerName.split(" ")[0];
+      navNameEl.textContent = officerName;
+
+      navInitialsEl.textContent = officerName
+        .split(" ")
+        .map(n => n[0])
+        .join("")
+        .toUpperCase();
+    }
+  });
+</script>
+
+<script type="module" src="home.js"></script>
 <script src="../../../js/navbar.js"></script>
 
 </body>
