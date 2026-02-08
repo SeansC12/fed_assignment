@@ -32,6 +32,7 @@ const auth = getAuth(app);
 let currentStall = null;
 let currentMenuItems = [];
 let activePromotions = [];
+let searchQuery = "";
 
 // Get stall ID from URL
 function getStallIdFromUrl() {
@@ -191,12 +192,15 @@ function updateCardQuantityUI(itemId) {
 }
 
 function attachQuantityEventListeners() {
-  // Use event delegation to handle dynamically created buttons
   const menuContainer = document.querySelector("#menu-sections");
   if (!menuContainer) return;
 
-  // Remove any existing listeners by cloning and replacing the container
   const newMenuContainer = menuContainer.cloneNode(true);
+  // I cloned the container using cloneNode to remove all existing event listeners
+  // because I had to dynamically attach listeners to newly created menu items based on
+  // the firebase and interactions like add to cart, search etc.
+  // Thus, I replaced the container to remove old listeners and attach new ones (below).
+
   menuContainer.parentNode.replaceChild(newMenuContainer, menuContainer);
 
   // Attach single delegated event listener
@@ -222,6 +226,15 @@ function attachQuantityEventListeners() {
     } else if (likeBtn) {
       e.stopPropagation();
       likeBtn.classList.toggle("liked");
+      const heartIcon = likeBtn.querySelector('[data-lucide="heart"]');
+      if (heartIcon) {
+        if (likeBtn.classList.contains("liked")) {
+          heartIcon.classList.add("fill-red-500", "text-red-500");
+        } else {
+          heartIcon.classList.remove("fill-red-500", "text-red-500");
+        }
+        lucide.createIcons();
+      }
     } else if (card && !card.classList.contains("cursor-not-allowed")) {
       const wrapper = card.querySelector("[id^='item-wrapper-']");
       if (wrapper) {
@@ -232,9 +245,7 @@ function attachQuantityEventListeners() {
   });
 }
 
-// Fetch stall details
 async function fetchStallDetails(stallId) {
-  console.log(stallId);
   try {
     const stallDoc = await getDoc(doc(db, "hawker-stalls", stallId));
     if (stallDoc.exists()) {
@@ -896,19 +907,33 @@ function displayMenuItems(menuItems) {
 
   menuContainer.innerHTML = "";
 
-  if (menuItems.length === 0) {
+  let filteredItems = menuItems;
+  if (searchQuery.trim()) {
+    const query = searchQuery.toLowerCase();
+    filteredItems = menuItems.filter((item) => {
+      const name = (item.name || "").toLowerCase();
+      const description = (item.desc || "").toLowerCase();
+      const category = (item.category || "").toLowerCase();
+      return (
+        name.includes(query) ||
+        description.includes(query) ||
+        category.includes(query)
+      );
+    });
+  }
+
+  if (filteredItems.length === 0) {
     menuContainer.innerHTML = `
       <div class="text-center py-12">
-        <p class="text-gray-500 text-lg">No menu items available at the moment.</p>
+        <p class="text-gray-500 text-lg">${searchQuery.trim() ? `No items found matching "${searchQuery}"` : "No menu items available at the moment."}</p>
       </div>
     `;
     return;
   }
 
-  const groupedItems = groupMenuItemsByCategory(menuItems);
+  const groupedItems = groupMenuItemsByCategory(filteredItems);
   const categories = Object.keys(groupedItems);
 
-  // Update category tabs
   updateCategoryTabs(categories);
 
   // Create sections for each category
@@ -937,7 +962,7 @@ function displayMenuItems(menuItems) {
   lucide.createIcons();
 
   // Update all item UIs to reflect current cart state
-  menuItems.forEach((item) => {
+  filteredItems.forEach((item) => {
     updateCardQuantityUI(item.id);
   });
 
@@ -980,6 +1005,16 @@ function updateCategoryTabs(categories) {
         .querySelectorAll(".tab-button")
         .forEach((btn) => btn.classList.remove("active"));
       button.classList.add("active");
+
+      // Scroll to the corresponding category section
+      const targetId = button.dataset.tab;
+      const targetSection = document.getElementById(targetId);
+      if (targetSection) {
+        targetSection.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
     });
   });
 }
@@ -1066,10 +1101,16 @@ async function initializePage() {
   // Load and display reviews
   await loadReviews(stallId);
 
-  // Update search placeholder
+  // Update search placeholder and setup search functionality
   const searchInput = document.querySelector("#menu-search");
   if (searchInput) {
     searchInput.placeholder = `Search in ${stall.name}`;
+
+    // Add search event listener
+    searchInput.addEventListener("input", (e) => {
+      searchQuery = e.target.value;
+      displayMenuItems(currentMenuItems);
+    });
   }
 
   // Initialize cart badge

@@ -258,7 +258,7 @@ async function loadOrderItems(items) {
 
       return `
         <div class="flex gap-3 p-3 bg-white rounded-lg">
-          <div class="w-16 h-16 bg-gray-200 rounded-md overflow-hidden flex-shrink-0">
+          <div class="w-16 h-16 bg-gray-200 rounded-md overflow-hidden shrink-0">
             ${itemData.image ? `<img src="${itemData.image}" alt="${itemData.name}" class="w-full h-full object-cover" />` : `<div class="w-full h-full flex items-center justify-center"><i data-lucide="image" class="w-6 h-6 text-gray-400"></i></div>`}
           </div>
           <div class="flex-1 min-w-0">
