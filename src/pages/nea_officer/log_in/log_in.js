@@ -43,12 +43,8 @@ if (loginForm) {
 
                 alert(`Welcome back, ${officerData.Name}!`);
                 
-<<<<<<< HEAD:src/pages/nea_officer/home/log_in/log_in.js
-                window.location.href = "../../homepage/home.html";
-=======
                 // Redirect to Home Page (Up one level to 'home' folder)
                 window.location.href = "../homepage/home.html";
->>>>>>> Jaron-nea-home:src/pages/nea_officer/log_in/log_in.js
             } else {
                 alert("Invalid NEA ID or Password. Please try again.");
                 submitBtn.disabled = false;
