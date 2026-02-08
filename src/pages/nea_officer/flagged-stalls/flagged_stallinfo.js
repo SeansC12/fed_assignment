@@ -20,6 +20,53 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+function initializeSecondaryNav() {
+  // Get stall ID from URL first, then fall back to localStorage
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlId = urlParams.get("id");
+  const storageId = localStorage.getItem("selectedStallId");
+  const stallId = urlId || storageId;
+  
+  console.log("Initializing nav with stall ID:", stallId);
+  
+  if (!stallId) {
+    console.warn("No stall ID found for navigation");
+    return;
+  }
+  
+  // Sync to localStorage for consistency
+  localStorage.setItem("selectedStallId", stallId);
+  
+  // Define navigation links
+  const navLinks = [
+    { id: 'nav-home', url: 'flagged_stallinfo.html' },
+    { id: 'nav-dashboard', url: '../Stall-Statistics/Stall-Statistics.html' },
+    { id: 'nav-grade', url: '../submit-grade/submit_grade.html' },
+    { id: 'nav-feedback', url: '../Customer-Feedback/Customer-Feedback.html' }
+  ];
+  
+  const currentPage = window.location.pathname;
+  
+  navLinks.forEach(link => {
+    const element = document.getElementById(link.id);
+    if (!element) {
+      console.warn("Nav element not found:", link.id);
+      return;
+    }
+    
+    // Set the full href with stall ID
+    const fullUrl = link.url + '?id=' + encodeURIComponent(stallId);
+    element.href = fullUrl;
+    console.log(`Set ${link.id} to:`, fullUrl);
+    
+    // Highlight current page
+    if (currentPage.includes(link.url.replace('../', '').split('/').pop())) {
+      element.classList.remove('border-transparent');
+      element.classList.add('border-slate-400');
+    }
+  });
+}
+
 /* ================= DOM ================= */
 const stallNameEl = document.getElementById("stall-name");
 const stallIdEl = document.getElementById("stall-id");
@@ -107,5 +154,7 @@ async function loadStallInfo() {
     pastInspectionsBody.appendChild(row);
   });
 }
+
+initializeSecondaryNav();
 
 loadStallInfo();
