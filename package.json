@@ -10,8 +10,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:css": "tailwindcss -i ./src/styles/input.css -o ./static/output.css",
     "watch:css": "tailwindcss -i ./src/styles/input.css -o ./static/output.css --watch",
-    "fix-paths:production": "BASE_PATH=/fed_assignment/ node fix-paths.js",
-    "fix-paths:local": "BASE_PATH=/ node fix-paths.js",
+    "fix-paths:production": "node fix-paths.js production",
+    "fix-paths:local": "node fix-paths.js local",
     "build": "npm run build:css && npm run fix-paths:production"
   },
   "dependencies": {
