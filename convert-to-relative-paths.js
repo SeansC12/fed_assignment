@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-function findHTMLFiles(dir, fileList = []) {
+function findFiles(dir, extensions, fileList = []) {
   const files = fs.readdirSync(dir);
 
   files.forEach((file) => {
@@ -9,8 +9,8 @@ function findHTMLFiles(dir, fileList = []) {
     const stat = fs.statSync(filePath);
 
     if (stat.isDirectory()) {
-      findHTMLFiles(filePath, fileList);
-    } else if (file.endsWith(".html")) {
+      findFiles(filePath, extensions, fileList);
+    } else if (extensions.some(ext => file.endsWith(ext))) {
       fileList.push(filePath);
     }
   });
@@ -71,14 +71,19 @@ function convertAbsoluteToRelative(filePath) {
   }
 }
 
-// Find and convert all HTML files
-const htmlFiles = [...findHTMLFiles("./src"), "./index.html"].filter((file) =>
+// Find and convert all HTML and JS files
+const htmlFiles = [...findFiles("./src", ['.html']), "./index.html"].filter((file) =>
   fs.existsSync(file)
 );
+const jsFiles = findFiles("./src", ['.js']);
 
-console.log(`Found ${htmlFiles.length} HTML files\n`);
+console.log(`Found ${htmlFiles.length} HTML files and ${jsFiles.length} JS files\n`);
 
+console.log('Converting HTML files:');
 htmlFiles.forEach(convertAbsoluteToRelative);
+
+console.log('\nConverting JS files:');
+jsFiles.forEach(convertAbsoluteToRelative);
 
 console.log("\n✨ Done!");
 console.log("📝 All absolute paths converted to relative paths");
