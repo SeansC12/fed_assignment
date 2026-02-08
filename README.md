@@ -192,28 +192,18 @@ There is also the foreign key `stallId` which references the `hawker-stalls` doc
 
 Upon accepting the Firebase invite, you will be able to see all of our collections and their relationships.
 
-## Deploying to GitHub Pages
+### How the Deployment Works
 
 This app is configured to automatically deploy to GitHub Pages using GitHub Actions. The workflow builds Tailwind CSS and deploys the site whenever you push to the main branch.
 
-### Automatic Deployment Setup
+The GitHub Actions workflow automatically:
+1. Builds Tailwind CSS (`npm run build:css`)
+2. Fixes absolute paths for GitHub Pages deployment
+3. Adds `<base href="/fed_assignment/">` tags to all HTML files
+4. Deploys the complete site
 
-1. **Enable GitHub Pages**:
-   - Go to your repository on GitHub
-   - Navigate to **Settings** → **Pages**
-   - Under "Source", select **GitHub Actions**
-
-2. **Push Your Changes**:
-   ```bash
-   git add .
-   git commit -m "Setup GitHub Pages deployment"
-   git push origin main
-   ```
-
-3. **Monitor Deployment**:
-   - Go to the **Actions** tab in your repository
-   - Watch the "Deploy to GitHub Pages" workflow run
-   - Once complete, your site will be live at: `https://[your-username].github.io/[repo-name]/`
+This ensures that paths like `/static/output.css` and `/static/images/logo.png` work correctly on GitHub Pages.
+```
 
 ## Important Notes
 

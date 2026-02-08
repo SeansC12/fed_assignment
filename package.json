@@ -10,7 +10,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:css": "tailwindcss -i ./src/styles/input.css -o ./static/output.css",
     "watch:css": "tailwindcss -i ./src/styles/input.css -o ./static/output.css --watch",
-    "build": "npm run build:css"
+    "fix-paths:production": "BASE_PATH=/fed_assignment/ node fix-paths.js",
+    "fix-paths:local": "BASE_PATH=/ node fix-paths.js",
+    "build": "npm run build:css && npm run fix-paths:production"
   },
   "dependencies": {
     "@tailwindcss/cli": "^4.1.18",
