@@ -24,6 +24,53 @@ const db = getFirestore(app);
 const urlParams = new URLSearchParams(window.location.search);
 const stallId = urlParams.get("id");
 
+function initializeSecondaryNav() {
+  // Get stall ID from URL first, then fall back to localStorage
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlId = urlParams.get("id");
+  const storageId = localStorage.getItem("selectedStallId");
+  const stallId = urlId || storageId;
+  
+  console.log("Initializing nav with stall ID:", stallId);
+  
+  if (!stallId) {
+    console.warn("No stall ID found for navigation");
+    return;
+  }
+  
+  // Sync to localStorage for consistency
+  localStorage.setItem("selectedStallId", stallId);
+  
+  // Define navigation links
+  const navLinks = [
+    { id: 'nav-home', url: '../flagged-stalls/flagged_stallinfo.html' },
+    { id: 'nav-dashboard', url: '../Stall-Statistics/Stall-Statistics.html' },
+    { id: 'nav-grade', url: '../submit-grade/submit_grade.html' },
+    { id: 'nav-feedback', url: 'Customer-Feedback.html' }
+  ];
+  
+  const currentPage = window.location.pathname;
+  
+  navLinks.forEach(link => {
+    const element = document.getElementById(link.id);
+    if (!element) {
+      console.warn("Nav element not found:", link.id);
+      return;
+    }
+    
+    // Set the full href with stall ID
+    const fullUrl = link.url + '?id=' + encodeURIComponent(stallId);
+    element.href = fullUrl;
+    console.log(`Set ${link.id} to:`, fullUrl);
+    
+    // Highlight current page
+    if (currentPage.includes(link.url.replace('../', '').split('/').pop())) {
+      element.classList.remove('border-transparent');
+      element.classList.add('border-slate-400');
+    }
+  });
+}
+
 // HELPER: Format date to HH:SS DD/MM/YYYY
 function formatFeedbackDate(dateField) {
   if (!dateField) return "N/A";
@@ -37,6 +84,8 @@ function formatFeedbackDate(dateField) {
 }
 
 async function initFeedbackPage() {
+  initializeSecondaryNav();
+  
   if (!stallId) return;
 
   try {
@@ -87,14 +136,14 @@ async function processComplaints(snapshot) {
 
     // Fixed: Complaints use simple border style, removed getStarSVG and formattedDate (added HH:SS later if needed)
     listEl.innerHTML += `
-                        <div class="bg-white p-4 rounded-xl border border-slate-100 hover:border-red-200 hover:shadow-md transition">
-                            <div class="flex justify-between items-start mb-2">
-                                <span class="bg-red-50 text-red-700 text-[10px] px-2 py-0.5 rounded-full font-black uppercase tracking-tighter border border-red-100">${cat}</span>
-                                <span class="text-[10px] text-slate-400 font-mono">${data.userEmail}</span>
-                            </div>
-                            <p class="text-slate-700 mb-3 italic font-medium leading-relaxed">"${data.message || "No message provided."}"</p>
-                            <p class="text-xs font-bold text-slate-900">— ${userName}</p>
-                        </div>`;
+    <div class="bg-white p-4 rounded-xl border border-slate-100 hover:border-red-200 hover:shadow-md transition">
+        <div class="flex justify-between items-start mb-2">
+            <span class="bg-red-50 text-red-700 text-[10px] px-2 py-0.5 rounded-full font-black uppercase tracking-tighter border border-red-100">${cat}</span>
+            <span class="text-[10px] text-slate-400 font-mono">${data.userEmail}</span>
+        </div>
+        <p class="text-slate-700 mb-3 italic font-medium leading-relaxed">"${data.message || "No message provided."}"</p>
+        <p class="text-xs font-bold text-slate-900">— ${userName}</p>
+    </div>`;
   }
 
   const mostCommon = Object.keys(categories).reduce((a, b) =>
