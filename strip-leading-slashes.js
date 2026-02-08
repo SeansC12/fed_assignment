@@ -22,6 +22,9 @@ function stripLeadingSlashes(filePath) {
   let content = fs.readFileSync(filePath, 'utf8');
   let modified = false;
 
+  // Get the directory of the HTML file
+  const htmlDir = path.dirname(filePath);
+
   // Strip leading slashes from paths to /static/ and /src/
   const patterns = [
     { regex: /href="\/(?=(?:static|src)\/)/g, replacement: 'href="' },
@@ -30,10 +33,24 @@ function stripLeadingSlashes(filePath) {
   ];
 
   patterns.forEach(({ regex, replacement }) => {
-    if (regex.test(content)) {
-      content = content.replace(regex, replacement);
+    const originalContent = content;
+    content = content.replace(regex, replacement);
+    if (content !== originalContent) {
       modified = true;
     }
+  });
+
+  // Convert relative paths (./file.js, ../folder/file.js) to root-relative paths
+  // Match src="./..." or src="../..." or href="./..." or href="../..."
+  const relativePattern = /((?:src|href)=")(\.\.?\/[^"]+)(")/g;
+  
+  content = content.replace(relativePattern, (match, prefix, relativePath, suffix) => {
+    // Resolve the relative path against the HTML file's directory
+    const absolutePath = path.resolve(htmlDir, relativePath);
+    // Make it relative to the project root
+    const rootRelativePath = path.relative('.', absolutePath).replace(/\\/g, '/');
+    modified = true;
+    return prefix + rootRelativePath + suffix;
   });
 
   if (modified) {
