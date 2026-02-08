@@ -34,6 +34,9 @@ jobs:
       - name: Build Tailwind CSS
         run: npm run build:css
 
+      - name: Convert paths to relative
+        run: node convert-to-relative-paths.js
+
       - name: Add base tags for GitHub Pages
         run: node add-base-tags.js
 
