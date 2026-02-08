@@ -19,6 +19,43 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+function initializeSecondaryNav() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlId = urlParams.get("id");
+  const storageId = localStorage.getItem("selectedStallId");
+  const stallId = urlId || storageId;
+  
+  if (!stallId) {
+    console.warn("No stall ID found for navigation");
+    return;
+  }
+  
+  localStorage.setItem("selectedStallId", stallId);
+  
+  const navLinks = [
+    { id: 'nav-home', url: '../flagged-stalls/flagged_stallinfo.html' },
+    { id: 'nav-dashboard', url: '../Stall-Statistics/Stall-Statistics.html' },
+    { id: 'nav-grade', url: 'submit_grade.html' },
+    { id: 'nav-feedback', url: '../Customer-Feedback/Customer-Feedback.html' }
+  ];
+  
+  const currentPage = window.location.pathname;
+  
+  navLinks.forEach(link => {
+    const element = document.getElementById(link.id);
+    if (!element) return;
+    
+    element.href = link.url + '?id=' + encodeURIComponent(stallId);
+    
+    if (currentPage.includes(link.url.replace('../', '').split('/').pop())) {
+      element.classList.remove('border-transparent');
+      element.classList.add('border-slate-400');
+    }
+  });
+}
+
+initializeSecondaryNav();
+
 /* ================= DOM ================= */
 const stallIdEl = document.getElementById("stall-id");
 const stallNameEl = document.getElementById("stall-name");
