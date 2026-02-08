@@ -34,11 +34,8 @@ jobs:
       - name: Build Tailwind CSS
         run: npm run build:css
 
-      - name: Strip leading slashes from paths
-        run: node strip-leading-slashes.js
-
-      - name: Add base tags for GitHub Pages
-        run: node add-base-tags.js
+      - name: Convert paths to relative for GitHub Pages
+        run: node convert-to-relative-paths.js
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
