@@ -25,8 +25,7 @@
         <!-- NAV LINKS CENTERED -->
         <nav class="flex gap-20 items-center mx-auto">
             <a href="../homepage/home.html" class="text-xl font-semibold hover:text-[#18e667] transition-colors border-b-2 border-white pb-1">Home</a>
-            <a href="../Report/cust_exp2.html" class="text-xl font-semibold hover:text-[#18e667] transition-colors">Dashboard</a>
-            <a href="../Map/HawkerMap.html" class="text-xl font-semibold hover:text-[#18e667] transition-colors">Hawker Centre</a>
+            <a href="../hawker_stalls/stalls.html" class="text-xl font-semibold hover:text-[#18e667] transition-colors">Hawker Centre</a>
             <a href="#" class="text-xl font-semibold hover:text-[#18e667] transition-colors">Policy</a>
         </nav>
 
@@ -44,65 +43,71 @@
         </div>
 </header>
 <!-- ================= END HEADER ================= -->
+<!-- ===== WELCOME MESSAGE ===== -->
+<section class="mb-10">
+  <div class="bg-white border border-[#009481]/30 rounded-2xl p-6 shadow-sm">
+
+    <p class="text-sm uppercase tracking-widest text-slate-400 font-bold mb-2">
+      NEA Officer Dashboard
+    </p>
+
+    <h1 class="text-3xl md:text-4xl font-extrabold text-slate-800">
+      Welcome back,
+      <span
+        id="welcome-officer-name"
+        class="text-[#009481]"
+      >
+        Officer
+      </span>
+    </h1>
+
+    <p class="text-slate-500 mt-3 max-w-2xl">
+      Below is a summary of the most recent  stall reports
+      that may require inspection or follow-up action.
+    </p>
+
+  </div>
+</section>
 
 
-<!-- ================= MAIN ================= -->
-<main class="container mx-auto px-6 py-8 grow">
 
-    <h1 class="text-2xl font-bold text-slate-800 mb-8">Dashboard</h1>
+<!-- ===== RECENT PUBLIC COMPLAINTS ===== -->
+<section class="bg-white p-6 rounded-xl border space-y-4">
 
-    <!-- Grid layout: Left = Chart, Right = Stats/Buttons -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+  <h2 class="text-lg font-bold text-slate-800">
+    Recent inspection remarks
+  </h2>
 
-        <!-- LEFT: Line Chart -->
-        <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border">
-            <h2 class="text-lg font-bold mb-4">Trend of Average Hygiene Grade</h2>
-            <canvas id="hygieneTrendChart" class="w-full h-64"></canvas>
-        </div>
-
-        <!-- RIGHT: Stats + Actions -->
-        <div class="flex flex-col gap-6">
-
-            <!-- Stats Cards -->
-            <div class="bg-white p-4 rounded-xl shadow border flex justify-between items-center">
-                <div>
-                    <p class="text-xs text-slate-500 uppercase font-bold">Total Stalls Monitored</p>
-                    <p class="text-lg font-bold text-slate-800">124</p>
-                </div>
-                <div class="bg-[#009481] h-10 w-10 flex items-center justify-center text-white rounded-full font-bold">S</div>
-            </div>
-
-            <div class="bg-white p-4 rounded-xl shadow border flex justify-between items-center">
-                <div>
-                    <p class="text-xs text-slate-500 uppercase font-bold">Flagged Stalls</p>
-                    <p class="text-lg font-bold text-red-600">12</p>
-                </div>
-                <div class="bg-red-500 h-10 w-10 flex items-center justify-center text-white rounded-full font-bold">F</div>
-            </div>
-
-            <div class="bg-white p-4 rounded-xl shadow border flex justify-between items-center">
-                <div>
-                    <p class="text-xs text-slate-500 uppercase font-bold">Ongoing Investigations</p>
-                    <p class="text-lg font-bold text-orange-500">3</p>
-                </div>
-                <div class="bg-orange-500 h-10 w-10 flex items-center justify-center text-white rounded-full font-bold">I</div>
-            </div>
-
-            <!-- Action Buttons -->
-            <a href="../flagged-stalls/violationlist.html" class="block bg-[#009481] text-white text-center py-5 rounded-xl font-bold shadow hover:bg-[#007964] transition">
-                View Flagged Stalls
-            </a>
-
-            <a href="#" class="block bg-[#0ea5e9] text-white text-center py-4 rounded-xl font-bold shadow hover:bg-[#0284c7] transition">
-                Ongoing Investigations
-            </a>
-
-        </div>
-
+  <!-- Complaint 1 -->
+  <div class="flex justify-between items-start gap-4 p-4 rounded-lg bg-slate-50 border">
+    <div>
+      <p class="font-semibold text-slate-700">
+        Jingho Shokudo
+      </p>
+      <p class="text-xs text-slate-400 mt-2">
+        Submitted: 22 Jan 2026
+      </p>
+      very mid
     </div>
 
-</main>
-<!-- ================= END MAIN ================= -->
+    <div class="flex flex-col items-end gap-2">
+      <span class="px-3 py-1 text-xs rounded-full bg-orange-500 text-white font-bold">
+        Flagged
+      </span>
+      <a
+        href="../flagged-stalls/flagged_stallinfo.html"
+        class="text-sm font-semibold text-[#009481] hover:underline"
+      >
+        View →
+      </a>
+    </div>
+  </div>
+
+  
+
+</section>
+
+
 
 
 <!-- ================= FOOTER ================= -->

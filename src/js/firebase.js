@@ -1,9 +1,8 @@
-// Firebase initialization
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDxw4nszjHYSWann1cuppWg0EGtaa-sjxs",
+  apiKey: "...",
   authDomain: "fed-assignment-f1456.firebaseapp.com",
   projectId: "fed-assignment-f1456",
   storageBucket: "fed-assignment-f1456.firebasestorage.app",
@@ -13,4 +12,3 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
-export { collection, onSnapshot };
