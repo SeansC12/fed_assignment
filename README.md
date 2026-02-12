@@ -99,6 +99,9 @@ Our customer registration feature is functional. We encourage you to create your
 ### NEA Officer Portal (Done by Jaron Lee and Samuel Fhu)
 **Entry Point**: [src/pages/nea_officer/home/log_in/login.html](src/pages/nea_officer/home/log_in/login.html)
 
+NEA ID: S14993T
+Password: password
+
 **Features**:
 - View hawker centre locations on interactive map (Samuel)
 - Dashboard for individual hawker stall (Samuel)
